@@ -26,11 +26,18 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Type-check
-        run: npx tsc --noEmit
-
       - name: Test
         run: npm test
 
       - name: Build
         run: npm run build
+
+      # Runs after Build, not before: `LayoutProps<"/">` and other typed-route
+      # helpers come from ambient types Next.js generates under .next/types/
+      # during build/dev — on a fresh checkout those don't exist yet, so this
+      # step fails with "Cannot find name 'LayoutProps'" if run earlier, even
+      # though there's no real type error (next build's own TypeScript pass
+      # already gates on real errors; this is a fast, explicit sanity check
+      # on top of that, not the source of truth).
+      - name: Type-check
+        run: npx tsc --noEmit
