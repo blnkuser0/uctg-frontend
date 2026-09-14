@@ -21,7 +21,7 @@ export function ChannelList({ channels, currentUserId }: { channels: Channel[]; 
   const projects = channels.filter((c) => c.type === "project");
 
   if (channels.length === 0) {
-    return <p className="p-4 text-center text-sm text-muted-foreground">No conversations yet — start one below.</p>;
+    return <p className="p-4 text-center text-sm text-muted-foreground">No conversations yet — start one above.</p>;
   }
 
   return (

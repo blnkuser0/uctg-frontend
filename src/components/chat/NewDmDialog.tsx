@@ -54,18 +54,22 @@ export function NewDmDialog() {
         <DialogHeader>
           <DialogTitle>New direct message</DialogTitle>
         </DialogHeader>
-        <Select value={userId || undefined} onValueChange={(v) => setUserId(v ?? "")}>
-          <SelectTrigger>
-            <SelectValue placeholder="Choose a teammate..." />
-          </SelectTrigger>
-          <SelectContent>
-            {options.map((u) => (
-              <SelectItem key={u.id} value={u.id}>
-                {u.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {options.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No other teammates yet.</p>
+        ) : (
+          <Select value={userId || undefined} onValueChange={(v) => setUserId(v ?? "")}>
+            <SelectTrigger>
+              <SelectValue placeholder="Choose a teammate..." />
+            </SelectTrigger>
+            <SelectContent>
+              {options.map((u) => (
+                <SelectItem key={u.id} value={u.id}>
+                  {u.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
         <DialogFooter>
           <Button
             onClick={handleStart}
