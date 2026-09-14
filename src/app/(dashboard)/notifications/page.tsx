@@ -37,7 +37,7 @@ export default function NotificationsPage() {
         <TabsContent value="all" className="pt-3">
           {isLoading ? (
             <div className="flex justify-center py-10">
-              <div className="size-6 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+              <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
             </div>
           ) : notifications && notifications.length > 0 ? (
             <div className="grid gap-1 rounded-2xl border border-border bg-card p-1.5">
@@ -53,7 +53,7 @@ export default function NotificationsPage() {
         <TabsContent value="mentions" className="pt-3">
           {mentionsLoading ? (
             <div className="flex justify-center py-10">
-              <div className="size-6 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+              <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
             </div>
           ) : mentions && mentions.length > 0 ? (
             <div className="grid gap-1 rounded-2xl border border-border bg-card p-1.5">

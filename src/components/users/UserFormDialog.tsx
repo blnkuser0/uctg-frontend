@@ -83,7 +83,7 @@ export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
       <DialogTrigger
         render={
           trigger ?? (
-            <Button className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+            <Button className="bg-cyan-600 text-white hover:bg-cyan-500">
               <Plus className="size-4" />
               New user
             </Button>
@@ -141,7 +141,7 @@ export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
             </Select>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={isPending} className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+            <Button type="submit" disabled={isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">
               {isPending ? "Saving..." : isEditing ? "Save changes" : "Create user"}
             </Button>
           </DialogFooter>

@@ -43,7 +43,7 @@ export function RoleTable({ roles }: { roles: Role[] }) {
                   <span className="text-xs text-muted-foreground">No permissions</span>
                 ) : (
                   role.permissions.map((p) => (
-                    <Badge key={p} className="bg-amber-500/15 font-normal text-amber-700">
+                    <Badge key={p} className="bg-cyan-500/15 font-normal text-cyan-700">
                       {PERMISSION_LABELS[p]}
                     </Badge>
                   ))

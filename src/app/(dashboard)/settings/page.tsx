@@ -73,7 +73,7 @@ function ProfileSection() {
         <div className="relative">
           <Avatar className="size-16">
             <AvatarImage src={user.avatarUrl ?? undefined} />
-            <AvatarFallback className="bg-amber-500/20 text-lg text-amber-700">{initials(user.name)}</AvatarFallback>
+            <AvatarFallback className="bg-cyan-500/20 text-lg text-cyan-700">{initials(user.name)}</AvatarFallback>
           </Avatar>
           <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
           <button
@@ -81,7 +81,7 @@ function ProfileSection() {
             onClick={() => inputRef.current?.click()}
             disabled={uploadAvatar.isPending}
             aria-label="Change avatar"
-            className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full bg-amber-500 text-stone-900 shadow-sm hover:bg-amber-400"
+            className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full bg-cyan-600 text-white shadow-sm hover:bg-cyan-500"
           >
             <Camera className="size-3.5" />
           </button>

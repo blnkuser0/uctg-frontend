@@ -38,7 +38,7 @@ export function MessageItem({ message, isOwn, onUpdate, onDelete }: MessageItemP
   return (
     <div className="flex gap-2.5">
       <Avatar className="size-8 shrink-0">
-        <AvatarFallback className="bg-amber-500/20 text-[10px] text-amber-700">{initials(message.authorName)}</AvatarFallback>
+        <AvatarFallback className="bg-cyan-500/20 text-[10px] text-cyan-700">{initials(message.authorName)}</AvatarFallback>
       </Avatar>
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">

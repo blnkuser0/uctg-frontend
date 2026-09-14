@@ -24,7 +24,7 @@ export function WorkloadByAssignee({ workload, users }: { workload: ProjectRepor
             return (
               <div key={entry.userId} className="flex items-center gap-3">
                 <Avatar className="size-7 shrink-0">
-                  <AvatarFallback className="bg-amber-500/20 text-[10px] text-amber-700">
+                  <AvatarFallback className="bg-cyan-500/20 text-[10px] text-cyan-700">
                     {initials(user?.name ?? "?")}
                   </AvatarFallback>
                 </Avatar>

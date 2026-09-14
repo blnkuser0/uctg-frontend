@@ -22,7 +22,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (isLoading || !user) {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-background">
-        <div className="size-6 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+        <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
       </div>
     );
   }

@@ -20,7 +20,7 @@ export function TeamRoster({ dateKey, entries, isLoading }: { dateKey: string; e
   if (isLoading) {
     return (
       <div className="flex justify-center py-10">
-        <div className="size-6 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+        <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
       </div>
     );
   }
@@ -32,7 +32,7 @@ export function TeamRoster({ dateKey, entries, isLoading }: { dateKey: string; e
         {entries.map((entry) => (
           <div key={entry.userId} className="flex items-center gap-3">
             <Avatar className="size-7 shrink-0">
-              <AvatarFallback className="bg-amber-500/20 text-[10px] text-amber-700">{initials(entry.name)}</AvatarFallback>
+              <AvatarFallback className="bg-cyan-500/20 text-[10px] text-cyan-700">{initials(entry.name)}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm">{entry.name}</p>

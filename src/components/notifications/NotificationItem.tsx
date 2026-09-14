@@ -43,13 +43,13 @@ export function NotificationItem({
       onClick={onNavigate}
       className={cn(
         "flex items-start gap-2.5 rounded-lg px-3 py-2.5 text-sm transition-colors hover:bg-muted",
-        unread && "bg-amber-500/5"
+        unread && "bg-cyan-500/5"
       )}
     >
       <span
         className={cn(
           "mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full",
-          unread ? "bg-amber-500/15 text-amber-600" : "bg-muted text-muted-foreground"
+          unread ? "bg-cyan-500/15 text-cyan-600" : "bg-muted text-muted-foreground"
         )}
       >
         <Icon className="size-3.5" />
@@ -65,7 +65,7 @@ export function NotificationItem({
           {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
         </p>
       </div>
-      {unread && <span className="mt-1.5 size-2 shrink-0 rounded-full bg-amber-500" />}
+      {unread && <span className="mt-1.5 size-2 shrink-0 rounded-full bg-cyan-600" />}
     </Link>
   );
 }

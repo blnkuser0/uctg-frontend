@@ -74,7 +74,7 @@ export function NewDmDialog() {
           <Button
             onClick={handleStart}
             disabled={!userId || getOrCreateDm.isPending}
-            className="bg-amber-500 text-stone-900 hover:bg-amber-400"
+            className="bg-cyan-600 text-white hover:bg-cyan-500"
           >
             {getOrCreateDm.isPending ? "Starting..." : "Start conversation"}
           </Button>

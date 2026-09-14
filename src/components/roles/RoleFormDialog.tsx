@@ -73,7 +73,7 @@ export function RoleFormDialog({ role, trigger }: RoleFormDialogProps) {
       <DialogTrigger
         render={
           trigger ?? (
-            <Button className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+            <Button className="bg-cyan-600 text-white hover:bg-cyan-500">
               <Plus className="size-4" />
               New Role
             </Button>
@@ -95,7 +95,7 @@ export function RoleFormDialog({ role, trigger }: RoleFormDialogProps) {
             <PermissionChecklist selected={permissions} onChange={setPermissions} />
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={isPending} className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+            <Button type="submit" disabled={isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">
               {isPending ? "Saving..." : isEditing ? "Save changes" : "Create role"}
             </Button>
           </DialogFooter>

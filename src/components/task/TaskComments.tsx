@@ -70,7 +70,7 @@ export function TaskComments({ taskId, memberIds }: { taskId: string; memberIds:
         {(comments ?? []).map((comment) => (
           <div key={comment._id} className="flex gap-2.5">
             <Avatar className="size-7 shrink-0">
-              <AvatarFallback className="bg-amber-500/20 text-[10px] text-amber-700">{initials(comment.authorName)}</AvatarFallback>
+              <AvatarFallback className="bg-cyan-500/20 text-[10px] text-cyan-700">{initials(comment.authorName)}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex items-center gap-2">
@@ -138,7 +138,7 @@ export function TaskComments({ taskId, memberIds }: { taskId: string; memberIds:
               </div>
             </PopoverContent>
           </Popover>
-          <Button type="submit" size="sm" disabled={createComment.isPending} className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+          <Button type="submit" size="sm" disabled={createComment.isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">
             Post
           </Button>
         </div>

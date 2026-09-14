@@ -38,7 +38,7 @@ export function ClockActionButtons({ state, onAction, isPending }: ClockActionBu
             key={type}
             disabled={isPending}
             onClick={() => onAction(type)}
-            className={primary ? "bg-amber-500 text-stone-900 hover:bg-amber-400" : undefined}
+            className={primary ? "bg-cyan-600 text-white hover:bg-cyan-500" : undefined}
             variant={primary ? "default" : "outline"}
           >
             <Icon className="size-4" />

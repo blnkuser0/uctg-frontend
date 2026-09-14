@@ -26,7 +26,7 @@ export default function MyTasksPage() {
 
       {isLoading ? (
         <div className="flex justify-center py-10">
-          <div className="size-6 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+          <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
         </div>
       ) : tasks && tasks.length > 0 ? (
         <div className="grid gap-2 sm:grid-cols-2">

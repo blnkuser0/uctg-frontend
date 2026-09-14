@@ -67,7 +67,7 @@ export function RequestLeaveDialog() {
     >
       <DialogTrigger
         render={
-          <Button className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+          <Button className="bg-cyan-600 text-white hover:bg-cyan-500">
             <Plus className="size-4" />
             Request Leave
           </Button>
@@ -100,7 +100,7 @@ export function RequestLeaveDialog() {
             <Button
               type="submit"
               disabled={createLeave.isPending}
-              className="bg-amber-500 text-stone-900 hover:bg-amber-400"
+              className="bg-cyan-600 text-white hover:bg-cyan-500"
             >
               {createLeave.isPending ? "Submitting..." : "Submit request"}
             </Button>

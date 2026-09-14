@@ -67,7 +67,7 @@ export function TaskTimeTracking({ taskId, trackedMinutes, estimateMinutes }: { 
             Stop
           </Button>
         ) : (
-          <Button onClick={handleStart} className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+          <Button onClick={handleStart} className="bg-cyan-600 text-white hover:bg-cyan-500">
             <Play className="size-4" />
             Start timer
           </Button>

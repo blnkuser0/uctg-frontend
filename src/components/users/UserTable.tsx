@@ -51,7 +51,7 @@ export function UserTable({ users }: { users: User[] }) {
             <div className="flex items-start justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
                 <Avatar className="size-9 shrink-0">
-                  <AvatarFallback className="bg-amber-500/20 text-xs text-amber-700">{initials(user.name)}</AvatarFallback>
+                  <AvatarFallback className="bg-cyan-500/20 text-xs text-cyan-700">{initials(user.name)}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-1.5">
@@ -59,7 +59,7 @@ export function UserTable({ users }: { users: User[] }) {
                     {!isActive && <Badge className="bg-muted font-normal text-muted-foreground">Deactivated</Badge>}
                   </div>
                   <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-                  <Badge className="mt-1.5 bg-amber-500/15 font-normal text-amber-700">{user.role.name ?? "No role"}</Badge>
+                  <Badge className="mt-1.5 bg-cyan-500/15 font-normal text-cyan-700">{user.role.name ?? "No role"}</Badge>
                 </div>
               </div>
               <div className="flex shrink-0 gap-1.5">

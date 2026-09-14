@@ -19,7 +19,7 @@ export default function ProjectReportsPage({ params }: { params: Promise<{ proje
   if (isLoading || !report || !project) {
     return (
       <div className="flex justify-center py-10">
-        <div className="size-6 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+        <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
       </div>
     );
   }

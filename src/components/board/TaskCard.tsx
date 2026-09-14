@@ -83,7 +83,7 @@ export function TaskCard({ task, projectKey, labels, assignees, onClick, onMoveC
         <div className="flex -space-x-1.5">
           {taskAssignees.slice(0, 3).map((u) => (
             <Avatar key={u.id} className="size-5 border border-background">
-              <AvatarFallback className="bg-amber-500/20 text-[9px] text-amber-700">{initials(u.name)}</AvatarFallback>
+              <AvatarFallback className="bg-cyan-500/20 text-[9px] text-cyan-700">{initials(u.name)}</AvatarFallback>
             </Avatar>
           ))}
         </div>

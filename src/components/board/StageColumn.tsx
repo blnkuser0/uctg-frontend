@@ -44,7 +44,7 @@ export function StageColumn({ stage, tasks, projectKey, labels, members, onTaskC
 
       <div
         ref={setNodeRef}
-        className={cn("flex flex-1 flex-col gap-2 rounded-b-2xl p-2 transition-colors", isOver && "bg-amber-500/10")}
+        className={cn("flex flex-1 flex-col gap-2 rounded-b-2xl p-2 transition-colors", isOver && "bg-cyan-500/10")}
       >
         {tasks.map((task) => (
           <DraggableTaskCard

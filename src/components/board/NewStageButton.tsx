@@ -46,7 +46,7 @@ export function NewStageButton({ projectId }: { projectId: string }) {
         onBlur={() => !name && setIsAdding(false)}
       />
       <div className="flex gap-2">
-        <Button type="submit" size="sm" disabled={createStage.isPending} className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+        <Button type="submit" size="sm" disabled={createStage.isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">
           Add
         </Button>
         <Button type="button" size="sm" variant="ghost" onClick={() => setIsAdding(false)}>

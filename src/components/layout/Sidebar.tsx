@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutGrid, ListChecks, Bell, Clock, CalendarDays, CalendarCheck, ShieldCheck, Users, MessagesSquare } from "lucide-react";
@@ -32,9 +33,13 @@ export function Sidebar() {
   return (
     <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-card md:flex">
       <div className="flex h-16 items-center gap-2 border-b border-border px-5">
-        <div className="flex size-8 items-center justify-center rounded-lg bg-amber-500 text-xs font-bold text-stone-900">
-          UC
-        </div>
+        <Image
+          src="/assets/branding/logo-square.jpg"
+          alt="Ugnexa Catalyst"
+          width={32}
+          height={32}
+          className="size-8 shrink-0 rounded-lg"
+        />
         <span className="text-sm font-semibold">Ugnexa Catalyst</span>
       </div>
       <nav className="flex flex-col gap-1 p-3">
@@ -47,7 +52,7 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 active
-                  ? "bg-amber-500/15 text-amber-600"
+                  ? "bg-cyan-500/15 text-cyan-600"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >

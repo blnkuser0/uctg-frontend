@@ -95,7 +95,7 @@ export function NewTaskDialog({ projectId, stageId, memberIds, onOpenChange }: N
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={createTask.isPending} className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+            <Button type="submit" disabled={createTask.isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">
               {createTask.isPending ? "Creating..." : "Create task"}
             </Button>
           </DialogFooter>

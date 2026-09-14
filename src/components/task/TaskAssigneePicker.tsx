@@ -40,7 +40,7 @@ export function TaskAssigneePicker({ memberIds, selected, onChange }: TaskAssign
             <div className="flex -space-x-1.5">
               {selectedUsers.slice(0, 3).map((u) => (
                 <Avatar key={u.id} className="size-5 border border-background">
-                  <AvatarFallback className="bg-amber-500/20 text-[9px] text-amber-700">
+                  <AvatarFallback className="bg-cyan-500/20 text-[9px] text-cyan-700">
                     {initials(u.name)}
                   </AvatarFallback>
                 </Avatar>
@@ -58,7 +58,7 @@ export function TaskAssigneePicker({ memberIds, selected, onChange }: TaskAssign
             <label key={u.id} className="flex items-center gap-2 rounded-md p-1.5 text-sm hover:bg-muted">
               <Checkbox checked={selected.includes(u.id)} onCheckedChange={(c) => toggle(u.id, c === true)} />
               <Avatar className="size-5">
-                <AvatarFallback className="bg-amber-500/20 text-[9px] text-amber-700">{initials(u.name)}</AvatarFallback>
+                <AvatarFallback className="bg-cyan-500/20 text-[9px] text-cyan-700">{initials(u.name)}</AvatarFallback>
               </Avatar>
               <Label className="cursor-pointer font-normal">{u.name}</Label>
             </label>

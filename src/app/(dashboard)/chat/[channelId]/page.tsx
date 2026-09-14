@@ -14,7 +14,7 @@ export default function ChannelThreadPage({ params }: { params: Promise<{ channe
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <div className="size-6 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+        <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
       </div>
     );
   }

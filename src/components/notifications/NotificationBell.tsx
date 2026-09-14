@@ -25,7 +25,7 @@ export function NotificationBell() {
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="size-4.5" />
             {hasUnread && (
-              <span className="absolute right-1.5 top-1.5 flex size-2 rounded-full bg-amber-500" />
+              <span className="absolute right-1.5 top-1.5 flex size-2 rounded-full bg-cyan-600" />
             )}
           </Button>
         }
@@ -58,7 +58,7 @@ export function NotificationBell() {
         <Link
           href="/notifications"
           onClick={() => setOpen(false)}
-          className="block border-t border-border px-3 py-2 text-center text-xs font-medium text-amber-600 hover:bg-muted"
+          className="block border-t border-border px-3 py-2 text-center text-xs font-medium text-cyan-600 hover:bg-muted"
         >
           View all
         </Link>

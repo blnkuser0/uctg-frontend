@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -52,11 +53,15 @@ export default function RegisterPage() {
 
   return (
     <main className="flex min-h-dvh items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-sm border-amber-500/20">
+      <Card className="w-full max-w-sm border-cyan-500/20">
         <CardHeader className="items-center gap-2 text-center">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-amber-500 text-sm font-bold text-stone-900">
-            UC
-          </div>
+          <Image
+            src="/assets/branding/logo-square.jpg"
+            alt="Ugnexa Catalyst"
+            width={44}
+            height={44}
+            className="size-11 rounded-xl"
+          />
           <CardTitle>Create your workspace</CardTitle>
           <CardDescription>Set up your organization and admin account.</CardDescription>
         </CardHeader>
@@ -84,7 +89,7 @@ export default function RegisterPage() {
               <Input id="password" type="password" autoComplete="new-password" {...register("password")} />
               {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
             </div>
-            <Button type="submit" disabled={isSubmitting} className="mt-1 bg-amber-500 text-stone-900 hover:bg-amber-400">
+            <Button type="submit" disabled={isSubmitting} className="mt-1 bg-cyan-600 text-white hover:bg-cyan-500">
               {isSubmitting ? "Creating..." : "Create workspace"}
             </Button>
           </form>

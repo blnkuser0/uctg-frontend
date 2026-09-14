@@ -49,7 +49,7 @@ export function NewProjectDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+          <Button className="bg-cyan-600 text-white hover:bg-cyan-500">
             <Plus className="size-4" />
             New Project
           </Button>
@@ -70,7 +70,7 @@ export function NewProjectDialog() {
             <Textarea id="projectDescription" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={createProject.isPending} className="bg-amber-500 text-stone-900 hover:bg-amber-400">
+            <Button type="submit" disabled={createProject.isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">
               {createProject.isPending ? "Creating..." : "Create project"}
             </Button>
           </DialogFooter>

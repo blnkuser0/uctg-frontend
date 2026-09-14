@@ -65,7 +65,7 @@ export function KanbanBoardMobile({ project }: { project: Project }) {
               className={cn(
                 "shrink-0 rounded-full px-3 py-1.5 text-xs font-medium",
                 active
-                  ? "bg-amber-500 text-stone-900"
+                  ? "bg-cyan-600 text-white"
                   : overLimit
                     ? "bg-destructive/15 text-destructive"
                     : "bg-muted text-muted-foreground"

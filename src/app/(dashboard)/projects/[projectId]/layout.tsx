@@ -29,8 +29,8 @@ export default function ProjectLayout({
       <div className="shrink-0 border-b border-border px-4 md:px-6">
         <div className="flex items-center gap-2 pt-4">
           <span
-            className="flex size-7 items-center justify-center rounded-lg text-xs font-bold text-stone-900"
-            style={{ backgroundColor: project?.color ?? "#f59e0b" }}
+            className="flex size-7 items-center justify-center rounded-lg text-xs font-bold text-white"
+            style={{ backgroundColor: project?.color ?? "#0891b2" }}
           >
             {project?.key.slice(0, 2) ?? ".."}
           </span>
@@ -46,7 +46,7 @@ export default function ProjectLayout({
                 href={href}
                 className={cn(
                   "shrink-0 rounded-t-lg border-b-2 px-3 py-2 text-sm font-medium",
-                  active ? "border-amber-500 text-amber-600" : "border-transparent text-muted-foreground hover:text-foreground"
+                  active ? "border-cyan-500 text-cyan-600" : "border-transparent text-muted-foreground hover:text-foreground"
                 )}
               >
                 {tab.label}

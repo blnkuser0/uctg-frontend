@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     default: "Ugnexa Catalyst",
     template: "%s · Ugnexa Catalyst",
   },
-  description: "Fitout project management and ticketing",
+  description: "Team workspace for projects, time tracking, leaves, attendance, and chat",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f59e0b",
+  themeColor: "#0891b2",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,

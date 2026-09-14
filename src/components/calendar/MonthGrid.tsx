@@ -38,7 +38,7 @@ export function MonthGrid({ year, month, renderDay, onSelectDate, selectedDateKe
         const isSelected = dateKey === selectedDateKey;
         const content = (
           <>
-            <span className={cn("text-[11px]", isToday && "font-semibold text-amber-600")}>{date.getDate()}</span>
+            <span className={cn("text-[11px]", isToday && "font-semibold text-cyan-600")}>{date.getDate()}</span>
             {renderDay(date, dateKey)}
           </>
         );
@@ -57,7 +57,7 @@ export function MonthGrid({ year, month, renderDay, onSelectDate, selectedDateKe
             onClick={() => onSelectDate(dateKey)}
             className={cn(
               "flex aspect-square flex-col items-center gap-0.5 rounded-lg p-1 transition-colors hover:bg-muted",
-              isSelected && "ring-2 ring-amber-500"
+              isSelected && "ring-2 ring-cyan-500"
             )}
           >
             {content}

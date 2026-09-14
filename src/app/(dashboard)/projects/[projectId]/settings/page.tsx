@@ -36,7 +36,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ proj
 
   const [newStageName, setNewStageName] = useState("");
   const [newLabelName, setNewLabelName] = useState("");
-  const [newLabelColor, setNewLabelColor] = useState("#f59e0b");
+  const [newLabelColor, setNewLabelColor] = useState("#0891b2");
   const [addMemberId, setAddMemberId] = useState("");
 
   if (!project) return null;
@@ -167,7 +167,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ proj
             <div key={member.id} className="flex items-center justify-between rounded-lg border border-border p-2">
               <div className="flex items-center gap-2">
                 <Avatar className="size-6">
-                  <AvatarFallback className="bg-amber-500/20 text-[10px] text-amber-700">{initials(member.name)}</AvatarFallback>
+                  <AvatarFallback className="bg-cyan-500/20 text-[10px] text-cyan-700">{initials(member.name)}</AvatarFallback>
                 </Avatar>
                 <span className="text-sm">{member.name}</span>
                 <Badge className="bg-muted font-normal text-muted-foreground">{member.role.name}</Badge>

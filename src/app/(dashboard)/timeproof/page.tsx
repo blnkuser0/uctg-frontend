@@ -23,7 +23,7 @@ export default function TimeproofPage() {
   if (isLoading || !data) {
     return (
       <div className="flex h-full items-center justify-center p-8">
-        <div className="size-6 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+        <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
       </div>
     );
   }

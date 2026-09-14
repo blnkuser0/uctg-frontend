@@ -92,7 +92,7 @@ export function MessageComposer({ members, onSend, onAttach, isSending, isUpload
                     <label key={m._id} className="flex items-center gap-2 rounded-md p-1.5 text-sm hover:bg-muted">
                       <Checkbox checked={mentions.includes(m._id)} onCheckedChange={(c) => toggleMention(m._id, c === true)} />
                       <Avatar className="size-5">
-                        <AvatarFallback className="bg-amber-500/20 text-[9px] text-amber-700">
+                        <AvatarFallback className="bg-cyan-500/20 text-[9px] text-cyan-700">
                           {initials(m.name)}
                         </AvatarFallback>
                       </Avatar>
@@ -109,7 +109,7 @@ export function MessageComposer({ members, onSend, onAttach, isSending, isUpload
           size="icon"
           onClick={handleSubmit}
           disabled={!text.trim() || isSending}
-          className="shrink-0 bg-amber-500 text-stone-900 hover:bg-amber-400"
+          className="shrink-0 bg-cyan-600 text-white hover:bg-cyan-500"
           aria-label="Send message"
         >
           <Send className="size-4" />

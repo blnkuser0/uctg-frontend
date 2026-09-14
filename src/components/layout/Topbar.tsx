@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare, Settings } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
@@ -39,9 +40,13 @@ export function Topbar() {
   return (
     <header className="flex h-16 items-center justify-between border-b border-border bg-background px-4 md:px-6">
       <div className="md:hidden flex items-center gap-2">
-        <div className="flex size-7 items-center justify-center rounded-lg bg-amber-500 text-[10px] font-bold text-stone-900">
-          UC
-        </div>
+        <Image
+          src="/assets/branding/logo-square.jpg"
+          alt="Ugnexa Catalyst"
+          width={28}
+          height={28}
+          className="size-7 shrink-0 rounded-lg"
+        />
         <span className="text-sm font-semibold">Ugnexa Catalyst</span>
       </div>
       <div className="hidden md:block" />
@@ -53,7 +58,7 @@ export function Topbar() {
               <Button variant="ghost" className="flex items-center gap-2 px-2">
                 <Avatar className="size-7">
                   <AvatarImage src={user?.avatarUrl ?? undefined} />
-                  <AvatarFallback className="bg-amber-500/20 text-xs text-amber-700">
+                  <AvatarFallback className="bg-cyan-500/20 text-xs text-cyan-700">
                     {user ? initials(user.name) : <UserIcon className="size-3.5" />}
                   </AvatarFallback>
                 </Avatar>

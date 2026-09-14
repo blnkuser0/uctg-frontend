@@ -76,7 +76,7 @@ export function NewGroupDialog() {
         <div className="grid gap-4">
           <div className="grid gap-1.5">
             <Label htmlFor="groupName">Group name</Label>
-            <Input id="groupName" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Fitout Crew" />
+            <Input id="groupName" value={name} onChange={(e) => setName(e.target.value)} placeholder="New Group Name" />
           </div>
           <div className="grid gap-1.5">
             <Label>Members</Label>
@@ -86,7 +86,7 @@ export function NewGroupDialog() {
                 <label key={u.id} className="flex items-center gap-2 rounded-md p-1.5 text-sm hover:bg-muted">
                   <Checkbox checked={memberIds.includes(u.id)} onCheckedChange={(c) => toggle(u.id, c === true)} />
                   <Avatar className="size-6">
-                    <AvatarFallback className="bg-amber-500/20 text-[10px] text-amber-700">{initials(u.name)}</AvatarFallback>
+                    <AvatarFallback className="bg-cyan-500/20 text-[10px] text-cyan-700">{initials(u.name)}</AvatarFallback>
                   </Avatar>
                   <span className="cursor-pointer">{u.name}</span>
                 </label>
@@ -98,7 +98,7 @@ export function NewGroupDialog() {
           <Button
             onClick={handleCreate}
             disabled={createGroup.isPending}
-            className="bg-amber-500 text-stone-900 hover:bg-amber-400"
+            className="bg-cyan-600 text-white hover:bg-cyan-500"
           >
             {createGroup.isPending ? "Creating..." : "Create group"}
           </Button>

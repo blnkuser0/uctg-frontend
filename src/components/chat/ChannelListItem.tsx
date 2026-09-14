@@ -24,7 +24,7 @@ export function ChannelListItem({ channel, currentUserId }: { channel: Channel; 
     const other = channel.memberIds.find((m) => m._id !== currentUserId) ?? channel.memberIds[0];
     icon = (
       <Avatar className="size-8 shrink-0">
-        <AvatarFallback className="bg-amber-500/20 text-[10px] text-amber-700">
+        <AvatarFallback className="bg-cyan-500/20 text-[10px] text-cyan-700">
           {other ? initials(other.name) : "?"}
         </AvatarFallback>
       </Avatar>
@@ -48,7 +48,7 @@ export function ChannelListItem({ channel, currentUserId }: { channel: Channel; 
       href={href}
       className={cn(
         "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors",
-        active ? "bg-amber-500/15 text-amber-600" : "hover:bg-muted"
+        active ? "bg-cyan-500/15 text-cyan-600" : "hover:bg-muted"
       )}
     >
       {icon}
@@ -56,7 +56,7 @@ export function ChannelListItem({ channel, currentUserId }: { channel: Channel; 
         {label}
       </span>
       {channel.unreadCount > 0 ? (
-        <span className="flex size-4.5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-[10px] font-semibold text-stone-900">
+        <span className="flex size-4.5 shrink-0 items-center justify-center rounded-full bg-cyan-600 text-[10px] font-semibold text-white">
           {channel.unreadCount > 9 ? "9+" : channel.unreadCount}
         </span>
       ) : (

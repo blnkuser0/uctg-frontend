@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,11 +47,15 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-dvh items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-sm border-amber-500/20">
+      <Card className="w-full max-w-sm border-cyan-500/20">
         <CardHeader className="items-center gap-2 text-center">
-          <div className="flex size-11 items-center justify-center rounded-xl bg-amber-500 text-sm font-bold text-stone-900">
-            UC
-          </div>
+          <Image
+            src="/assets/branding/logo-square.jpg"
+            alt="Ugnexa Catalyst"
+            width={44}
+            height={44}
+            className="size-11 rounded-xl"
+          />
           <CardTitle>Ugnexa Catalyst</CardTitle>
           <CardDescription>Sign in to your workspace</CardDescription>
         </CardHeader>
@@ -66,13 +71,13 @@ export default function LoginPage() {
               <Input id="password" type="password" autoComplete="current-password" {...register("password")} />
               {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
             </div>
-            <Button type="submit" disabled={isSubmitting} className="mt-1 bg-amber-500 text-stone-900 hover:bg-amber-400">
+            <Button type="submit" disabled={isSubmitting} className="mt-1 bg-cyan-600 text-white hover:bg-cyan-500">
               {isSubmitting ? "Signing in..." : "Sign in"}
             </Button>
           </form>
           <p className="mt-4 text-center text-xs text-muted-foreground">
             First time setting this up?{" "}
-            <Link href="/register" className="font-medium text-amber-600 hover:underline">
+            <Link href="/register" className="font-medium text-cyan-600 hover:underline">
               Create the admin account
             </Link>
           </p>
