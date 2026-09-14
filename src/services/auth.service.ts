@@ -40,6 +40,14 @@ export async function changePassword(input: { currentPassword: string; newPasswo
   await apiClient.post("/auth/change-password", input);
 }
 
+export async function forgotPassword(email: string): Promise<void> {
+  await apiClient.post("/auth/forgot-password", { email });
+}
+
+export async function resetPassword(input: { token: string; newPassword: string }): Promise<void> {
+  await apiClient.post("/auth/reset-password", input);
+}
+
 export async function uploadAvatar(file: File): Promise<User> {
   const formData = new FormData();
   formData.append("avatar", file);
