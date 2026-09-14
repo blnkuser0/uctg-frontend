@@ -6,10 +6,12 @@ import { useAuth } from "@/providers/AuthProvider";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
+  useNotificationSocket();
 
   useEffect(() => {
     if (!isLoading && !user) {

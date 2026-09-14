@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, ListChecks, Bell } from "lucide-react";
+import { LayoutGrid, ListChecks, Bell, Clock, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { href: "/projects", label: "Projects", icon: LayoutGrid },
-  { href: "/my-tasks", label: "My Tasks", icon: ListChecks },
+  { href: "/timeproof", label: "Clock", icon: Clock },
+  { href: "/leaves", label: "Leaves", icon: CalendarDays },
+  { href: "/my-tasks", label: "Tasks", icon: ListChecks },
   { href: "/notifications", label: "Alerts", icon: Bell },
 ];
 

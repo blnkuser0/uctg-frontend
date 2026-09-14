@@ -2,17 +2,32 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, ListChecks, Bell } from "lucide-react";
+import { LayoutGrid, ListChecks, Bell, Clock, CalendarDays, CalendarCheck, ShieldCheck, Users, MessagesSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/providers/AuthProvider";
+import { PERMISSIONS } from "@/types/role";
 
 const NAV_ITEMS = [
   { href: "/projects", label: "Projects", icon: LayoutGrid },
+  { href: "/chat", label: "Chat", icon: MessagesSquare },
+  { href: "/timeproof", label: "Timeproof", icon: Clock },
+  { href: "/attendance", label: "Attendance", icon: CalendarCheck },
+  { href: "/leaves", label: "Leaves", icon: CalendarDays },
   { href: "/my-tasks", label: "My Tasks", icon: ListChecks },
   { href: "/notifications", label: "Notifications", icon: Bell },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+  const canManageUsers = user?.role.permissions.includes(PERMISSIONS.USERS_MANAGE);
+  const canManageRoles = user?.role.permissions.includes(PERMISSIONS.ROLES_MANAGE);
+
+  const items = [
+    ...NAV_ITEMS,
+    ...(canManageUsers ? [{ href: "/users", label: "Users", icon: Users }] : []),
+    ...(canManageRoles ? [{ href: "/roles", label: "Roles", icon: ShieldCheck }] : []),
+  ];
 
   return (
     <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-card md:flex">
@@ -23,7 +38,7 @@ export function Sidebar() {
         <span className="text-sm font-semibold">Ugnexa Catalyst</span>
       </div>
       <nav className="flex flex-col gap-1 p-3">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {items.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname?.startsWith(`${href}/`);
           return (
             <Link
