@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated at build time by Serwist from src/sw.ts — minified build
+    // output, not hand-written source, so it shouldn't be linted.
+    "public/sw.js",
   ]),
 ]);
 

@@ -19,6 +19,5 @@ const targets = [
 
 for (const { file, size } of targets) {
   await sharp(sourceLogo).resize(size, size, { fit: "cover" }).png().toFile(join(publicDir, file));
-  // eslint-disable-next-line no-console
   console.log(`Generated ${file}`);
 }
