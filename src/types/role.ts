@@ -6,6 +6,7 @@ export const PERMISSIONS = {
   ROLES_MANAGE: "roles.manage",
   PROJECTS_MANAGE: "projects.manage",
   ATTENDANCE_VIEW_ALL: "attendance.view_all",
+  ORG_MANAGE: "org.manage",
 } as const;
 
 export type Permission = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
@@ -20,6 +21,7 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   [PERMISSIONS.ROLES_MANAGE]: "Manage roles",
   [PERMISSIONS.PROJECTS_MANAGE]: "Manage all projects",
   [PERMISSIONS.ATTENDANCE_VIEW_ALL]: "View everyone's attendance",
+  [PERMISSIONS.ORG_MANAGE]: "Manage organization settings",
 };
 
 export interface Role {

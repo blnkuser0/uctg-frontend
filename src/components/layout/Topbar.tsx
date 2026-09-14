@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare } from "lucide-react";
+import { LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare, Settings } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -64,6 +64,10 @@ export function Topbar() {
           <DropdownMenuContent align="end">
             <DropdownMenuItem disabled className="text-xs text-muted-foreground">
               {user?.email}
+            </DropdownMenuItem>
+            <DropdownMenuItem render={<Link href="/settings" />}>
+              <Settings className="mr-2 size-4" />
+              Settings
             </DropdownMenuItem>
             <DropdownMenuItem render={<Link href="/chat" className="md:hidden" />}>
               <MessagesSquare className="mr-2 size-4" />

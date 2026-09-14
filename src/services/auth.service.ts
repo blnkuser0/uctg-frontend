@@ -39,3 +39,12 @@ export async function updateMe(input: { name?: string; avatarUrl?: string | null
 export async function changePassword(input: { currentPassword: string; newPassword: string }): Promise<void> {
   await apiClient.post("/auth/change-password", input);
 }
+
+export async function uploadAvatar(file: File): Promise<User> {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  const res = await apiClient.post<ApiEnvelope<User>>("/auth/me/avatar", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data.data;
+}
