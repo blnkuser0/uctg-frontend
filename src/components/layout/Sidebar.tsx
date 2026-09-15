@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, CalendarCheck, CalendarDays, Clock, LayoutGrid, ListChecks, MessagesSquare, PanelLeftClose, PanelLeftOpen, Settings, ShieldCheck, Sparkles, Users } from "lucide-react";
+import { Bell, CalendarCheck, CalendarDays, Clock, LayoutGrid, ListChecks, MessagesSquare, PanelLeftClose, PanelLeftOpen, Settings, ShieldCheck, Users } from "lucide-react";
 import { useState } from "react";
 import { BrandLogo } from "@/components/branding/BrandLogo";
 import { InstallAppButton } from "@/components/pwa/InstallAppButton";
@@ -78,9 +78,8 @@ export function Sidebar() {
         {renderItems(operationItems)}
         {administrationItems.length > 0 && <>{collapsed ? <div className="mx-2 my-4 h-px bg-sidebar-border" /> : <p className="mt-5 px-3 pb-1 text-[10px] font-semibold tracking-[0.14em] text-sidebar-foreground/40 uppercase">Administration</p>}{renderItems(administrationItems)}</>}
       </nav>
-      <div className={cn("mt-4 rounded-sm border border-sidebar-border bg-sidebar-accent/55", collapsed ? "p-1.5" : "p-3.5")}>
-        {!collapsed && <><div className="flex items-center gap-2 text-xs font-semibold text-sidebar-accent-foreground"><Sparkles className="size-3.5 text-primary" />Catalyst is ready</div><p className="mt-1.5 text-[11px] leading-relaxed text-sidebar-foreground/60">Your workspace stays available from the home screen.</p></>}
-        <div className={cn("flex items-center gap-1", !collapsed && "mt-2.5", collapsed && "flex-col")}><InstallAppButton /><ThemeToggle /><Link href="/settings" aria-label="Workspace settings" title="Workspace settings" className="inline-flex size-8 items-center justify-center rounded-sm text-sidebar-foreground/60 transition-colors hover:bg-sidebar hover:text-sidebar-foreground"><Settings className="size-4" /></Link></div>
+      <div className={cn("mt-4 border-t border-sidebar-border pt-3", collapsed && "px-1.5")}>
+        <div className={cn("flex items-center gap-1", collapsed && "flex-col")}><InstallAppButton /><ThemeToggle /><Link href="/settings" aria-label="Workspace settings" title="Workspace settings" className="inline-flex size-8 items-center justify-center rounded-sm text-sidebar-foreground/60 transition-colors hover:bg-sidebar hover:text-sidebar-foreground"><Settings className="size-4" /></Link></div>
       </div>
     </aside>
   );

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, FolderKanban, Sparkles } from "lucide-react";
 import { useAllProjects, useMyProjects } from "@/hooks/useProjects";
 import { NewProjectDialog } from "@/components/board/NewProjectDialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -40,19 +39,17 @@ export default function ProjectsPage() {
       </div>
 
       <section className="grid gap-3 md:grid-cols-[1.6fr_1fr]">
-        <div className="catalyst-panel relative overflow-hidden p-5 sm:p-6">
-          <div className="absolute -right-12 -top-12 size-48 rounded-full bg-primary/10 blur-3xl" />
-          <div className="relative flex items-start justify-between gap-4">
+        <div className="catalyst-panel p-5 sm:p-6">
+          <div className="flex items-start justify-between gap-4">
             <div>
               <p className="catalyst-eyebrow">Workspace overview</p>
               <p className="mt-3 text-3xl font-bold tracking-tight">{projects?.length ?? 0}</p>
               <p className="mt-1 text-sm text-muted-foreground">active project {projects?.length === 1 ? "space" : "spaces"} in your view</p>
             </div>
-            <div className="flex size-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/25"><FolderKanban className="size-5" /></div>
+            <span className="border-l-2 border-primary pl-3 font-mono text-[11px] font-medium tracking-[0.12em] text-primary uppercase">Active</span>
           </div>
         </div>
-        <div className="catalyst-panel flex items-center gap-4 p-5 sm:p-6">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_oklch,var(--chart-2)_16%,transparent)] text-[var(--chart-2)]"><Sparkles className="size-4" /></div>
+        <div className="catalyst-panel flex items-center p-5 sm:p-6">
           <p className="text-sm leading-relaxed text-muted-foreground">Open a board to focus on the next concrete move, not just the backlog.</p>
         </div>
       </section>
@@ -67,7 +64,7 @@ export default function ProjectsPage() {
             <Link
               key={project._id}
               href={`/projects/${project._id}/board`}
-              className="group catalyst-panel relative overflow-hidden p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/8"
+              className="catalyst-panel p-4 transition-colors hover:border-primary/40"
             >
               <div className="flex items-center justify-between gap-2">
                 <span
@@ -76,7 +73,6 @@ export default function ProjectsPage() {
                 >
                   {project.key.slice(0, 2)}
                 </span>
-                <ArrowUpRight className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary" />
               </div>
               <div className="mt-4">
                 <p className="text-base font-semibold tracking-tight">{project.name}</p>

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Command, LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare, Settings } from "lucide-react";
+import { LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare, Settings } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -50,10 +50,7 @@ export function Topbar() {
           <p className="text-[10px] font-medium tracking-[0.12em] text-primary uppercase">Ugnexa workspace</p>
         </div>
       </div>
-      <div className="hidden items-center gap-2 lg:flex">
-        <Command className="size-4 text-primary" />
-        <p className="text-sm font-medium">Your operating space</p>
-      </div>
+      <p className="hidden font-mono text-[11px] font-medium tracking-[0.08em] text-muted-foreground uppercase lg:block">Workspace</p>
       <div className="flex items-center gap-1.5">
         <InstallAppButton compact />
         <ThemeToggle />
