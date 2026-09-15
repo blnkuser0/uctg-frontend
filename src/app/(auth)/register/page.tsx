@@ -56,9 +56,9 @@ export default function RegisterPage() {
     <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-background px-4 py-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,color-mix(in_oklch,var(--primary)_18%,transparent),transparent_24rem),radial-gradient(circle_at_85%_85%,color-mix(in_oklch,var(--chart-2)_14%,transparent),transparent_28rem)]" />
       <div className="absolute right-4 top-4"><ThemeToggle /></div>
-      <Card className="relative w-full max-w-md border-border/90 bg-card/92 py-6 shadow-2xl shadow-primary/10 backdrop-blur">
+      <Card className="relative w-full max-w-md border-border/90 bg-card py-6 shadow-2xl shadow-primary/10">
         <CardHeader className="items-center gap-2 text-center">
-          <div className="flex size-20 items-center justify-center bg-white p-2 shadow-sm"><BrandLogo variant="portrait" className="size-full" priority /></div>
+          <div className="flex size-20 items-center justify-center rounded-sm bg-white p-2 shadow-sm dark:bg-sidebar-accent/35"><BrandLogo variant="portrait" className="size-full" priority /></div>
           <p className="catalyst-eyebrow mt-2">Catalyst workspace</p>
           <CardTitle className="text-2xl tracking-tight">Create your workspace</CardTitle>
           <CardDescription>Set up your organization and admin account.</CardDescription>

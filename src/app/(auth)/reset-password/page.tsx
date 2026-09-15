@@ -60,9 +60,9 @@ function ResetPasswordForm() {
   }
 
   return (
-    <Card className="relative w-full max-w-md border-border/90 bg-card/92 py-6 shadow-2xl shadow-primary/10 backdrop-blur">
+    <Card className="relative w-full max-w-md border-border/90 bg-card py-6 shadow-2xl shadow-primary/10">
       <CardHeader className="items-center gap-2 text-center">
-        <div className="flex size-20 items-center justify-center bg-white p-2 shadow-sm"><BrandLogo variant="portrait" className="size-full" priority /></div>
+        <div className="flex size-20 items-center justify-center rounded-sm bg-white p-2 shadow-sm dark:bg-sidebar-accent/35"><BrandLogo variant="portrait" className="size-full" priority /></div>
         <p className="catalyst-eyebrow mt-2">Account recovery</p>
         <CardTitle className="text-2xl tracking-tight">Set a new password</CardTitle>
         <CardDescription>Choose a new password for your account.</CardDescription>

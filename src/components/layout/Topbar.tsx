@@ -40,9 +40,9 @@ export function Topbar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/80 bg-background/82 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/80 bg-background/95 px-4 sm:px-6 lg:px-8">
       <div className="flex items-center gap-3 lg:hidden">
-        <div className="flex size-9 items-center justify-center overflow-hidden rounded-sm bg-white p-1 shadow-sm ring-1 ring-black/5">
+        <div className="flex size-9 items-center justify-center overflow-hidden rounded-sm bg-white p-1 shadow-sm ring-1 ring-black/5 dark:bg-sidebar-accent/35 dark:ring-sidebar-border">
           <BrandLogo variant="square" className="h-full w-full" priority />
         </div>
         <div>
