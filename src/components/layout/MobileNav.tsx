@@ -18,7 +18,7 @@ export function MobileNav() {
 
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-card/95 backdrop-blur md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border/80 bg-card/92 px-1 backdrop-blur-xl lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
@@ -28,10 +28,11 @@ export function MobileNav() {
             key={href}
             href={href}
             className={cn(
-              "flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium",
-              active ? "text-cyan-600" : "text-muted-foreground"
+              "relative flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-semibold tracking-wide",
+              active ? "text-primary" : "text-muted-foreground"
             )}
           >
+            {active && <span className="absolute top-0 h-0.5 w-7 rounded-full bg-primary" />}
             <Icon className="size-5" />
             {label}
           </Link>

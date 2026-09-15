@@ -37,13 +37,14 @@ export default function AttendancePage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-6 p-4 md:p-8">
+    <div className="catalyst-page max-w-5xl">
       <div>
-        <h1 className="text-lg font-semibold">Attendance</h1>
-        <p className="text-sm text-muted-foreground">Your clock-in history at a glance.</p>
+        <p className="catalyst-eyebrow">Team rhythm</p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Attendance</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Your verified presence and the team&apos;s working cadence at a glance.</p>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="catalyst-panel p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <Button variant="ghost" size="icon-sm" onClick={() => shiftMonth(-1)} aria-label="Previous month">
             <ChevronLeft className="size-4" />

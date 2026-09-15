@@ -18,10 +18,11 @@ export default function MyTasksPage() {
   const openProject = openTask ? projectById.get(openTask.projectId) : null;
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-4 p-4 md:p-8">
+    <div className="catalyst-page max-w-5xl">
       <div>
-        <h1 className="text-lg font-semibold">My Tasks</h1>
-        <p className="text-sm text-muted-foreground">Everything assigned to you, across every project.</p>
+        <p className="catalyst-eyebrow">Personal queue</p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">My Tasks</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Everything assigned to you, across every project.</p>
       </div>
 
       {isLoading ? (
@@ -29,7 +30,7 @@ export default function MyTasksPage() {
           <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
         </div>
       ) : tasks && tasks.length > 0 ? (
-        <div className="grid gap-2 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {tasks.map((task) => {
             const project = projectById.get(task.projectId);
             return (

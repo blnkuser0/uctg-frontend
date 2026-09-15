@@ -29,10 +29,11 @@ export default function TimeproofPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-lg flex-col gap-6 p-4 md:p-8">
+    <div className="catalyst-page max-w-3xl">
       <div>
-        <h1 className="text-lg font-semibold">Timeproof</h1>
-        <p className="text-sm text-muted-foreground">Record your time in/out, breaks, and lunch.</p>
+        <p className="catalyst-eyebrow">Presence station</p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Timeproof</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Record verified time, breaks, and lunch in one clear rhythm.</p>
       </div>
 
       <ClockStatusCard state={data.state} />

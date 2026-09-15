@@ -21,10 +21,11 @@ export default function SettingsPage() {
   const canManageOrg = user?.role.permissions.includes(PERMISSIONS.ORG_MANAGE) ?? false;
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 p-4 md:p-8">
+    <div className="catalyst-page max-w-4xl">
       <div>
-        <h1 className="text-lg font-semibold">Settings</h1>
-        <p className="text-sm text-muted-foreground">Manage your profile and password.</p>
+        <p className="catalyst-eyebrow">Workspace preferences</p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Settings</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Manage your profile, password, and organization details.</p>
       </div>
 
       <ProfileSection />

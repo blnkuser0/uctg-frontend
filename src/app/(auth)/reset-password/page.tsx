@@ -2,7 +2,6 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { BrandLogo } from "@/components/branding/BrandLogo";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const resetPasswordSchema = z
   .object({
@@ -59,16 +60,11 @@ function ResetPasswordForm() {
   }
 
   return (
-    <Card className="w-full max-w-sm border-cyan-500/20">
+    <Card className="relative w-full max-w-md border-border/90 bg-card/92 py-6 shadow-2xl shadow-primary/10 backdrop-blur">
       <CardHeader className="items-center gap-2 text-center">
-        <Image
-          src="/assets/branding/logo-square.jpg"
-          alt="Ugnexa Catalyst"
-          width={44}
-          height={44}
-          className="size-11 rounded-xl"
-        />
-        <CardTitle>Set a new password</CardTitle>
+        <div className="flex size-20 items-center justify-center bg-white p-2 shadow-sm"><BrandLogo variant="portrait" className="size-full" priority /></div>
+        <p className="catalyst-eyebrow mt-2">Account recovery</p>
+        <CardTitle className="text-2xl tracking-tight">Set a new password</CardTitle>
         <CardDescription>Choose a new password for your account.</CardDescription>
       </CardHeader>
       <CardContent>
@@ -95,7 +91,7 @@ function ResetPasswordForm() {
                 <p className="text-xs text-destructive">{errors.confirmPassword.message}</p>
               )}
             </div>
-            <Button type="submit" disabled={isSubmitting} className="mt-1 bg-cyan-600 text-white hover:bg-cyan-500">
+            <Button type="submit" disabled={isSubmitting} className="mt-2 h-10 bg-primary text-primary-foreground hover:bg-primary/90">
               {isSubmitting ? "Resetting..." : "Reset password"}
             </Button>
           </form>
@@ -112,7 +108,9 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-background px-4">
+    <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-background px-4 py-8">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,color-mix(in_oklch,var(--primary)_18%,transparent),transparent_24rem),radial-gradient(circle_at_85%_85%,color-mix(in_oklch,var(--chart-2)_14%,transparent),transparent_28rem)]" />
+      <div className="absolute right-4 top-4"><ThemeToggle /></div>
       <Suspense fallback={null}>
         <ResetPasswordForm />
       </Suspense>

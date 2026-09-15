@@ -26,17 +26,17 @@ export default function ProjectLayout({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="shrink-0 border-b border-border px-4 md:px-6">
-        <div className="flex items-center gap-2 pt-4">
+      <div className="shrink-0 border-b border-border/80 bg-background/55 px-4 backdrop-blur sm:px-6 lg:px-8">
+        <div className="flex items-center gap-3 pt-5">
           <span
-            className="flex size-7 items-center justify-center rounded-lg text-xs font-bold text-white"
+            className="flex size-9 items-center justify-center rounded-xl text-xs font-bold text-slate-950 shadow-sm"
             style={{ backgroundColor: project?.color ?? "#0891b2" }}
           >
             {project?.key.slice(0, 2) ?? ".."}
           </span>
-          <h1 className="truncate text-base font-semibold">{project?.name ?? "Loading..."}</h1>
+          <div className="min-w-0"><p className="catalyst-eyebrow">Project space</p><h1 className="truncate text-lg font-bold tracking-tight">{project?.name ?? "Loading..."}</h1></div>
         </div>
-        <nav className="mt-3 flex gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+        <nav className="mt-4 flex gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden">
           {TABS.map((tab) => {
             const href = `/projects/${projectId}/${tab.segment}`;
             const active = pathname === href;
@@ -45,8 +45,8 @@ export default function ProjectLayout({
                 key={tab.segment}
                 href={href}
                 className={cn(
-                  "shrink-0 rounded-t-lg border-b-2 px-3 py-2 text-sm font-medium",
-                  active ? "border-cyan-500 text-cyan-600" : "border-transparent text-muted-foreground hover:text-foreground"
+                  "shrink-0 rounded-t-lg border-b-2 px-3 py-2.5 text-sm font-medium transition-colors",
+                  active ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
                 )}
               >
                 {tab.label}

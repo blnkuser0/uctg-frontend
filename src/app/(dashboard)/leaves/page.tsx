@@ -46,11 +46,12 @@ export default function LeavesPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-6 p-4 md:p-8">
+    <div className="catalyst-page max-w-6xl">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold">Leaves</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="catalyst-eyebrow">People operations</p>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Leaves</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Every request needs both HR and Admin approval — Admin has the final say.
           </p>
         </div>

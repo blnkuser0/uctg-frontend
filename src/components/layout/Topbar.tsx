@@ -1,9 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
-import { LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare, Settings } from "lucide-react";
+import { Command, LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare, Settings } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,6 +15,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PERMISSIONS } from "@/types/role";
+import { BrandLogo } from "@/components/branding/BrandLogo";
+import { InstallAppButton } from "@/components/pwa/InstallAppButton";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 function initials(name: string): string {
   return name
@@ -38,27 +40,31 @@ export function Topbar() {
   }
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-border bg-background px-4 md:px-6">
-      <div className="md:hidden flex items-center gap-2">
-        <Image
-          src="/assets/branding/logo-square.jpg"
-          alt="Ugnexa Catalyst"
-          width={28}
-          height={28}
-          className="size-7 shrink-0 rounded-lg"
-        />
-        <span className="text-sm font-semibold">Ugnexa Catalyst</span>
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/80 bg-background/82 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
+      <div className="flex items-center gap-3 lg:hidden">
+        <div className="flex size-9 items-center justify-center overflow-hidden rounded-sm bg-white p-1 shadow-sm ring-1 ring-black/5">
+          <BrandLogo variant="square" className="h-full w-full" priority />
+        </div>
+        <div>
+          <p className="text-sm font-bold tracking-tight">Catalyst</p>
+          <p className="text-[10px] font-medium tracking-[0.12em] text-primary uppercase">Ugnexa workspace</p>
+        </div>
       </div>
-      <div className="hidden md:block" />
-      <div className="flex items-center gap-1">
+      <div className="hidden items-center gap-2 lg:flex">
+        <Command className="size-4 text-primary" />
+        <p className="text-sm font-medium">Your operating space</p>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <InstallAppButton compact />
+        <ThemeToggle />
         <NotificationBell />
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <Button variant="ghost" className="flex items-center gap-2 px-2">
+              <Button variant="ghost" className="flex h-9 items-center gap-2 rounded-sm px-2">
                 <Avatar className="size-7">
                   <AvatarImage src={user?.avatarUrl ?? undefined} />
-                  <AvatarFallback className="bg-cyan-500/20 text-xs text-cyan-700">
+                  <AvatarFallback className="bg-primary/15 text-xs text-primary">
                     {user ? initials(user.name) : <UserIcon className="size-3.5" />}
                   </AvatarFallback>
                 </Avatar>
@@ -74,22 +80,22 @@ export function Topbar() {
               <Settings className="mr-2 size-4" />
               Settings
             </DropdownMenuItem>
-            <DropdownMenuItem render={<Link href="/chat" className="md:hidden" />}>
+            <DropdownMenuItem render={<Link href="/chat" className="lg:hidden" />}>
               <MessagesSquare className="mr-2 size-4" />
-              Chat
+              Catalyst Space
             </DropdownMenuItem>
-            <DropdownMenuItem render={<Link href="/attendance" className="md:hidden" />}>
+            <DropdownMenuItem render={<Link href="/attendance" className="lg:hidden" />}>
               <CalendarCheck className="mr-2 size-4" />
               Attendance
             </DropdownMenuItem>
             {canManageUsers && (
-              <DropdownMenuItem render={<Link href="/users" className="md:hidden" />}>
+              <DropdownMenuItem render={<Link href="/users" className="lg:hidden" />}>
                 <Users className="mr-2 size-4" />
                 Users
               </DropdownMenuItem>
             )}
             {canManageRoles && (
-              <DropdownMenuItem render={<Link href="/roles" className="md:hidden" />}>
+              <DropdownMenuItem render={<Link href="/roles" className="lg:hidden" />}>
                 <ShieldCheck className="mr-2 size-4" />
                 Roles
               </DropdownMenuItem>
