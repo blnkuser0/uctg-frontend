@@ -14,6 +14,7 @@ export interface User {
   role: UserRoleSummary;
   avatarUrl: string | null;
   isActive?: boolean;
+  isSuperAdmin?: boolean;
 }
 
 export interface CreateUserInput {

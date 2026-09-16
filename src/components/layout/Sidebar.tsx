@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bell, CalendarCheck, CalendarDays, Clock, LayoutGrid, ListChecks, MessagesSquare, PanelLeftClose, PanelLeftOpen, Settings, ShieldCheck, Users } from "lucide-react";
+import { Bell, CalendarCheck, CalendarDays, Clock, LayoutGrid, ListChecks, MessagesSquare, PanelLeftClose, PanelLeftOpen, Settings, ShieldCheck, Users, Crown } from "lucide-react";
 import { useState } from "react";
 import { BrandLogo } from "@/components/branding/BrandLogo";
 import { InstallAppButton } from "@/components/pwa/InstallAppButton";
@@ -22,7 +22,7 @@ const NAV_ITEMS = [
 ];
 
 const OPERATION_PATHS = new Set(["/timeproof", "/attendance", "/leaves"]);
-const ADMIN_PATHS = new Set(["/users", "/roles"]);
+const ADMIN_PATHS = new Set(["/users", "/roles", "/platform"]);
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -35,6 +35,7 @@ export function Sidebar() {
     ...NAV_ITEMS,
     ...(canManageUsers ? [{ href: "/users", label: "Users", icon: Users }] : []),
     ...(canManageRoles ? [{ href: "/roles", label: "Roles", icon: ShieldCheck }] : []),
+    ...(user?.isSuperAdmin ? [{ href: "/platform", label: "Platform", icon: Crown }] : []),
   ];
 
   function renderItems(collection: typeof items) {

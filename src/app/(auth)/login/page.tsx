@@ -80,12 +80,6 @@ export default function LoginPage() {
               {isSubmitting ? "Signing in..." : "Sign in"}
             </Button>
           </form>
-          <p className="mt-4 text-center text-xs text-muted-foreground">
-            First time setting this up?{" "}
-            <Link href="/register" className="font-medium text-cyan-600 hover:underline">
-              Create the admin account
-            </Link>
-          </p>
         </CardContent>
       </Card>
     </main>

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare, Settings } from "lucide-react";
+import { LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare, Settings, Crown } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -95,6 +95,12 @@ export function Topbar() {
               <DropdownMenuItem render={<Link href="/roles" className="lg:hidden" />}>
                 <ShieldCheck className="mr-2 size-4" />
                 Roles
+              </DropdownMenuItem>
+            )}
+            {user?.isSuperAdmin && (
+              <DropdownMenuItem render={<Link href="/platform" className="lg:hidden" />}>
+                <Crown className="mr-2 size-4" />
+                Platform
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />
