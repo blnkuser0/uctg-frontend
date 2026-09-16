@@ -257,3 +257,31 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Circular reveal for theme changes (ThemeToggle) — expands from the button
+   that was clicked, via the View Transitions API. --theme-toggle-x/y are set
+   in JS right before the transition starts; unsupported browsers and
+   prefers-reduced-motion skip this entirely and just swap the theme class. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+  animation: catalyst-theme-reveal 480ms ease-in-out;
+}
+
+@keyframes catalyst-theme-reveal {
+  from {
+    clip-path: circle(0% at var(--theme-toggle-x, 50%) var(--theme-toggle-y, 50%));
+  }
+  to {
+    clip-path: circle(150% at var(--theme-toggle-x, 50%) var(--theme-toggle-y, 50%));
+  }
+}

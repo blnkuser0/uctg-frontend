@@ -33,7 +33,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="catalyst-shell flex min-h-dvh min-w-0 overflow-x-hidden bg-background">
+    <div className="catalyst-shell flex h-dvh min-w-0 overflow-x-hidden bg-background">
       <Sidebar />
       <div className="flex min-w-0 max-w-full flex-1 flex-col overflow-x-hidden">
         <Topbar />
