@@ -19,7 +19,7 @@ import { useCreateProject } from "@/hooks/useProjects";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 
-export function NewProjectDialog() {
+export function NewProjectDialog({ trigger }: { trigger?: React.ReactElement } = {}) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -49,10 +49,12 @@ export function NewProjectDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button className="bg-cyan-600 text-white hover:bg-cyan-500">
-            <Plus className="size-4" />
-            New Project
-          </Button>
+          trigger ?? (
+            <Button className="bg-cyan-600 text-white hover:bg-cyan-500">
+              <Plus className="size-4" />
+              New Project
+            </Button>
+          )
         }
       />
       <DialogContent>

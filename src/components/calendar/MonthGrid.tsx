@@ -25,7 +25,7 @@ export function MonthGrid({ year, month, renderDay, onSelectDate, selectedDateKe
   while (cells.length % 7 !== 0) cells.push(null);
 
   return (
-    <div className="grid grid-cols-7 gap-1">
+    <div className="grid grid-cols-7 gap-1.5">
       {WEEKDAY_LABELS.map((label) => (
         <div key={label} className="pb-1 text-center text-[11px] font-medium text-muted-foreground">
           {label}
@@ -45,7 +45,7 @@ export function MonthGrid({ year, month, renderDay, onSelectDate, selectedDateKe
 
         if (!onSelectDate) {
           return (
-            <div key={dateKey} className="flex aspect-square flex-col items-center gap-0.5 rounded-lg p-1">
+            <div key={dateKey} className="flex min-h-16 flex-col items-center justify-center gap-1 border border-transparent p-1">
               {content}
             </div>
           );
@@ -56,8 +56,8 @@ export function MonthGrid({ year, month, renderDay, onSelectDate, selectedDateKe
             key={dateKey}
             onClick={() => onSelectDate(dateKey)}
             className={cn(
-              "flex aspect-square flex-col items-center gap-0.5 rounded-lg p-1 transition-colors hover:bg-muted",
-              isSelected && "ring-2 ring-cyan-500"
+              "flex min-h-16 flex-col items-center justify-center gap-1 border border-transparent p-1 transition-[background-color,border-color,transform] hover:-translate-y-px hover:border-border hover:bg-muted",
+              isSelected && "border-primary bg-primary/8 text-primary"
             )}
           >
             {content}

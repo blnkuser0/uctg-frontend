@@ -1,207 +1,33 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
+import Link from "next/link";
+import { Building2, CircleUserRound, MonitorCog } from "lucide-react";
 import { toast } from "sonner";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useAuth } from "@/providers/AuthProvider";
-import { useUpdateProfile, useUploadAvatar, useChangePassword } from "@/hooks/useProfile";
 import { useOrganization, useUpdateOrganization } from "@/hooks/useOrganization";
 import { PERMISSIONS } from "@/types/role";
-import { Camera } from "lucide-react";
-
-function initials(name: string): string {
-  return name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
-}
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export default function SettingsPage() {
   const { user } = useAuth();
-  const canManageOrg = user?.role.permissions.includes(PERMISSIONS.ORG_MANAGE) ?? false;
-
-  return (
-    <div className="catalyst-page max-w-4xl">
-      <div>
-        <p className="catalyst-eyebrow">Workspace preferences</p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Settings</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Manage your profile, password, and organization details.</p>
-      </div>
-
-      <ProfileSection />
-      <PasswordSection />
-      {canManageOrg && <OrganizationSection />}
-    </div>
-  );
-}
-
-function ProfileSection() {
-  const { user } = useAuth();
-  const [name, setName] = useState(user?.name ?? "");
-  const inputRef = useRef<HTMLInputElement>(null);
-  const updateProfile = useUpdateProfile();
-  const uploadAvatar = useUploadAvatar();
-
-  if (!user) return null;
-
-  function handleSaveName(e: React.FormEvent) {
-    e.preventDefault();
-    if (!name.trim() || name.trim() === user!.name) return;
-    updateProfile.mutate(
-      { name: name.trim() },
-      {
-        onSuccess: () => toast.success("Profile updated"),
-        onError: () => toast.error("Could not update your profile."),
-      }
-    );
-  }
-
-  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    uploadAvatar.mutate(file, {
-      onSuccess: () => toast.success("Avatar updated"),
-      onError: () => toast.error("Could not upload your avatar."),
-    });
-    e.target.value = "";
-  }
-
-  return (
-    <section className="rounded-2xl border border-border bg-card p-4">
-      <h2 className="text-sm font-semibold">Profile</h2>
-
-      <div className="mt-3 flex items-center gap-4">
-        <div className="relative">
-          <Avatar className="size-16">
-            <AvatarImage src={user.avatarUrl ?? undefined} />
-            <AvatarFallback className="bg-cyan-500/20 text-lg text-cyan-700">{initials(user.name)}</AvatarFallback>
-          </Avatar>
-          <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            disabled={uploadAvatar.isPending}
-            aria-label="Change avatar"
-            className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full bg-cyan-600 text-white shadow-sm hover:bg-cyan-500"
-          >
-            <Camera className="size-3.5" />
-          </button>
-        </div>
-        <div className="text-sm text-muted-foreground">{user.email}</div>
-      </div>
-
-      <form onSubmit={handleSaveName} className="mt-4 flex items-end gap-2">
-        <div className="grid flex-1 gap-1.5">
-          <Label htmlFor="profileName">Name</Label>
-          <Input id="profileName" value={name} onChange={(e) => setName(e.target.value)} />
-        </div>
-        <Button
-          type="submit"
-          variant="outline"
-          disabled={updateProfile.isPending || !name.trim() || name.trim() === user.name}
-        >
-          {updateProfile.isPending ? "Saving..." : "Save"}
-        </Button>
-      </form>
-    </section>
-  );
-}
-
-function PasswordSection() {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const changePassword = useChangePassword();
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (newPassword.length < 8) {
-      toast.error("New password must be at least 8 characters");
-      return;
-    }
-    changePassword.mutate(
-      { currentPassword, newPassword },
-      {
-        onSuccess: () => {
-          toast.success("Password changed");
-          setCurrentPassword("");
-          setNewPassword("");
-        },
-        onError: (err: unknown) => {
-          const message =
-            (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
-            "Could not change your password.";
-          toast.error(message);
-        },
-      }
-    );
-  }
-
-  return (
-    <section className="rounded-2xl border border-border bg-card p-4">
-      <h2 className="text-sm font-semibold">Password</h2>
-      <form onSubmit={handleSubmit} className="mt-3 grid gap-3">
-        <div className="grid gap-1.5">
-          <Label htmlFor="currentPassword">Current password</Label>
-          <Input
-            id="currentPassword"
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="newPassword">New password</Label>
-          <Input id="newPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-        </div>
-        <Button
-          type="submit"
-          variant="outline"
-          className="justify-self-start"
-          disabled={changePassword.isPending || !currentPassword || newPassword.length < 8}
-        >
-          {changePassword.isPending ? "Changing..." : "Change password"}
-        </Button>
-      </form>
-    </section>
-  );
-}
-
-function OrganizationSection() {
-  const { data: org } = useOrganization();
+  const { data: organization } = useOrganization();
   const [name, setName] = useState("");
   const updateOrganization = useUpdateOrganization();
+  const canManage = user?.role.permissions.includes(PERMISSIONS.ORG_MANAGE) ?? false;
+  const currentName = name || organization?.name || "";
+  function saveOrganization(event: React.FormEvent) { event.preventDefault(); if (!organization || !currentName.trim() || currentName.trim() === organization.name) return; updateOrganization.mutate({ name: currentName.trim() }, { onSuccess: () => toast.success("Organization updated"), onError: () => toast.error("Could not update the organization") }); }
 
-  if (!org) return null;
-  const currentName = name || org.name;
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!currentName.trim() || currentName.trim() === org!.name) return;
-    updateOrganization.mutate(
-      { name: currentName.trim() },
-      {
-        onSuccess: () => toast.success("Organization updated"),
-        onError: () => toast.error("Could not update the organization."),
-      }
-    );
-  }
-
-  return (
-    <section className="rounded-2xl border border-border bg-card p-4">
-      <h2 className="text-sm font-semibold">Organization</h2>
-      <form onSubmit={handleSubmit} className="mt-3 flex items-end gap-2">
-        <div className="grid flex-1 gap-1.5">
-          <Label htmlFor="orgName">Organization name</Label>
-          <Input id="orgName" value={currentName} onChange={(e) => setName(e.target.value)} />
-        </div>
-        <Button
-          type="submit"
-          variant="outline"
-          disabled={updateOrganization.isPending || !currentName.trim() || currentName.trim() === org.name}
-        >
-          {updateOrganization.isPending ? "Saving..." : "Save"}
-        </Button>
-      </form>
-    </section>
-  );
+  return <div className="catalyst-page">
+    <PageHeader title="Settings" section="System / Workspace controls" tone="amber" />
+    <div className="grid gap-4 xl:grid-cols-2">
+      <section className="catalyst-panel"><div className="flex items-center gap-2 border-b border-border px-5 py-3"><Building2 className="size-4 text-primary" /><h2 className="text-sm font-semibold">Organization</h2></div><form onSubmit={saveOrganization} className="grid gap-4 p-5 sm:grid-cols-[1fr_auto] sm:items-end"><div className="grid gap-1.5"><Label htmlFor="organizationName">Workspace name</Label><Input id="organizationName" value={currentName} disabled={!canManage} onChange={(event) => setName(event.target.value)} /></div>{canManage ? <Button type="submit" variant="outline" disabled={updateOrganization.isPending || !organization || currentName.trim() === organization.name}>{updateOrganization.isPending ? "Saving..." : "Save"}</Button> : <span className="pb-2 text-xs text-muted-foreground">Managed by an administrator</span>}</form></section>
+      <section className="catalyst-panel"><div className="flex items-center gap-2 border-b border-border px-5 py-3"><MonitorCog className="size-4 text-primary" /><h2 className="text-sm font-semibold">Interface</h2></div><div className="flex items-center justify-between p-5"><div><p className="text-sm font-medium">Color theme</p><p className="mt-1 text-xs text-muted-foreground">Follows your saved preference or system setting.</p></div><ThemeToggle /></div></section>
+    </div>
+    <Link href="/profile" className="group flex items-center justify-between border border-border bg-card px-5 py-4 transition-colors hover:border-primary/50"><div className="flex items-center gap-3"><CircleUserRound className="size-4 text-primary" /><div><p className="text-sm font-medium">Profile and security</p><p className="mt-0.5 text-xs text-muted-foreground">Update your identity, avatar, and password.</p></div></div><span className="font-mono text-[10px] tracking-[.12em] text-primary uppercase transition-transform group-hover:translate-x-0.5">Open profile →</span></Link>
+  </div>;
 }

@@ -34,15 +34,17 @@ export function AttendanceCalendar({ year, month, summaries, selectedDateKey, on
   const byDate = new Map(summaries.map((s) => [s.date, s]));
 
   return (
-    <MonthGrid
-      year={year}
-      month={month}
-      selectedDateKey={selectedDateKey}
-      onSelectDate={onSelectDate}
-      renderDay={(_date, dateKey) => {
-        const summary = byDate.get(dateKey);
-        return <span className={cn("size-1.5 rounded-full", summary ? STATUS_DOT[summary.status] : "bg-transparent")} />;
-      }}
-    />
+    <div className="min-w-[34rem]">
+      <MonthGrid
+        year={year}
+        month={month}
+        selectedDateKey={selectedDateKey}
+        onSelectDate={onSelectDate}
+        renderDay={(_date, dateKey) => {
+          const summary = byDate.get(dateKey);
+          return <span className={cn("size-1.5 rounded-full", summary ? STATUS_DOT[summary.status] : "bg-transparent")} />;
+        }}
+      />
+    </div>
   );
 }

@@ -11,6 +11,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { toPhDateKey } from "@/lib/utils";
 import { PERMISSIONS } from "@/types/role";
 import { DayAttendanceStatus } from "@/types/timeLog";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 const LEGEND_ORDER: DayAttendanceStatus[] = ["present", "on-leave", "absent", "weekend"];
 
@@ -37,14 +38,10 @@ export default function AttendancePage() {
   }
 
   return (
-    <div className="catalyst-page max-w-5xl">
-      <div>
-        <p className="catalyst-eyebrow">Team rhythm</p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Attendance</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Your verified presence and the team&apos;s working cadence at a glance.</p>
-      </div>
+    <div className="catalyst-page min-w-0">
+      <PageHeader title="Attendance" section="Operations / Team records" tone="green" />
 
-      <div className="catalyst-panel p-4 sm:p-5">
+      <div className="catalyst-panel min-w-0 overflow-hidden p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <Button variant="ghost" size="icon-sm" onClick={() => shiftMonth(-1)} aria-label="Previous month">
             <ChevronLeft className="size-4" />
@@ -60,7 +57,7 @@ export default function AttendancePage() {
             <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
           </div>
         ) : (
-          <div className="mt-3">
+          <div className="mt-3 min-w-0 overflow-x-auto overscroll-x-contain pb-1">
             <AttendanceCalendar
               year={year}
               month={month}

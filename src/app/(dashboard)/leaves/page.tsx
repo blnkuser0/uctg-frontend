@@ -8,6 +8,7 @@ import { LeaveCalendar } from "@/components/leaves/LeaveCalendar";
 import { RequestLeaveDialog } from "@/components/leaves/RequestLeaveDialog";
 import { useAllLeaves, useMyLeaves, useHrDecision, useAdminDecision, useCancelLeave } from "@/hooks/useLeaves";
 import { PERMISSIONS } from "@/types/role";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export default function LeavesPage() {
   const { user } = useAuth();
@@ -47,16 +48,7 @@ export default function LeavesPage() {
 
   return (
     <div className="catalyst-page max-w-6xl">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="catalyst-eyebrow">People operations</p>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Leaves</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Every request needs both HR and Admin approval — Admin has the final say.
-          </p>
-        </div>
-        <RequestLeaveDialog />
-      </div>
+      <PageHeader title="Leaves" section="Operations / Time away" tone="green" actions={<RequestLeaveDialog />} />
 
       <Tabs defaultValue={canSeeAll ? "all" : "mine"}>
         <TabsList>

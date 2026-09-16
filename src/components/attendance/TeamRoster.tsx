@@ -26,18 +26,18 @@ export function TeamRoster({ dateKey, entries, isLoading }: { dateKey: string; e
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4">
-      <h3 className="text-sm font-semibold">Team — {label}</h3>
-      <div className="mt-3 grid gap-2">
+    <section className="catalyst-panel min-w-0 overflow-hidden">
+      <div className="border-b border-border bg-sky-500/6 px-4 py-3"><h3 className="text-sm font-semibold">Team — {label}</h3></div>
+      <div className="divide-y divide-border">
         {entries.map((entry) => (
-          <div key={entry.userId} className="flex items-center gap-3">
+          <div key={entry.userId} className="flex min-w-0 items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/40">
             <Avatar className="size-7 shrink-0">
               <AvatarFallback className="bg-cyan-500/20 text-[10px] text-cyan-700">{initials(entry.name)}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm">{entry.name}</p>
             </div>
-            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
               {entry.summary.status === "present" && (
                 <span>
                   {formatTime(entry.summary.firstTimeIn)} – {formatTime(entry.summary.lastTimeOut)}
@@ -48,7 +48,8 @@ export function TeamRoster({ dateKey, entries, isLoading }: { dateKey: string; e
             </span>
           </div>
         ))}
+        {entries.length === 0 && <p className="px-4 py-8 text-center text-xs text-muted-foreground">No team attendance records for this date.</p>}
       </div>
-    </div>
+    </section>
   );
 }

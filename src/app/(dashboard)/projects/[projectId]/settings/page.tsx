@@ -76,8 +76,8 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ proj
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-6 overflow-y-auto p-4 md:p-8">
-      <section className="rounded-2xl border border-border bg-card p-4">
+    <div className="catalyst-page overflow-y-auto">
+      <section className="catalyst-panel p-4">
         <h2 className="text-sm font-semibold">Stages</h2>
         <div className="mt-3 grid gap-2">
           {stages?.map((stage) => (
@@ -127,7 +127,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ proj
         </form>
       </section>
 
-      <section className="rounded-2xl border border-border bg-card p-4">
+      <section className="catalyst-panel p-4">
         <h2 className="text-sm font-semibold">Labels</h2>
         <div className="mt-3 flex flex-wrap gap-2">
           {labels?.map((label) => (
@@ -160,7 +160,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ proj
         </form>
       </section>
 
-      <section className="rounded-2xl border border-border bg-card p-4">
+      <section className="catalyst-panel p-4">
         <h2 className="text-sm font-semibold">Members</h2>
         <div className="mt-3 grid gap-2">
           {members.map((member) => (

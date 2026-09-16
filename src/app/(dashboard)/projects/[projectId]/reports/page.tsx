@@ -25,7 +25,7 @@ export default function ProjectReportsPage({ params }: { params: Promise<{ proje
   }
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-4 overflow-y-auto p-4 md:p-8">
+    <div className="catalyst-page overflow-y-auto">
       <CompletionGauge
         totalTasks={report.totalTasks}
         completedTasks={report.completedTasks}

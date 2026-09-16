@@ -21,18 +21,23 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (isLoading || !user) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-background">
-        <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+      <div className="grid min-h-dvh grid-cols-[4.5rem_1fr] bg-background">
+        <div className="hidden border-r border-border bg-sidebar lg:block" />
+        <div className="p-5 lg:p-8">
+          <div className="h-8 w-44 animate-pulse bg-muted" />
+          <div className="mt-8 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3"><div className="h-28 animate-pulse bg-card" /><div className="h-28 animate-pulse bg-card" /><div className="h-28 animate-pulse bg-card" /></div>
+          <div className="mt-6 h-72 animate-pulse border border-border bg-card" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="catalyst-shell flex min-h-dvh bg-background">
+    <div className="catalyst-shell flex min-h-dvh min-w-0 overflow-x-hidden bg-background">
       <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 max-w-full flex-1 flex-col overflow-x-hidden">
         <Topbar />
-        <main className="flex-1 overflow-y-auto pb-20 lg:pb-0">{children}</main>
+        <main className="dashboard-stage min-w-0 max-w-full flex-1 overflow-x-hidden overflow-y-auto pb-20 lg:pb-0">{children}</main>
       </div>
       <MobileNav />
     </div>

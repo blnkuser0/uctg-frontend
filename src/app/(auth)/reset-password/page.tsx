@@ -8,112 +8,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
-
+import { AuthFrame } from "@/components/auth/AuthFrame";
 import { resetPassword } from "@/services/auth.service";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BrandLogo } from "@/components/branding/BrandLogo";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
-const resetPasswordSchema = z
-  .object({
-    password: z.string().min(8, "At least 8 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+const schema = z.object({ password: z.string().min(8, "Use at least 8 characters"), confirmPassword: z.string().min(1, "Confirm your password") }).refine((data) => data.password === data.confirmPassword, { message: "Passwords do not match", path: ["confirmPassword"] });
+type Values = z.infer<typeof schema>;
 
 function ResetPasswordForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const token = useSearchParams().get("token");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ResetPasswordFormValues>({ resolver: zodResolver(resetPasswordSchema) });
-
-  async function onSubmit(values: ResetPasswordFormValues) {
-    if (!token) return;
-    setIsSubmitting(true);
-    try {
-      await resetPassword({ token, newPassword: values.password });
-      toast.success("Password reset. Please log in.");
-      router.push("/login");
-    } catch (err) {
-      if (isAxiosError(err) && err.response?.status === 400) {
-        toast.error("This reset link is invalid or has expired.");
-      } else {
-        toast.error("Something went wrong. Please try again.");
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
-  return (
-    <Card className="relative w-full max-w-md border-border/90 bg-card py-6 shadow-2xl shadow-primary/10">
-      <CardHeader className="items-center gap-2 text-center">
-        <div className="flex size-20 items-center justify-center rounded-sm bg-white p-2 shadow-sm dark:bg-sidebar-accent/35"><BrandLogo variant="portrait" className="size-full" priority /></div>
-        <p className="catalyst-eyebrow mt-2">Account recovery</p>
-        <CardTitle className="text-2xl tracking-tight">Set a new password</CardTitle>
-        <CardDescription>Choose a new password for your account.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        {!token ? (
-          <p className="text-center text-sm text-destructive">
-            This reset link is missing or invalid. Please request a new one.
-          </p>
-        ) : (
-          <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid gap-1.5">
-              <Label htmlFor="password">New password</Label>
-              <Input id="password" type="password" autoComplete="new-password" {...register("password")} />
-              {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
-            </div>
-            <div className="grid gap-1.5">
-              <Label htmlFor="confirmPassword">Confirm password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                {...register("confirmPassword")}
-              />
-              {errors.confirmPassword && (
-                <p className="text-xs text-destructive">{errors.confirmPassword.message}</p>
-              )}
-            </div>
-            <Button type="submit" disabled={isSubmitting} className="mt-2 h-10 bg-primary text-primary-foreground hover:bg-primary/90">
-              {isSubmitting ? "Resetting..." : "Reset password"}
-            </Button>
-          </form>
-        )}
-        <p className="mt-4 text-center text-xs text-muted-foreground">
-          <Link href="/login" className="font-medium text-cyan-600 hover:underline">
-            Back to sign in
-          </Link>
-        </p>
-      </CardContent>
-    </Card>
-  );
+  const { register, handleSubmit, formState: { errors } } = useForm<Values>({ resolver: zodResolver(schema) });
+  async function onSubmit(values: Values) { if (!token) return; setIsSubmitting(true); try { await resetPassword({ token, newPassword: values.password }); toast.success("Password updated. Sign in with your new password."); router.push("/login"); } catch (error) { toast.error(isAxiosError(error) && error.response?.status === 400 ? "This reset link is invalid or expired." : "Could not reset your password."); } finally { setIsSubmitting(false); } }
+  return <AuthFrame eyebrow="Secure reset" title="Set a new password" description="Choose a new password for your Catalyst account. Existing refresh sessions will be revoked.">
+    {!token ? <div className="border-l-2 border-destructive bg-card p-4 text-sm text-destructive">This reset link is missing or invalid. Request a new link.</div> : <form className="grid gap-5" onSubmit={handleSubmit(onSubmit)}><div className="grid gap-2"><Label htmlFor="password">New password</Label><Input id="password" type="password" autoComplete="new-password" className="h-11 bg-card" {...register("password")} />{errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}</div><div className="grid gap-2"><Label htmlFor="confirmPassword">Confirm password</Label><Input id="confirmPassword" type="password" autoComplete="new-password" className="h-11 bg-card" {...register("confirmPassword")} />{errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword.message}</p>}</div><Button type="submit" disabled={isSubmitting} className="h-11 bg-primary font-mono text-[11px] tracking-[.12em] text-primary-foreground uppercase">{isSubmitting ? "Updating..." : "Update password"}</Button></form>}
+    <Link href="/login" className="mt-6 inline-block text-xs font-medium text-primary underline-offset-4 hover:underline">Return to sign in</Link>
+  </AuthFrame>;
 }
 
-export default function ResetPasswordPage() {
-  return (
-    <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-background px-4 py-8">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,color-mix(in_oklch,var(--primary)_18%,transparent),transparent_24rem),radial-gradient(circle_at_85%_85%,color-mix(in_oklch,var(--chart-2)_14%,transparent),transparent_28rem)]" />
-      <div className="absolute right-4 top-4"><ThemeToggle /></div>
-      <Suspense fallback={null}>
-        <ResetPasswordForm />
-      </Suspense>
-    </main>
-  );
-}
+export default function ResetPasswordPage() { return <Suspense fallback={<div className="min-h-dvh bg-background" />}><ResetPasswordForm /></Suspense>; }
