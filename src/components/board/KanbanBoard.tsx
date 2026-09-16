@@ -78,6 +78,7 @@ export function KanbanBoard({ project }: { project: Project }) {
         <NewTaskDialog
           projectId={project._id}
           stageId={newTaskStageId}
+          stageName={(stages ?? []).find((stage) => stage._id === newTaskStageId)?.name}
           memberIds={project.memberIds}
           onOpenChange={(open) => !open && setNewTaskStageId(null)}
         />

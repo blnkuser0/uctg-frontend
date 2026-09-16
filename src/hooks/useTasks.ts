@@ -28,9 +28,14 @@ export function useCreateTask(projectId: string) {
 
 export function useMoveTask(projectId: string) {
   const invalidate = useInvalidateTasks(projectId);
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ taskId, stageId, order }: { taskId: string; stageId: string; order: number }) =>
       taskService.moveTask(taskId, stageId, order),
-    onSuccess: invalidate,
+    onSuccess: (task) => {
+      invalidate();
+      queryClient.invalidateQueries({ queryKey: queryKeys.task(task._id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.myTasks() });
+    },
   });
 }

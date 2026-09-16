@@ -17,6 +17,8 @@ import { TaskTimeTracking } from "./TaskTimeTracking";
 import { TaskComments } from "./TaskComments";
 import { TaskAttachments } from "./TaskAttachments";
 import { useTask, useUpdateTask, useDeleteTask } from "@/hooks/useTask";
+import { useStages } from "@/hooks/useStages";
+import { useMoveTask } from "@/hooks/useTasks";
 import { Task, TaskPriority } from "@/types/task";
 import { Trash2 } from "lucide-react";
 
@@ -68,9 +70,13 @@ function TaskDetailBody({
 }) {
   const updateTask = useUpdateTask(task._id, projectId);
   const deleteTask = useDeleteTask(task._id, projectId);
+  const stages = useStages(projectId);
+  const moveTask = useMoveTask(projectId);
 
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
+  const priorityValue = task.priority ?? "normal";
+  const stageValue = task.stageId ?? "";
 
   function saveField<T>(field: string, value: T) {
     updateTask.mutate({ [field]: value }, { onError: () => toast.error("Could not save changes.") });
@@ -87,9 +93,7 @@ function TaskDetailBody({
   return (
     <>
       <SheetHeader>
-        <span className="font-mono text-xs text-muted-foreground">
-          {projectKey}-{task.taskNumber}
-        </span>
+        <div className="flex items-center justify-between gap-3 pr-8"><span className="font-mono text-xs text-muted-foreground">{projectKey}-{task.taskNumber}</span><span className="border border-violet-500/25 bg-violet-500/10 px-2 py-1 text-[10px] font-medium text-violet-700 dark:text-violet-300">{stages.data?.find((stage) => stage._id === task.stageId)?.name ?? "Loading status"}</span></div>
         <SheetTitle className="sr-only">{task.title}</SheetTitle>
       </SheetHeader>
       <div className="px-4 pb-6">
@@ -106,12 +110,29 @@ function TaskDetailBody({
             <TabsTrigger value="checklist" className="shrink-0">Checklist</TabsTrigger>
             <TabsTrigger value="subtasks" className="shrink-0">Subtasks</TabsTrigger>
             <TabsTrigger value="time" className="shrink-0">Time</TabsTrigger>
+            <TabsTrigger value="attachments" className="shrink-0">Files{task.attachments.length > 0 ? ` (${task.attachments.length})` : ""}</TabsTrigger>
             <TabsTrigger value="comments" className="shrink-0">
               Comments{task.commentCount > 0 ? ` (${task.commentCount})` : ""}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="grid gap-4 pt-3">
+            <div className="grid gap-1.5 border border-border bg-muted/25 p-3">
+              <Label>Current status</Label>
+              <Select
+                value={stageValue}
+                onValueChange={(stageId) => {
+                  if (!stageId) return;
+                  moveTask.mutate({ taskId: task._id, stageId, order: 0 }, {
+                    onSuccess: () => toast.success("Task status updated"),
+                    onError: () => toast.error("Could not update task status"),
+                  });
+                }}
+              >
+                <SelectTrigger className="bg-background"><SelectValue placeholder="Select status" /></SelectTrigger>
+                <SelectContent>{(stages.data ?? []).map((stage) => <SelectItem key={stage._id} value={stage._id}>{stage.name}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
             <div className="grid gap-1.5">
               <Label>Description</Label>
               <Textarea
@@ -125,7 +146,7 @@ function TaskDetailBody({
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1.5">
                 <Label>Priority</Label>
-                <Select value={task.priority ?? undefined} onValueChange={(v) => saveField("priority", v as TaskPriority)}>
+                <Select value={priorityValue} onValueChange={(v) => saveField("priority", v as TaskPriority)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -171,11 +192,6 @@ function TaskDetailBody({
               </div>
             </div>
 
-            <div className="grid gap-1.5">
-              <Label>Attachments</Label>
-              <TaskAttachments taskId={task._id} projectId={projectId} attachments={task.attachments} />
-            </div>
-
             <Button variant="outline" className="mt-2 text-destructive hover:text-destructive" onClick={handleDelete}>
               <Trash2 className="size-4" />
               Delete task
@@ -192,6 +208,10 @@ function TaskDetailBody({
 
           <TabsContent value="time" className="pt-3">
             <TaskTimeTracking taskId={task._id} trackedMinutes={task.trackedMinutes} estimateMinutes={task.estimateMinutes} />
+          </TabsContent>
+
+          <TabsContent value="attachments" className="pt-3">
+            <TaskAttachments taskId={task._id} projectId={projectId} attachments={task.attachments} />
           </TabsContent>
 
           <TabsContent value="comments" className="pt-3">

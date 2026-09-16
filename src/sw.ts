@@ -8,7 +8,7 @@ declare const self: ServiceWorkerGlobalScope & {
 } & SerwistGlobalConfig;
 
 // Bump this prefix whenever a breaking cache-shape change ships.
-setCacheNameDetails({ prefix: "ugnexa-catalyst-v2026-09-13" });
+setCacheNameDetails({ prefix: "ugnexa-catalyst-v2026-09-16" });
 
 const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,

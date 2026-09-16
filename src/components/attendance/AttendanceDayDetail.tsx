@@ -24,8 +24,8 @@ export function AttendanceDayDetail({ dateKey, summary }: { dateKey: string; sum
   });
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between">
+    <section className="catalyst-panel overflow-hidden">
+      <div className="flex items-center justify-between border-b border-border bg-emerald-500/6 px-4 py-3">
         <h3 className="text-sm font-semibold">{label}</h3>
         {summary && (
           <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -36,7 +36,7 @@ export function AttendanceDayDetail({ dateKey, summary }: { dateKey: string; sum
       </div>
 
       {summary && summary.status === "present" && (
-        <div className="mt-3 grid grid-cols-3 gap-3 text-center">
+        <div className="grid grid-cols-3 divide-x divide-border p-4 text-center">
           <div>
             <p className="text-[11px] text-muted-foreground">Time in</p>
             <p className="text-sm font-medium">{formatTime(summary.firstTimeIn)}</p>
@@ -51,6 +51,7 @@ export function AttendanceDayDetail({ dateKey, summary }: { dateKey: string; sum
           </div>
         </div>
       )}
-    </div>
+      {!summary && <p className="px-4 py-6 text-center text-xs text-muted-foreground">No attendance record for this date.</p>}
+    </section>
   );
 }

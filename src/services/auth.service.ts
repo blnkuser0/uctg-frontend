@@ -7,16 +7,6 @@ interface ApiEnvelope<T> {
   data: T;
 }
 
-export async function registerOrganization(input: {
-  organizationName: string;
-  name: string;
-  email: string;
-  password: string;
-}): Promise<User> {
-  const res = await apiClient.post<ApiEnvelope<User>>("/auth/register", input);
-  return res.data.data;
-}
-
 export async function login(input: { email: string; password: string }): Promise<{ user: User; accessToken: string }> {
   const res = await apiClient.post<ApiEnvelope<{ user: User; accessToken: string }>>("/auth/login", input);
   return res.data.data;

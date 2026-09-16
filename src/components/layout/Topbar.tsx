@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare, Settings } from "lucide-react";
+import { LogOut, User as UserIcon, Users, CalendarCheck, MessagesSquare, Settings, CircleUserRound } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,10 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PERMISSIONS } from "@/types/role";
 import { BrandLogo } from "@/components/branding/BrandLogo";
-import { InstallAppButton } from "@/components/pwa/InstallAppButton";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { WorkspaceSearch } from "@/components/layout/WorkspaceSearch";
 
 function initials(name: string): string {
   return name
@@ -31,8 +30,7 @@ function initials(name: string): string {
 export function Topbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
-  const canManageUsers = user?.role.permissions.includes(PERMISSIONS.USERS_MANAGE);
-  const canManageRoles = user?.role.permissions.includes(PERMISSIONS.ROLES_MANAGE);
+  const canManageUsers = user?.role.name === "SUPER_ADMIN";
 
   async function handleLogout() {
     await logout();
@@ -40,7 +38,7 @@ export function Topbar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/80 bg-background/95 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/80 bg-background/90 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
       <div className="flex items-center gap-3 lg:hidden">
         <div className="flex size-9 items-center justify-center overflow-hidden rounded-sm bg-white p-1 shadow-sm ring-1 ring-black/5 dark:bg-sidebar-accent/35 dark:ring-sidebar-border">
           <BrandLogo variant="square" className="h-full w-full" priority />
@@ -50,9 +48,9 @@ export function Topbar() {
           <p className="text-[10px] font-medium tracking-[0.12em] text-primary uppercase">Ugnexa workspace</p>
         </div>
       </div>
-      <p className="hidden font-mono text-[11px] font-medium tracking-[0.08em] text-muted-foreground uppercase lg:block">Workspace</p>
+      <div className="hidden items-center gap-2 lg:flex"><span className="size-1.5 rounded-full bg-emerald-500" /><p className="text-xs font-medium text-muted-foreground">Workspace connected</p></div>
       <div className="flex items-center gap-1.5">
-        <InstallAppButton compact />
+        <WorkspaceSearch />
         <ThemeToggle />
         <NotificationBell />
         <DropdownMenu>
@@ -73,6 +71,10 @@ export function Topbar() {
             <DropdownMenuItem disabled className="text-xs text-muted-foreground">
               {user?.email}
             </DropdownMenuItem>
+            <DropdownMenuItem render={<Link href="/profile" />}>
+              <CircleUserRound className="mr-2 size-4" />
+              Profile
+            </DropdownMenuItem>
             <DropdownMenuItem render={<Link href="/settings" />}>
               <Settings className="mr-2 size-4" />
               Settings
@@ -89,12 +91,6 @@ export function Topbar() {
               <DropdownMenuItem render={<Link href="/users" className="lg:hidden" />}>
                 <Users className="mr-2 size-4" />
                 Users
-              </DropdownMenuItem>
-            )}
-            {canManageRoles && (
-              <DropdownMenuItem render={<Link href="/roles" className="lg:hidden" />}>
-                <ShieldCheck className="mr-2 size-4" />
-                Roles
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />

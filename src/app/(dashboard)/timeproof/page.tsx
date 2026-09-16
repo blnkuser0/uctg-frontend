@@ -6,6 +6,7 @@ import { ClockStatusCard } from "@/components/timeproof/ClockStatusCard";
 import { ClockActionButtons } from "@/components/timeproof/ClockActionButtons";
 import { TodayLogList } from "@/components/timeproof/TodayLogList";
 import { TimeLogType } from "@/types/timeLog";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export default function TimeproofPage() {
   const { data, isLoading } = useTodayTimeLog();
@@ -29,12 +30,8 @@ export default function TimeproofPage() {
   }
 
   return (
-    <div className="catalyst-page max-w-3xl">
-      <div>
-        <p className="catalyst-eyebrow">Presence station</p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">Timeproof</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Record verified time, breaks, and lunch in one clear rhythm.</p>
-      </div>
+    <div className="catalyst-page max-w-5xl">
+      <PageHeader title="Timeproof" section="Operations / Work session" tone="amber" />
 
       <ClockStatusCard state={data.state} />
       <ClockActionButtons state={data.state} onAction={handleAction} isPending={clockMutation.isPending} />

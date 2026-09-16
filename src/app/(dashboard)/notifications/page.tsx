@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NotificationItem } from "@/components/notifications/NotificationItem";
 import { useMarkNotificationsRead, useNotifications, useUnreadNotificationCount } from "@/hooks/useNotifications";
 import { useMentions } from "@/hooks/useMentions";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export default function NotificationsPage() {
   const { data: notifications, isLoading } = useNotifications();
@@ -15,18 +16,12 @@ export default function NotificationsPage() {
   const markRead = useMarkNotificationsRead();
 
   return (
-    <div className="mx-auto flex max-w-2xl flex-col gap-4 p-4 md:p-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-lg font-semibold">Notifications</h1>
-          <p className="text-sm text-muted-foreground">Mentions, assignments, and deadlines across your projects.</p>
-        </div>
-        {(unreadCount ?? 0) > 0 && (
+    <div className="catalyst-page">
+      <PageHeader title="Notifications" section="Workspace / Activity" tone="violet" actions={(unreadCount ?? 0) > 0 ? (
           <Button variant="outline" size="sm" onClick={() => markRead.mutate(undefined)}>
             Mark all read
           </Button>
-        )}
-      </div>
+        ) : undefined} />
 
       <Tabs defaultValue="all">
         <TabsList>
@@ -40,7 +35,7 @@ export default function NotificationsPage() {
               <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
             </div>
           ) : notifications && notifications.length > 0 ? (
-            <div className="grid gap-1 rounded-2xl border border-border bg-card p-1.5">
+            <div className="grid gap-px border border-border bg-border p-px">
               {notifications.map((n) => (
                 <NotificationItem key={n._id} notification={n} />
               ))}
@@ -56,7 +51,7 @@ export default function NotificationsPage() {
               <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
             </div>
           ) : mentions && mentions.length > 0 ? (
-            <div className="grid gap-1 rounded-2xl border border-border bg-card p-1.5">
+            <div className="grid gap-px border border-border bg-border p-px">
               {mentions.map((mention) => (
                 <Link
                   key={mention._id}

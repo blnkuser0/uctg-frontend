@@ -20,6 +20,8 @@ export interface CreateProjectInput {
   key?: string;
   description?: string;
   color?: string;
+  organizationId?: string;
+  memberIds?: string[];
 }
 
 export interface UpdateProjectInput {

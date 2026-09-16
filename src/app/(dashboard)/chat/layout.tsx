@@ -16,9 +16,10 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   const isThreadOpen = pathname !== "/chat";
 
   const sidebar = (
-    <div className="flex h-full w-full flex-col md:w-72 md:shrink-0 md:border-r md:border-border">
-      <div className="border-b border-border p-3">
-        <h1 className="text-sm font-semibold">Chat</h1>
+    <div className="flex h-full min-w-0 w-full flex-col bg-card md:w-72 md:shrink-0 md:border-r md:border-border">
+      <div className="border-b border-violet-500/25 bg-violet-500/8 px-4 py-3 shadow-[inset_3px_0_0_theme(colors.violet.500)]">
+        <p className="text-[10px] font-medium text-muted-foreground">Workspace</p>
+        <h1 className="text-base font-semibold">Catalyst Space</h1>
       </div>
       <div className="flex gap-2 border-b border-border p-2">
         <NewDmDialog />

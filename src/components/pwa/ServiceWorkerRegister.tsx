@@ -23,7 +23,8 @@ export function ServiceWorkerRegister() {
 
     navigator.serviceWorker
       .register("/sw.js", { updateViaCache: "none" })
-      .catch((err) => console.error("Service worker registration failed:", err));
+      // The app stays fully usable online when a browser or host does not support SWs.
+      .catch(() => undefined);
   }, []);
 
   return null;
