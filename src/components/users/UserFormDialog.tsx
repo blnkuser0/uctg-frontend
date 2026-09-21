@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { useRoles } from "@/hooks/useRoles";
 import { announceAccountCreated } from "@/lib/accountCreated";
+import { AccountCredentials, CredentialsDialog } from "./CredentialsDialog";
 import { useCreateUser, useUpdateUser } from "@/hooks/useUsers";
 import { User } from "@/types/user";
 import { Plus } from "lucide-react";
@@ -33,6 +34,7 @@ interface UserFormDialogProps {
 
 export function UserFormDialog({ user, trigger, open: openProp, onOpenChange }: UserFormDialogProps) {
   const [internalOpen, setInternalOpen] = useState(false);
+  const [credentials, setCredentials] = useState<AccountCredentials | null>(null);
   const controlled = openProp !== undefined;
   const open = controlled ? openProp : internalOpen;
   function setOpen(next: boolean) {
@@ -87,7 +89,7 @@ export function UserFormDialog({ user, trigger, open: openProp, onOpenChange }: 
         { email: email.trim(), roleId },
         {
           onSuccess: (created) => {
-            announceAccountCreated(created, "User");
+            setCredentials(announceAccountCreated(created, "User"));
             setOpen(false);
           },
           onError,
@@ -97,6 +99,7 @@ export function UserFormDialog({ user, trigger, open: openProp, onOpenChange }: 
   }
 
   return (
+    <>
     <Dialog open={open} onOpenChange={handleOpenChange}>
       {!controlled && (
         <DialogTrigger
@@ -162,5 +165,7 @@ export function UserFormDialog({ user, trigger, open: openProp, onOpenChange }: 
         </form>
       </DialogContent>
     </Dialog>
+    <CredentialsDialog credentials={credentials} onClose={() => setCredentials(null)} />
+    </>
   );
 }

@@ -16,15 +16,17 @@ import { IdCardDialog } from "@/components/idcard/IdCardDialog";
 import { useAuth } from "@/providers/AuthProvider";
 import { useDeactivateUser, useUpdateUser } from "@/hooks/useUsers";
 import { User } from "@/types/user";
-import { IdCard, MoreVertical, Pencil, Power, PowerOff, Trash2 } from "lucide-react";
+import { IdCard, KeyRound, MoreVertical, Pencil, Power, PowerOff, Trash2 } from "lucide-react";
+import { AccountCredentials, CredentialsDialog } from "./CredentialsDialog";
 import { DeleteUserDialog } from "./DeleteUserDialog";
+import { ResetPasswordDialog } from "./ResetPasswordDialog";
 import { UserFormDialog } from "./UserFormDialog";
 
 function initials(name: string): string {
   return name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
 }
 
-type RowAction = { kind: "id" | "edit" | "delete"; user: User };
+type RowAction = { kind: "id" | "edit" | "reset" | "delete"; user: User };
 
 export function UserTable({ users }: { users: User[] }) {
   const { user: currentUser } = useAuth();
@@ -32,6 +34,7 @@ export function UserTable({ users }: { users: User[] }) {
   const updateUser = useUpdateUser();
   // One dialog of each kind for the whole table, opened from a row's menu.
   const [action, setAction] = useState<RowAction | null>(null);
+  const [credentials, setCredentials] = useState<AccountCredentials | null>(null);
   const closeAction = (open: boolean) => {
     if (!open) setAction(null);
   };
@@ -102,6 +105,13 @@ export function UserTable({ users }: { users: User[] }) {
                       {isActive ? <PowerOff className="size-4" /> : <Power className="size-4" />}
                       {isActive ? "Deactivate" : "Reactivate"}
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+                      disabled={isSelf || user.isSuperAdmin === true}
+                      onClick={() => setAction({ kind: "reset", user })}
+                    >
+                      <KeyRound className="size-4" />
+                      Reset password
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       variant="destructive"
@@ -123,7 +133,11 @@ export function UserTable({ users }: { users: User[] }) {
         <IdCardDialog userId={action.user.id} userName={action.user.name} open onOpenChange={closeAction} />
       )}
       {action?.kind === "edit" && <UserFormDialog key={action.user.id} user={action.user} open onOpenChange={closeAction} />}
+      {action?.kind === "reset" && (
+        <ResetPasswordDialog user={action.user} open onOpenChange={closeAction} onCredentials={setCredentials} />
+      )}
       {action?.kind === "delete" && <DeleteUserDialog user={action.user} open onOpenChange={closeAction} />}
+      <CredentialsDialog credentials={credentials} onClose={() => setCredentials(null)} title="Password reset" />
     </>
   );
 }

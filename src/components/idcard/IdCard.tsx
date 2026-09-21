@@ -3,23 +3,10 @@
 import Image from "next/image";
 import { Printer } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import { useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
+import { useAppOrigin } from "@/lib/appUrl";
 import { IdCardData } from "@/types/idCard";
-
-const subscribeNothing = () => () => undefined;
-
-// The QR code is printed, so it must point at the real public site no matter
-// where the card was rendered (e.g. someone printing from localhost or a
-// preview URL). Set NEXT_PUBLIC_APP_URL to the production URL to guarantee it.
-function useOrigin() {
-  return useSyncExternalStore(
-    subscribeNothing,
-    () => (process.env.NEXT_PUBLIC_APP_URL || window.location.origin).replace(/\/+$/, ""),
-    () => ""
-  );
-}
 
 function initials(name: string) {
   return name
@@ -92,7 +79,7 @@ function CardFace({ card, origin }: { card: IdCardData; origin: string }) {
 }
 
 export function IdCard({ card }: { card: IdCardData }) {
-  const origin = useOrigin();
+  const origin = useAppOrigin();
 
   return (
     <div className="flex flex-col items-center gap-4">

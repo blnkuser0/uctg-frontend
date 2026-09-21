@@ -18,9 +18,11 @@ import {
 import { useCreateOrganization } from "@/hooks/usePlatform";
 import { Plus } from "lucide-react";
 import { announceAccountCreated } from "@/lib/accountCreated";
+import { AccountCredentials, CredentialsDialog } from "@/components/users/CredentialsDialog";
 
 export function OrganizationFormDialog() {
   const [open, setOpen] = useState(false);
+  const [credentials, setCredentials] = useState<AccountCredentials | null>(null);
   const [organizationName, setOrganizationName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -47,7 +49,7 @@ export function OrganizationFormDialog() {
       { organizationName: organizationName.trim(), name: name.trim(), email: email.trim() },
       {
         onSuccess: (created) => {
-          announceAccountCreated(created, "Organization");
+          setCredentials(announceAccountCreated(created, "Organization"));
           setOpen(false);
         },
         onError: (err: unknown) => {
@@ -61,6 +63,7 @@ export function OrganizationFormDialog() {
   }
 
   return (
+    <>
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger
         render={
@@ -110,5 +113,7 @@ export function OrganizationFormDialog() {
         </form>
       </DialogContent>
     </Dialog>
+    <CredentialsDialog credentials={credentials} onClose={() => setCredentials(null)} />
+    </>
   );
 }

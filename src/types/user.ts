@@ -21,7 +21,8 @@ export interface User {
 
 // What the create endpoints return: the user plus whether the login-details
 // email actually went out.
-export type CreatedUser = User & { credentialsEmailSent?: boolean };
+// `temporaryPassword` is only present when that email did NOT go out.
+export type CreatedUser = User & { credentialsEmailSent?: boolean; temporaryPassword?: string };
 
 export interface CreateUserInput {
   name?: string;

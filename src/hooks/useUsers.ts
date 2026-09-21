@@ -48,3 +48,11 @@ export function useDeleteUser() {
     onSuccess: invalidate,
   });
 }
+
+export function useResetUserPassword() {
+  const invalidate = useInvalidateUsers();
+  return useMutation({
+    mutationFn: (userId: string) => userService.resetUserPassword(userId),
+    onSuccess: invalidate,
+  });
+}

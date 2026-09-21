@@ -35,3 +35,8 @@ export async function deactivateUser(userId: string): Promise<User> {
 export async function deleteUser(userId: string): Promise<void> {
   await apiClient.delete(`/users/${userId}/permanent`);
 }
+
+export async function resetUserPassword(userId: string): Promise<CreatedUser> {
+  const res = await apiClient.post<ApiEnvelope<CreatedUser>>(`/users/${userId}/reset-password`);
+  return res.data.data;
+}

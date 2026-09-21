@@ -17,10 +17,12 @@ import {
 } from "@/components/ui/dialog";
 import { useCreatePlatformUser } from "@/hooks/usePlatform";
 import { announceAccountCreated } from "@/lib/accountCreated";
+import { AccountCredentials, CredentialsDialog } from "@/components/users/CredentialsDialog";
 import { Plus } from "lucide-react";
 
 export function DeveloperFormDialog() {
   const [open, setOpen] = useState(false);
+  const [credentials, setCredentials] = useState<AccountCredentials | null>(null);
   const [email, setEmail] = useState("");
 
   const createUser = useCreatePlatformUser();
@@ -43,7 +45,7 @@ export function DeveloperFormDialog() {
       { email: email.trim(), isDeveloper: true },
       {
         onSuccess: (created) => {
-          announceAccountCreated(created, "Developer");
+          setCredentials(announceAccountCreated(created, "Developer"));
           setOpen(false);
         },
         onError: (err: unknown) => {
@@ -57,6 +59,7 @@ export function DeveloperFormDialog() {
   }
 
   return (
+    <>
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger
         render={
@@ -90,5 +93,7 @@ export function DeveloperFormDialog() {
         </form>
       </DialogContent>
     </Dialog>
+    <CredentialsDialog credentials={credentials} onClose={() => setCredentials(null)} />
+    </>
   );
 }
