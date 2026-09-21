@@ -12,7 +12,16 @@ function PasswordInput({ className, ...props }: Omit<React.ComponentProps<"input
 
   return (
     <div className="relative">
-      <Input {...props} type={visible ? "text" : "password"} className={cn("pr-10", className)} />
+      {/* Once revealed this is a plain text field, so phones would start auto-capitalising and
+          auto-correcting what is typed — which silently changes a password. Switch that off. */}
+      <Input
+        autoCapitalize="none"
+        autoCorrect="off"
+        spellCheck={false}
+        {...props}
+        type={visible ? "text" : "password"}
+        className={cn("pr-10", className)}
+      />
       <button
         type="button"
         onClick={() => setVisible((value) => !value)}
