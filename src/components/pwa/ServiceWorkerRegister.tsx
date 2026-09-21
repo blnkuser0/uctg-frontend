@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { startInstallPromptCapture } from "./installPrompt";
+import { startInstallPromptCapture } from "./installPromptStore";
 
 const ENABLE_SW_DEV = process.env.NEXT_PUBLIC_ENABLE_SW_DEV === "true";
 

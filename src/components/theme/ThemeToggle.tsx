@@ -12,7 +12,9 @@ const OPTIONS = [
   { value: "dark", icon: Moon, label: "Dark mode" },
 ] as const;
 
-export function ThemeToggle({ className }: { className?: string }) {
+// `compact` is a single button that cycles system → light → dark, for the collapsed
+// (icon-only) sidebar where the three-way pill doesn't fit.
+export function ThemeToggle({ className, compact = false }: { className?: string; compact?: boolean }) {
   const { theme, setTheme } = useTheme();
   const mounted = useSyncExternalStore(
     () => () => undefined,
@@ -21,7 +23,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   );
 
   if (!mounted) {
-    return <div aria-hidden className={cn("h-7 w-[4.75rem] shrink-0 rounded-full bg-muted/60", className)} />;
+    return <div aria-hidden className={cn("shrink-0 rounded-full bg-muted/60", compact ? "size-8" : "h-7 w-[4.75rem]", className)} />;
   }
 
   const activeIndex = Math.max(
@@ -44,6 +46,26 @@ export function ThemeToggle({ className }: { className?: string }) {
     document.startViewTransition(() => {
       flushSync(() => setTheme(value));
     });
+  }
+
+  if (compact) {
+    const current = OPTIONS[activeIndex];
+    const next = OPTIONS[(activeIndex + 1) % OPTIONS.length];
+    const CurrentIcon = current.icon;
+    return (
+      <button
+        type="button"
+        aria-label={`${current.label} — switch to ${next.label}`}
+        title={`${current.label} — click for ${next.label}`}
+        onClick={(event) => applyTheme(next.value, event)}
+        className={cn(
+          "flex size-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground",
+          className
+        )}
+      >
+        <CurrentIcon className="size-4" />
+      </button>
+    );
   }
 
   return (

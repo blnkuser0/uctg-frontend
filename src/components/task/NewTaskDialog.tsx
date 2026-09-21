@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PRIORITY_LABELS } from "./priorityLabels";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { TaskAssigneePicker } from "./TaskAssigneePicker";
 import { useCreateTask } from "@/hooks/useTasks";
@@ -76,7 +77,7 @@ export function NewTaskDialog({ projectId, stageId, stageName, memberIds, onOpen
           <div className="grid grid-cols-2 gap-3">
             <div className="grid gap-1.5">
               <Label>Priority</Label>
-              <Select value={priority ?? undefined} onValueChange={(v) => setPriority(v as TaskPriority)}>
+              <Select value={priority ?? undefined} items={PRIORITY_LABELS} onValueChange={(v) => setPriority(v as TaskPriority)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>

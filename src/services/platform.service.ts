@@ -1,7 +1,7 @@
 import { apiClient } from "@/lib/api-client";
 import { Project } from "@/types/project";
 import { CreateOrganizationInput, CreatePlatformUserInput, Developer, PlatformOrganization } from "@/types/platform";
-import { User } from "@/types/user";
+import { CreatedUser } from "@/types/user";
 
 interface ApiEnvelope<T> {
   success: boolean;
@@ -14,13 +14,13 @@ export async function listOrganizations(): Promise<PlatformOrganization[]> {
   return res.data.data;
 }
 
-export async function createOrganization(input: CreateOrganizationInput): Promise<User> {
-  const res = await apiClient.post<ApiEnvelope<User>>("/platform/organizations", input);
+export async function createOrganization(input: CreateOrganizationInput): Promise<CreatedUser> {
+  const res = await apiClient.post<ApiEnvelope<CreatedUser>>("/platform/organizations", input);
   return res.data.data;
 }
 
-export async function createPlatformUser(input: CreatePlatformUserInput): Promise<User> {
-  const res = await apiClient.post<ApiEnvelope<User>>("/platform/users", input);
+export async function createPlatformUser(input: CreatePlatformUserInput): Promise<CreatedUser> {
+  const res = await apiClient.post<ApiEnvelope<CreatedUser>>("/platform/users", input);
   return res.data.data;
 }
 

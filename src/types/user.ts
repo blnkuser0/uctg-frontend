@@ -15,12 +15,19 @@ export interface User {
   avatarUrl: string | null;
   isActive?: boolean;
   isSuperAdmin?: boolean;
+  // True until the user replaces the temporary password an admin gave them.
+  mustChangePassword?: boolean;
 }
 
+// What the create endpoints return: the user plus whether the login-details
+// email actually went out.
+export type CreatedUser = User & { credentialsEmailSent?: boolean };
+
 export interface CreateUserInput {
-  name: string;
+  name?: string;
   email: string;
-  password: string;
+  // Optional: the server gives every new account the shared temporary password.
+  password?: string;
   roleId: string;
 }
 

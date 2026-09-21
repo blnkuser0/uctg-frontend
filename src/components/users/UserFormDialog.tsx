@@ -17,6 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useRoles } from "@/hooks/useRoles";
+import { announceAccountCreated } from "@/lib/accountCreated";
 import { useCreateUser, useUpdateUser } from "@/hooks/useUsers";
 import { User } from "@/types/user";
 import { Plus } from "lucide-react";
@@ -30,7 +31,6 @@ export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
-  const [password, setPassword] = useState("");
   const [roleId, setRoleId] = useState(user?.role.id ?? "");
 
   const { data: roles } = useRoles(open);
@@ -44,24 +44,23 @@ export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
     if (next) {
       setName(user?.name ?? "");
       setEmail(user?.email ?? "");
-      setPassword("");
       setRoleId(user?.role.id ?? "");
     }
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !roleId) {
-      toast.error("Give the user a name and a role");
+    if (!roleId || (isEditing && !name.trim())) {
+      toast.error(isEditing ? "Give the user a name and a role" : "Choose a role for the user");
       return;
     }
-    if (!isEditing && (!email.trim() || password.length < 8)) {
-      toast.error("Email and an 8+ character password are required");
+    if (!isEditing && !email.trim()) {
+      toast.error("Enter the new user's email");
       return;
     }
 
     const onSuccess = () => {
-      toast.success(isEditing ? "User updated" : "User created");
+      toast.success("User updated");
       setOpen(false);
     };
     const onError = (err: unknown) => {
@@ -74,7 +73,16 @@ export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
     if (isEditing) {
       updateUser.mutate({ userId: user.id, input: { name: name.trim(), roleId } }, { onSuccess, onError });
     } else {
-      createUser.mutate({ name: name.trim(), email: email.trim(), password, roleId }, { onSuccess, onError });
+      createUser.mutate(
+        { email: email.trim(), roleId },
+        {
+          onSuccess: (created) => {
+            announceAccountCreated(created, "User");
+            setOpen(false);
+          },
+          onError,
+        }
+      );
     }
   }
 
@@ -94,14 +102,10 @@ export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit user" : "Create a user"}</DialogTitle>
           <DialogDescription>
-            {isEditing ? "Update their name or role." : "Add a teammate and assign them a role."}
+            {isEditing ? "Update their name or role." : "Enter their email and pick a role. We'll email them their login details and the temporary password; they set their own name and password after signing in."}
           </DialogDescription>
         </DialogHeader>
         <form className="grid gap-4" onSubmit={handleSubmit}>
-          <div className="grid gap-1.5">
-            <Label htmlFor="userName">Name</Label>
-            <Input id="userName" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Mona Member" />
-          </div>
           <div className="grid gap-1.5">
             <Label htmlFor="userEmail">Email</Label>
             <Input
@@ -113,21 +117,19 @@ export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
               placeholder="name@company.com"
             />
           </div>
-          {!isEditing && (
+          {isEditing && (
             <div className="grid gap-1.5">
-              <Label htmlFor="userPassword">Password</Label>
-              <Input
-                id="userPassword"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="At least 8 characters"
-              />
+              <Label htmlFor="userName">Name</Label>
+              <Input id="userName" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Mona Member" />
             </div>
           )}
           <div className="grid gap-1.5">
             <Label>Role</Label>
-            <Select value={roleId || undefined} onValueChange={(v) => setRoleId(v ?? "")}>
+            <Select
+              value={roleId || undefined}
+              items={(roles ?? []).map((role) => ({ value: role.id, label: role.name }))}
+              onValueChange={(v) => setRoleId(v ?? "")}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select a role..." />
               </SelectTrigger>

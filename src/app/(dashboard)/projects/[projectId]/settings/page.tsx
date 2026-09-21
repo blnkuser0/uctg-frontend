@@ -182,7 +182,11 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ proj
         </div>
         {nonMembers.length > 0 && (
           <div className="mt-3 flex gap-2">
-            <Select value={addMemberId} onValueChange={(value) => setAddMemberId(value ?? "")}>
+            <Select
+              value={addMemberId}
+              items={nonMembers.map((u) => ({ value: u.id, label: u.name }))}
+              onValueChange={(value) => setAddMemberId(value ?? "")}
+            >
               <SelectTrigger className="flex-1">
                 <SelectValue placeholder="Add a teammate..." />
               </SelectTrigger>

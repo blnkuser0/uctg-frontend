@@ -17,13 +17,13 @@ import {
 } from "@/components/ui/dialog";
 import { useCreateOrganization } from "@/hooks/usePlatform";
 import { Plus } from "lucide-react";
+import { announceAccountCreated } from "@/lib/accountCreated";
 
 export function OrganizationFormDialog() {
   const [open, setOpen] = useState(false);
   const [organizationName, setOrganizationName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const createOrganization = useCreateOrganization();
 
@@ -33,22 +33,21 @@ export function OrganizationFormDialog() {
       setOrganizationName("");
       setName("");
       setEmail("");
-      setPassword("");
     }
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!organizationName.trim() || !name.trim() || !email.trim() || password.length < 8) {
-      toast.error("Fill in the organization name, admin name/email, and an 8+ character password");
+    if (!organizationName.trim() || !name.trim() || !email.trim()) {
+      toast.error("Fill in the organization name and the admin's name and email");
       return;
     }
 
     createOrganization.mutate(
-      { organizationName: organizationName.trim(), name: name.trim(), email: email.trim(), password },
+      { organizationName: organizationName.trim(), name: name.trim(), email: email.trim() },
       {
-        onSuccess: () => {
-          toast.success("Organization created");
+        onSuccess: (created) => {
+          announceAccountCreated(created, "Organization");
           setOpen(false);
         },
         onError: (err: unknown) => {
@@ -100,16 +99,9 @@ export function OrganizationFormDialog() {
               placeholder="admin@client.com"
             />
           </div>
-          <div className="grid gap-1.5">
-            <Label htmlFor="adminPassword">Admin password</Label>
-            <Input
-              id="adminPassword"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 8 characters"
-            />
-          </div>
+          <p className="text-xs text-muted-foreground">
+            The admin is emailed their login details with the shared temporary password.
+          </p>
           <DialogFooter>
             <Button type="submit" disabled={createOrganization.isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">
               {createOrganization.isPending ? "Creating..." : "Create organization"}

@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LogOut, User as UserIcon, ShieldCheck, Users, CalendarCheck, MessagesSquare, Settings, Crown, CircleUserRound } from "lucide-react";
+import { LogOut, User as UserIcon, Settings, CircleUserRound } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
-import { PERMISSIONS } from "@/types/role";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,6 @@ import {
 import { BrandLogo } from "@/components/branding/BrandLogo";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { WorkspaceSearch } from "@/components/layout/WorkspaceSearch";
-import { InstallAppButton } from "@/components/pwa/InstallAppButton";
 
 function initials(name: string): string {
   return name
@@ -32,8 +30,6 @@ function initials(name: string): string {
 export function Topbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
-  const canManageUsers = user?.role.permissions.includes(PERMISSIONS.USERS_MANAGE) ?? false;
-  const canManageRoles = user?.role.permissions.includes(PERMISSIONS.ROLES_MANAGE) ?? false;
 
   async function handleLogout() {
     await logout();
@@ -54,8 +50,7 @@ export function Topbar() {
       <div className="hidden items-center gap-2 lg:flex"><span className="size-1.5 rounded-full bg-emerald-500" /><p className="text-xs font-medium text-muted-foreground">Workspace connected</p></div>
       <div className="flex items-center gap-1.5">
         <WorkspaceSearch />
-        <InstallAppButton compact className="lg:hidden" />
-        <ThemeToggle />
+        <ThemeToggle className="lg:hidden" />
         <NotificationBell />
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -83,32 +78,6 @@ export function Topbar() {
               <Settings className="mr-2 size-4" />
               Settings
             </DropdownMenuItem>
-            <DropdownMenuItem render={<Link href="/chat" className="lg:hidden" />}>
-              <MessagesSquare className="mr-2 size-4" />
-              Catalyst Space
-            </DropdownMenuItem>
-            <DropdownMenuItem render={<Link href="/attendance" className="lg:hidden" />}>
-              <CalendarCheck className="mr-2 size-4" />
-              Attendance
-            </DropdownMenuItem>
-            {canManageUsers && (
-              <DropdownMenuItem render={<Link href="/users" className="lg:hidden" />}>
-                <Users className="mr-2 size-4" />
-                Users
-              </DropdownMenuItem>
-            )}
-            {canManageRoles && (
-              <DropdownMenuItem render={<Link href="/roles" className="lg:hidden" />}>
-                <ShieldCheck className="mr-2 size-4" />
-                Roles
-              </DropdownMenuItem>
-            )}
-            {user?.isSuperAdmin && (
-              <DropdownMenuItem render={<Link href="/platform" className="lg:hidden" />}>
-                <Crown className="mr-2 size-4" />
-                Platform
-              </DropdownMenuItem>
-            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut className="mr-2 size-4" />

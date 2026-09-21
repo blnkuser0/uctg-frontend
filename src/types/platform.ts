@@ -13,13 +13,11 @@ export interface CreateOrganizationInput {
   organizationName: string;
   name: string;
   email: string;
-  password: string;
 }
 
 export interface CreatePlatformUserInput {
-  name: string;
+  name?: string;
   email: string;
-  password: string;
   isDeveloper: boolean;
   organizationId?: string;
   roleId?: string;

@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api-client";
-import { CreateUserInput, UpdateUserInput, User } from "@/types/user";
+import { CreatedUser, CreateUserInput, UpdateUserInput, User } from "@/types/user";
 
 interface ApiEnvelope<T> {
   success: boolean;
@@ -17,8 +17,8 @@ export async function searchUsers(q: string): Promise<User[]> {
   return res.data.data;
 }
 
-export async function createUser(input: CreateUserInput): Promise<User> {
-  const res = await apiClient.post<ApiEnvelope<User>>("/users", input);
+export async function createUser(input: CreateUserInput): Promise<CreatedUser> {
+  const res = await apiClient.post<ApiEnvelope<CreatedUser>>("/users", input);
   return res.data.data;
 }
 

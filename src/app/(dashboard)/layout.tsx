@@ -6,6 +6,8 @@ import { useAuth } from "@/providers/AuthProvider";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { PasswordChangeBanner } from "@/components/layout/PasswordChangeBanner";
+import { InstallAppDialog } from "@/components/pwa/InstallAppDialog";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -37,9 +39,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <Sidebar />
       <div className="flex min-w-0 max-w-full flex-1 flex-col overflow-x-hidden">
         <Topbar />
+        {user.mustChangePassword && <PasswordChangeBanner />}
         <main className="dashboard-stage min-w-0 max-w-full flex-1 overflow-x-hidden overflow-y-auto pb-20 lg:pb-0">{children}</main>
       </div>
       <MobileNav />
+      <InstallAppDialog />
     </div>
   );
 }

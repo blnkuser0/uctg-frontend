@@ -16,37 +16,34 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useCreatePlatformUser } from "@/hooks/usePlatform";
+import { announceAccountCreated } from "@/lib/accountCreated";
 import { Plus } from "lucide-react";
 
 export function DeveloperFormDialog() {
   const [open, setOpen] = useState(false);
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const createUser = useCreatePlatformUser();
 
   function handleOpenChange(next: boolean) {
     setOpen(next);
     if (next) {
-      setName("");
       setEmail("");
-      setPassword("");
     }
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !email.trim() || password.length < 8) {
-      toast.error("Name, email, and an 8+ character password are required");
+    if (!email.trim()) {
+      toast.error("Enter the developer's email");
       return;
     }
 
     createUser.mutate(
-      { name: name.trim(), email: email.trim(), password, isDeveloper: true },
+      { email: email.trim(), isDeveloper: true },
       {
-        onSuccess: () => {
-          toast.success("Developer created");
+        onSuccess: (created) => {
+          announceAccountCreated(created, "Developer");
           setOpen(false);
         },
         onError: (err: unknown) => {
@@ -72,13 +69,9 @@ export function DeveloperFormDialog() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create a developer</DialogTitle>
-          <DialogDescription>Adds them to the shared Developers organization.</DialogDescription>
+          <DialogDescription>Adds them to the shared Developers organization and emails them their login details.</DialogDescription>
         </DialogHeader>
         <form className="grid gap-4" onSubmit={handleSubmit}>
-          <div className="grid gap-1.5">
-            <Label htmlFor="devName">Name</Label>
-            <Input id="devName" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Dana Dev" />
-          </div>
           <div className="grid gap-1.5">
             <Label htmlFor="devEmail">Email</Label>
             <Input
@@ -87,16 +80,6 @@ export function DeveloperFormDialog() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="dev@ugnexa.com"
-            />
-          </div>
-          <div className="grid gap-1.5">
-            <Label htmlFor="devPassword">Password</Label>
-            <Input
-              id="devPassword"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 8 characters"
             />
           </div>
           <DialogFooter>

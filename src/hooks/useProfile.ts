@@ -32,7 +32,10 @@ export function useUploadAvatar() {
 }
 
 export function useChangePassword() {
+  const { refetchMe } = useAuth();
   return useMutation({
     mutationFn: (input: { currentPassword: string; newPassword: string }) => authService.changePassword(input),
+    // Picking their own password clears the "change your temporary password" banner.
+    onSuccess: () => refetchMe().catch(() => undefined),
   });
 }

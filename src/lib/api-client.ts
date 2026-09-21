@@ -29,8 +29,11 @@ async function refreshAccessToken(): Promise<string | null> {
     const newToken: string = res.data?.data?.accessToken ?? null;
     setAccessToken(newToken);
     return newToken;
-  } catch {
-    setAccessToken(null);
+  } catch (error) {
+    // Only a definite "your session is gone" answer clears the token. A timeout,
+    // dropped connection or a sleeping/restarting server must not log people out.
+    const status = (error as AxiosError).response?.status;
+    if (status === 401 || status === 403) setAccessToken(null);
     return null;
   }
 }

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PRIORITY_LABELS } from "./priorityLabels";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { TaskAssigneePicker } from "./TaskAssigneePicker";
@@ -146,7 +147,7 @@ function TaskDetailBody({
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1.5">
                 <Label>Priority</Label>
-                <Select value={priorityValue} onValueChange={(v) => saveField("priority", v as TaskPriority)}>
+                <Select value={priorityValue} items={PRIORITY_LABELS} onValueChange={(v) => saveField("priority", v as TaskPriority)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
