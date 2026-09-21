@@ -31,3 +31,7 @@ export async function deactivateUser(userId: string): Promise<User> {
   const res = await apiClient.delete<ApiEnvelope<User>>(`/users/${userId}`);
   return res.data.data;
 }
+
+export async function deleteUser(userId: string): Promise<void> {
+  await apiClient.delete(`/users/${userId}/permanent`);
+}

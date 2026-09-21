@@ -40,3 +40,11 @@ export function useDeactivateUser() {
     onSuccess: invalidate,
   });
 }
+
+export function useDeleteUser() {
+  const invalidate = useInvalidateUsers();
+  return useMutation({
+    mutationFn: (userId: string) => userService.deleteUser(userId),
+    onSuccess: invalidate,
+  });
+}

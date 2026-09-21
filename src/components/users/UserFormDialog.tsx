@@ -25,10 +25,20 @@ import { Plus } from "lucide-react";
 interface UserFormDialogProps {
   user?: User;
   trigger?: React.ReactElement;
+  // Pass `open` to control the dialog from outside (e.g. from a row's actions menu);
+  // it then renders no trigger of its own.
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
-  const [open, setOpen] = useState(false);
+export function UserFormDialog({ user, trigger, open: openProp, onOpenChange }: UserFormDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const controlled = openProp !== undefined;
+  const open = controlled ? openProp : internalOpen;
+  function setOpen(next: boolean) {
+    if (!controlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  }
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [roleId, setRoleId] = useState(user?.role.id ?? "");
@@ -88,16 +98,18 @@ export function UserFormDialog({ user, trigger }: UserFormDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger
-        render={
-          trigger ?? (
-            <Button className="bg-cyan-600 text-white hover:bg-cyan-500">
-              <Plus className="size-4" />
-              New user
-            </Button>
-          )
-        }
-      />
+      {!controlled && (
+        <DialogTrigger
+          render={
+            trigger ?? (
+              <Button className="bg-cyan-600 text-white hover:bg-cyan-500">
+                <Plus className="size-4" />
+                New user
+              </Button>
+            )
+          }
+        />
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit user" : "Create a user"}</DialogTitle>
