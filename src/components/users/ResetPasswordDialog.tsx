@@ -37,11 +37,9 @@ export function ResetPasswordDialog({ user, open, onOpenChange, onCredentials }:
     <Dialog open={open} onOpenChange={(next) => !resetPassword.isPending && onOpenChange(next)}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Reset {user.name}&apos;s password to the default?</DialogTitle>
+          <DialogTitle>Reset {user.name}&apos;s password?</DialogTitle>
           <DialogDescription>
-            Use this when someone forgot their password. It goes back to the default password (the same one every new account starts
-            with) and they&apos;re signed out on every device. They can sign in with it and then choose a new password. We&apos;ll email
-            them the details, and show them to you here if the email can&apos;t be sent.
+            Reset password to the default one.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -49,7 +47,7 @@ export function ResetPasswordDialog({ user, open, onOpenChange, onCredentials }:
             Cancel
           </Button>
           <Button onClick={handleReset} disabled={resetPassword.isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">
-            {resetPassword.isPending ? "Resetting..." : "Reset to default"}
+            {resetPassword.isPending ? "Resetting..." : "Reset"}
           </Button>
         </DialogFooter>
       </DialogContent>
