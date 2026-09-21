@@ -110,7 +110,7 @@ export function UserTable({ users }: { users: User[] }) {
                       onClick={() => setAction({ kind: "reset", user })}
                     >
                       <KeyRound className="size-4" />
-                      Reset password
+                      Reset to default password
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

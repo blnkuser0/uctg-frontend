@@ -41,9 +41,11 @@ export default function LoginPage() {
 
   async function onSubmit(values: LoginFormValues) {
     setIsSubmitting(true);
+    // Free hosting sleeps when idle; the first request after that can take up to a minute.
+    const slowNotice = setTimeout(() => toast.loading("Still connecting — the server may be waking up. This can take up to a minute.", { id: "slow-login" }), 6000);
     try { await login(values.email, values.password); router.push("/projects"); }
     catch (error) { toast.error(loginErrorMessage(error)); }
-    finally { setIsSubmitting(false); }
+    finally { clearTimeout(slowNotice); toast.dismiss("slow-login"); setIsSubmitting(false); }
   }
 
   return <AuthFrame eyebrow="Workspace sign in" title="Continue to Catalyst" description="Use the account provisioned for you by your Ugnexa administrator.">

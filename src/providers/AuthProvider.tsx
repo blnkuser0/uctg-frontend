@@ -28,7 +28,9 @@ async function withRetry<T>(fn: () => Promise<T>, attempts = 4): Promise<T> {
       return await fn();
     } catch (error) {
       const status = (error as AxiosError).response?.status;
-      const definitive = status === 401 || status === 403 || status === 400;
+      // The server answered with a client error (wrong password, rate limit, deactivated…): retrying can't help.
+      // No answer at all, or a 5xx, is the sleeping/restarting-server case worth retrying.
+      const definitive = status !== undefined && status < 500;
       if (definitive || attempt >= attempts) throw error;
       await sleep(1500 * attempt);
     }
@@ -74,7 +76,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const { user: loggedInUser, accessToken } = await authService.login({ email, password });
+    // A cold-starting backend can drop the very first request; retry instead of telling the user it failed.
+    const { user: loggedInUser, accessToken } = await withRetry(() => authService.login({ email, password }), 3);
     setAccessToken(accessToken);
     setUser(loggedInUser);
   }, []);
