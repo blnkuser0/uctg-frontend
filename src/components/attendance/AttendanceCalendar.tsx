@@ -34,7 +34,7 @@ export function AttendanceCalendar({ year, month, summaries, selectedDateKey, on
   const byDate = new Map(summaries.map((s) => [s.date, s]));
 
   return (
-    <div className="min-w-[34rem]">
+    <div className="min-w-0">
       <MonthGrid
         year={year}
         month={month}

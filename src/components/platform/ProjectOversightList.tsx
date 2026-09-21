@@ -57,7 +57,7 @@ export function ProjectOversightList({
   }
 
   return (
-    <div className="grid gap-3">
+    <div className="grid grid-cols-1 gap-3">
       {projects.map((project) => {
         const assignedDevIds = project.memberIds.filter((id) => devById.has(id));
         const availableDevs = (developers ?? []).filter((d) => !project.memberIds.includes(d.id));

@@ -13,7 +13,7 @@ export function DeveloperList({ developers }: { developers: Developer[] }) {
   }
 
   return (
-    <div className="grid gap-3">
+    <div className="grid grid-cols-1 gap-3">
       {developers.map((dev) => (
         <div key={dev.id} className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
           <Avatar className="size-9 shrink-0">

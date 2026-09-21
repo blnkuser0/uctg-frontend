@@ -21,3 +21,19 @@ for (const { file, size } of targets) {
   await sharp(sourceLogo).resize(size, size, { fit: "cover" }).png().toFile(join(publicDir, file));
   console.log(`Generated ${file}`);
 }
+
+// Maskable icons: Android crops these to a circle/squircle, and only the centre
+// 80% is guaranteed visible. The logo's outer dial ring reaches almost to the
+// edge, so scale it down onto a white canvas to keep it inside that safe zone.
+const MASKABLE_LOGO_SCALE = 0.72;
+
+for (const size of [192, 512]) {
+  const inner = Math.round(size * MASKABLE_LOGO_SCALE);
+  const logo = await sharp(sourceLogo).resize(inner, inner, { fit: "cover" }).png().toBuffer();
+  const file = `icon-maskable-${size}x${size}.png`;
+  await sharp({ create: { width: size, height: size, channels: 4, background: "#ffffff" } })
+    .composite([{ input: logo, gravity: "center" }])
+    .png()
+    .toFile(join(publicDir, file));
+  console.log(`Generated ${file}`);
+}

@@ -21,7 +21,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   );
 
   if (!mounted) {
-    return <div aria-hidden className={cn("h-7 w-[4.75rem] rounded-full bg-muted/60", className)} />;
+    return <div aria-hidden className={cn("h-7 w-[4.75rem] shrink-0 rounded-full bg-muted/60", className)} />;
   }
 
   const activeIndex = Math.max(
@@ -50,7 +50,7 @@ export function ThemeToggle({ className }: { className?: string }) {
     <div
       role="radiogroup"
       aria-label="Color theme"
-      className={cn("relative inline-grid grid-cols-3 rounded-full border border-border bg-muted/60 p-0.5", className)}
+      className={cn("relative inline-grid shrink-0 grid-cols-3 rounded-full border border-border bg-muted/60 p-0.5", className)}
     >
       <span
         aria-hidden

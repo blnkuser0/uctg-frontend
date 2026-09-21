@@ -9,7 +9,7 @@ export function OrganizationList({ organizations }: { organizations: PlatformOrg
   }
 
   return (
-    <div className="grid gap-3">
+    <div className="grid grid-cols-1 gap-3">
       {organizations.map((org) => (
         <div key={org._id} className="rounded-2xl border border-border bg-card p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">

@@ -25,4 +25,5 @@ export const queryKeys = {
   platformOrganizations: () => ["platform", "organizations"] as const,
   platformDevelopers: () => ["platform", "developers"] as const,
   platformProjects: () => ["platform", "projects"] as const,
+  idCard: (userId: string) => ["id-card", userId] as const,
 };

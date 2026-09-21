@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
+import { startInstallPromptCapture } from "./installPrompt";
 
 const ENABLE_SW_DEV = process.env.NEXT_PUBLIC_ENABLE_SW_DEV === "true";
 
 export function ServiceWorkerRegister() {
   useEffect(() => {
+    startInstallPromptCapture();
     if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
 
     const isDev = process.env.NODE_ENV === "development";

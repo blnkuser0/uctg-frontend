@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { CalendarCheck, CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, Clock, Crown, Gauge, LayoutGrid, ListChecks, MessagesSquare, Settings, ShieldCheck, Users } from "lucide-react";
 import { useState } from "react";
 import { BrandLogo } from "@/components/branding/BrandLogo";
+import { InstallAppButton } from "@/components/pwa/InstallAppButton";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
@@ -68,6 +69,7 @@ export function Sidebar() {
       {administrationItems.length > 0 && <><div className="my-5 border-t border-sidebar-border" />{!collapsed && <p className="mb-2 px-3 text-[10px] font-semibold text-sidebar-foreground/38">Administration</p>}<div className="grid gap-1">{renderItems(administrationItems)}</div></>}
     </nav>
     <div className="border-t border-sidebar-border p-2">
+      <InstallAppButton compact={collapsed} className={collapsed ? "mx-auto mb-1" : "mb-1 h-11 w-full justify-start gap-3 rounded-none px-3 text-[13px] font-medium"} />
       <Link href="/profile" title="Profile" className={cn("flex h-11 items-center border-l-2 border-transparent text-sidebar-foreground/62 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground", collapsed ? "justify-center" : "gap-3 px-3")}><CircleUserRound className="size-4" />{!collapsed && <span className="text-[13px] font-medium">Profile</span>}</Link>
       <div className={cn("mt-1 flex h-10 items-center", collapsed ? "justify-center" : "justify-between px-3")}><Link href="/settings" title="Settings" className={cn("flex items-center text-sidebar-foreground/55 transition-colors hover:text-sidebar-foreground", !collapsed && "gap-3 text-[13px]")}><Settings className="size-4" />{!collapsed && "Settings"}</Link>{!collapsed && <ThemeToggle />}</div>
     </div>

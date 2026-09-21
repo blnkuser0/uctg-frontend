@@ -1,22 +1,33 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/providers/AuthProvider";
+import { queryKeys } from "@/lib/queryKeys";
 import * as authService from "@/services/auth.service";
 
-export function useUpdateProfile() {
+// The company ID shows the user's name and photo, so it must refresh with them.
+function useRefreshIdentity() {
   const { refetchMe } = useAuth();
+  const queryClient = useQueryClient();
+  return async () => {
+    await refetchMe();
+    await queryClient.invalidateQueries({ queryKey: queryKeys.idCard("me") });
+  };
+}
+
+export function useUpdateProfile() {
+  const refreshIdentity = useRefreshIdentity();
   return useMutation({
     mutationFn: (input: { name?: string }) => authService.updateMe(input),
-    onSuccess: () => refetchMe(),
+    onSuccess: refreshIdentity,
   });
 }
 
 export function useUploadAvatar() {
-  const { refetchMe } = useAuth();
+  const refreshIdentity = useRefreshIdentity();
   return useMutation({
     mutationFn: (file: File) => authService.uploadAvatar(file),
-    onSuccess: () => refetchMe(),
+    onSuccess: refreshIdentity,
   });
 }
 

@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UserFormDialog } from "./UserFormDialog";
+import { IdCardDialog } from "@/components/idcard/IdCardDialog";
 import { useAuth } from "@/providers/AuthProvider";
 import { useDeactivateUser, useUpdateUser } from "@/hooks/useUsers";
 import { User } from "@/types/user";
@@ -42,7 +43,7 @@ export function UserTable({ users }: { users: User[] }) {
   }
 
   return (
-    <div className="grid gap-3">
+    <div className="grid grid-cols-1 gap-3">
       {users.map((user) => {
         const isActive = user.isActive !== false;
         const isSelf = user.id === currentUser?.id;
@@ -63,6 +64,7 @@ export function UserTable({ users }: { users: User[] }) {
                 </div>
               </div>
               <div className="flex shrink-0 gap-1.5">
+                <IdCardDialog userId={user.id} userName={user.name} />
                 <UserFormDialog
                   user={user}
                   trigger={

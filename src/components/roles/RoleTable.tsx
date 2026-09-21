@@ -27,7 +27,7 @@ export function RoleTable({ roles }: { roles: Role[] }) {
   }
 
   return (
-    <div className="grid gap-3">
+    <div className="grid grid-cols-1 gap-3">
       {roles.map((role) => (
         <div key={role.id} className="rounded-2xl border border-border bg-card p-4">
           <div className="flex items-start justify-between gap-3">

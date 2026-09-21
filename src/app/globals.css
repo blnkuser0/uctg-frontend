@@ -285,3 +285,38 @@
     clip-path: circle(150% at var(--theme-toggle-x, 50%) var(--theme-toggle-y, 50%));
   }
 }
+
+/* Company ID printing: on screen the print copy is hidden; when printing,
+   everything else is hidden and the card is scaled from its on-screen width
+   (16.5rem = 264px) to a real CR80 ID size (54mm = ~204px). */
+.id-card-print-root {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: 54mm 86mm;
+    margin: 0;
+  }
+
+  body > *:not(.id-card-print-root) {
+    display: none !important;
+  }
+
+  .id-card-print-root {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: scale(0.7727);
+    transform-origin: top left;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .id-card-print-root > div {
+    box-shadow: none;
+    border-radius: 0;
+    border: 0;
+  }
+}

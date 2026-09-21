@@ -87,8 +87,8 @@ export default function MyTasksPage() {
 
       <section className="catalyst-panel overflow-hidden">
         <div className="flex items-center gap-2 border-b border-border px-4 py-3"><SlidersHorizontal className="size-4 text-violet-500" /><h2 className="text-sm font-semibold">Filter work queue</h2>{overdueCount > 0 && <span className="ml-auto text-[11px] font-medium text-destructive">{overdueCount} overdue</span>}</div>
-        <div className="grid gap-2 p-3 md:grid-cols-[minmax(15rem,1fr)_repeat(4,minmax(8rem,.42fr))_auto]">
-          <div className="relative min-w-0"><Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search title, description, project..." className="pl-9" /></div>
+        <div className="grid gap-2 p-3 sm:grid-cols-2 xl:grid-cols-[minmax(15rem,1fr)_repeat(4,minmax(8rem,.42fr))_auto]">
+          <div className="relative min-w-0 sm:col-span-2 xl:col-span-1"><Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search title, description, project..." className="pl-9" /></div>
           <Select value={projectId} onValueChange={(value) => setProjectId(value ?? "all")}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All projects</SelectItem>{projectList.map((project) => <SelectItem key={project._id} value={project._id}>{project.key} · {project.name}</SelectItem>)}</SelectContent></Select>
           <Select value={stageId} onValueChange={(value) => setStageId(value ?? "all")}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All statuses</SelectItem>{stages.map((stage) => <SelectItem key={stage._id} value={stage._id}>{stage.name}</SelectItem>)}</SelectContent></Select>
           <Select value={priority} onValueChange={(value) => setPriority(value ?? "all")}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All priorities</SelectItem><SelectItem value="urgent">Urgent</SelectItem><SelectItem value="high">High</SelectItem><SelectItem value="normal">Normal</SelectItem><SelectItem value="low">Low</SelectItem></SelectContent></Select>
@@ -105,7 +105,7 @@ export default function MyTasksPage() {
         </div>
       ) : (
         <div className="catalyst-panel overflow-hidden">
-          <div className="grid grid-cols-[minmax(0,1fr)_8rem_8rem_7rem] border-b border-border bg-muted/35 px-4 py-2 text-[10px] font-medium text-muted-foreground"><span>Task</span><span>Status</span><span>Priority</span><span>Deadline</span></div>
+          <div className="grid grid-cols-[minmax(0,1fr)_6rem] border-b border-border bg-muted/35 px-4 py-2 text-[10px] font-medium text-muted-foreground md:grid-cols-[minmax(0,1fr)_8rem_8rem_7rem]"><span>Task</span><span>Status</span><span className="hidden md:block">Priority</span><span className="hidden md:block">Deadline</span></div>
           <div className="divide-y divide-border">{visibleTasks.map((task) => <TaskRow key={task._id} task={task} projectKey={projectById.get(task.projectId)?.key ?? "TASK"} status={stageById.get(task.stageId)?.name ?? "Status"} onOpen={() => setOpenTaskId(task._id)} />)}</div>
         </div>
       ) : (
@@ -122,5 +122,5 @@ function TaskMetric({ label, value, tone }: { label: string; value: number; tone
 }
 
 function TaskRow({ task, projectKey, status, onOpen }: { task: Task; projectKey: string; status: string; onOpen: () => void }) {
-  return <button type="button" onClick={onOpen} className="grid w-full grid-cols-[minmax(0,1fr)_8rem_8rem_7rem] items-center px-4 py-3 text-left transition-colors hover:bg-muted/40"><span className="min-w-0"><span className="block truncate text-sm font-semibold">{task.title}</span><span className="mt-0.5 block text-[10px] text-muted-foreground">{projectKey}-{task.taskNumber} · {task.commentCount} comments · {task.attachments.length} files</span></span><span className="truncate text-xs text-violet-600 dark:text-violet-300">{status}</span><span className="text-xs capitalize text-muted-foreground">{task.priority ?? "normal"}</span><span className="text-xs text-muted-foreground">{task.deadline ? new Date(task.deadline).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "None"}</span></button>;
+  return <button type="button" onClick={onOpen} className="grid w-full grid-cols-[minmax(0,1fr)_6rem] items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 md:grid-cols-[minmax(0,1fr)_8rem_8rem_7rem]"><span className="min-w-0"><span className="block truncate text-sm font-semibold">{task.title}</span><span className="mt-0.5 block text-[10px] text-muted-foreground">{projectKey}-{task.taskNumber} · {task.commentCount} comments · {task.attachments.length} files</span></span><span className="truncate text-xs text-violet-600 dark:text-violet-300">{status}</span><span className="hidden text-xs capitalize text-muted-foreground md:block">{task.priority ?? "normal"}</span><span className="hidden text-xs text-muted-foreground md:block">{task.deadline ? new Date(task.deadline).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "None"}</span></button>;
 }

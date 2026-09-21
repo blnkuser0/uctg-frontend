@@ -11,6 +11,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { useChangePassword, useUpdateProfile, useUploadAvatar } from "@/hooks/useProfile";
 import { useOrganization } from "@/hooks/useOrganization";
 import { PageHeader } from "@/components/layout/PageHeader";
+import { IdCardPanel } from "@/components/idcard/IdCardPanel";
 
 function initials(name: string) { return name.split(" ").map((part) => part[0]).slice(0, 2).join("").toUpperCase(); }
 function roleLabel(role: string | null) { return role?.split("_").map((part) => part[0] + part.slice(1).toLowerCase()).join(" ") ?? "Unassigned"; }
@@ -40,6 +41,7 @@ export default function ProfilePage() {
       </div></section>
       <aside className="catalyst-panel"><div className="flex items-center gap-2 border-b border-border px-5 py-3"><ShieldCheck className="size-4 text-primary" /><h2 className="text-sm font-semibold">Access scope</h2></div><dl className="divide-y divide-border"><AccessFact label="System role" value={roleLabel(user.role.name)} /><AccessFact label="Organization" value={organization?.name ?? "Loading..."} /><AccessFact label="Workspace type" value={user.isSuperAdmin ? "Platform control" : "Organization member"} /><AccessFact label="Account ID" value={user.id.slice(-8).toUpperCase()} mono /></dl></aside>
     </div>
+    <IdCardPanel />
     <section className="catalyst-panel"><div className="flex items-center justify-between border-b border-border px-5 py-3"><div className="flex items-center gap-2"><KeyRound className="size-4 text-primary" /><h2 className="text-sm font-semibold">Security</h2></div><span className="text-[11px] text-muted-foreground">Changing your password revokes other refresh sessions.</span></div><form onSubmit={updatePassword} className="grid gap-4 p-5 md:grid-cols-[1fr_1fr_auto] md:items-end"><div className="grid gap-1.5"><Label htmlFor="currentPassword">Current password</Label><Input id="currentPassword" type="password" autoComplete="current-password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} /></div><div className="grid gap-1.5"><Label htmlFor="newPassword">New password</Label><Input id="newPassword" type="password" autoComplete="new-password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} /></div><Button type="submit" variant="outline" disabled={changePassword.isPending || !currentPassword || newPassword.length < 8}>{changePassword.isPending ? "Updating..." : "Update password"}</Button></form></section>
   </div>;
 }
