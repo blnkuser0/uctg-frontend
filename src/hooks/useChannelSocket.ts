@@ -25,6 +25,16 @@ export function useChannelSocket(channelId: string) {
       queryClient.setQueryData<Message[]>(queryKeys.messages(channelId), (old) =>
         old?.map((m) => (m._id === message._id ? message : m))
       );
+      // Reactions and pins both travel over this same event — keep the Pinned panel in sync too,
+      // for a pin/unpin (or an edit to an already-pinned message) that someone ELSE just did.
+      queryClient.setQueryData<Message[]>(queryKeys.pinnedMessages(channelId), (old) => {
+        if (!old) return old;
+        const wasPinned = old.some((m) => m._id === message._id);
+        if (message.pinnedAt) {
+          return wasPinned ? old.map((m) => (m._id === message._id ? message : m)) : [message, ...old];
+        }
+        return old.filter((m) => m._id !== message._id);
+      });
     }
 
     function onDeleted({ messageId }: { messageId: string }) {

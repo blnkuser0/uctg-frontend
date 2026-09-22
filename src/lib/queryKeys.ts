@@ -22,6 +22,7 @@ export const queryKeys = {
   leavesMine: () => ["leaves", "mine"] as const,
   channels: () => ["channels"] as const,
   messages: (channelId: string) => ["channels", channelId, "messages"] as const,
+  pinnedMessages: (channelId: string) => ["channels", channelId, "pinned-messages"] as const,
   platformOrganizations: () => ["platform", "organizations"] as const,
   platformDevelopers: () => ["platform", "developers"] as const,
   platformProjects: () => ["platform", "projects"] as const,

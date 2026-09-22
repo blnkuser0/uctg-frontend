@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useChannels } from "@/hooks/useChannels";
+import { useChannelListSocket } from "@/hooks/useChannelListSocket";
+import { usePresenceTracking } from "@/hooks/usePresence";
 import { useAuth } from "@/providers/AuthProvider";
 import { ChannelList } from "@/components/chat/ChannelList";
 import { NewDmDialog } from "@/components/chat/NewDmDialog";
@@ -14,6 +16,8 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   const { user } = useAuth();
   const { data: channels } = useChannels();
   const isThreadOpen = pathname !== "/chat";
+  useChannelListSocket();
+  usePresenceTracking();
 
   const sidebar = (
     <div className="flex h-full min-w-0 w-full flex-col bg-card md:w-72 md:shrink-0 md:border-r md:border-border">

@@ -35,3 +35,23 @@ export async function addAttachments(channelId: string, files: File[], text?: st
   });
   return res.data.data;
 }
+
+export async function reactToMessage(messageId: string, emoji: string): Promise<Message> {
+  const res = await apiClient.post<ApiEnvelope<Message>>(`/messages/${messageId}/react`, { emoji });
+  return res.data.data;
+}
+
+export async function togglePinMessage(messageId: string): Promise<Message> {
+  const res = await apiClient.post<ApiEnvelope<Message>>(`/messages/${messageId}/pin`);
+  return res.data.data;
+}
+
+export async function listPinnedMessages(channelId: string): Promise<Message[]> {
+  const res = await apiClient.get<ApiEnvelope<Message[]>>(`/channels/${channelId}/pinned-messages`);
+  return res.data.data;
+}
+
+export async function searchChannel(channelId: string, q: string): Promise<Message[]> {
+  const res = await apiClient.get<ApiEnvelope<Message[]>>(`/channels/${channelId}/search`, { params: { q } });
+  return res.data.data;
+}

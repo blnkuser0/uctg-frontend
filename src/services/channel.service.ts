@@ -34,3 +34,19 @@ export async function deleteGroup(channelId: string): Promise<void> {
 export async function markChannelRead(channelId: string): Promise<void> {
   await apiClient.post(`/channels/${channelId}/read`);
 }
+
+export async function markChannelUnread(channelId: string): Promise<void> {
+  await apiClient.post(`/channels/${channelId}/unread`);
+}
+
+export async function setChannelPinned(channelId: string, pinned: boolean): Promise<void> {
+  await apiClient.post(`/channels/${channelId}/pin`, { pinned });
+}
+
+export async function setChannelMuted(channelId: string, muted: boolean): Promise<void> {
+  await apiClient.post(`/channels/${channelId}/mute`, { muted });
+}
+
+export async function hideDm(channelId: string): Promise<void> {
+  await apiClient.post(`/channels/${channelId}/hide`);
+}

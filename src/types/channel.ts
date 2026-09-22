@@ -17,6 +17,8 @@ export interface Channel {
   createdBy: string;
   lastMessageAt: string | null;
   unreadCount: number;
+  pinned: boolean;
+  muted: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -30,4 +32,6 @@ export interface UpdateGroupInput {
   name?: string;
   addMemberId?: string;
   removeMemberId?: string;
+  addMemberIds?: string[];
+  removeMemberIds?: string[];
 }

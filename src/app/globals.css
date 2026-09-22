@@ -286,6 +286,27 @@
   }
 }
 
+/* Catalyst Space: brief flash on a message jumped-to from a reply quote, a pinned-messages
+   entry, or a search result — otherwise the target is easy to lose in a long scrollback. */
+.catalyst-message-highlight {
+  animation: catalyst-message-flash 2.2s ease-out;
+}
+
+@keyframes catalyst-message-flash {
+  0%, 15% { background-color: color-mix(in oklch, var(--primary) 22%, transparent); }
+  100% { background-color: transparent; }
+}
+
+/* Catalyst Space: the three-dot "someone is typing" indicator. */
+@keyframes catalyst-typing-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-3px); opacity: 1; }
+}
+
+.catalyst-typing-dot {
+  animation: catalyst-typing-dot 1.2s ease-in-out infinite;
+}
+
 /* Company ID printing: on screen the print copy is hidden; when printing,
    everything else is hidden and the card is scaled from its on-screen width
    (16.5rem = 264px) to a real CR80 ID size (54mm = ~204px). */

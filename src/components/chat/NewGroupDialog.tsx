@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { useCreateGroup } from "@/hooks/useChannels";
 import { useUsers } from "@/hooks/useUsers";
+import { avatarGradient, cn } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import { UsersRound } from "lucide-react";
 
@@ -86,7 +87,7 @@ export function NewGroupDialog() {
                 <label key={u.id} className="flex items-center gap-2 rounded-md p-1.5 text-sm hover:bg-muted">
                   <Checkbox checked={memberIds.includes(u.id)} onCheckedChange={(c) => toggle(u.id, c === true)} />
                   <Avatar className="size-6">
-                    <AvatarFallback className="bg-cyan-500/20 text-[10px] text-cyan-700">{initials(u.name)}</AvatarFallback>
+                    <AvatarFallback className={cn("text-[10px] font-medium text-white", avatarGradient(u.id))}>{initials(u.name)}</AvatarFallback>
                   </Avatar>
                   <span className="cursor-pointer">{u.name}</span>
                 </label>

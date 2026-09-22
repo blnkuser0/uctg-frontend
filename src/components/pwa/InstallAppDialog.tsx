@@ -10,6 +10,11 @@ import { clearInstallPrompt, getInstallPrompt, subscribeInstallPrompt } from "./
 const DISMISSED_KEY = "ugnexa-install-dismissed-at";
 const DISMISS_FOR_MS = 7 * 24 * 60 * 60 * 1000;
 const SHOW_AFTER_MS = 2500;
+// The prompt covers real UI underneath it (full-screen on phones), so it must never pop up
+// while someone is mid-tap/scroll/type — that silently eats the gesture they were making
+// (e.g. a tap that lands on the backdrop instead of the button it was covering). It's only
+// allowed to appear once the page has been quiet for this long.
+const IDLE_BEFORE_SHOW_MS = 1500;
 
 const noopSubscribe = () => () => undefined;
 
@@ -43,6 +48,15 @@ function isIosDevice(): boolean {
   return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 }
 
+// True while any other Dialog/Sheet (task detail, new-group, confirm-delete, …) is open. Idle
+// mouse/keyboard activity alone isn't a reliable enough signal that it's safe to pop up: a
+// dialog the user is quietly reading or thinking about (no clicks for a second) looks "idle"
+// too, and this prompt would render on top of it and swallow the next click. Checked instead of
+// tracked, since dialogs across the app open and close through many unrelated code paths.
+function anotherDialogIsOpen(): boolean {
+  return !!document.querySelector('[data-slot="dialog-content"], [data-slot="sheet-content"]');
+}
+
 // Asks people using the site in a browser to install it. Never shown once the app is
 // installed (opened as a standalone window/app), and there is deliberately no
 // always-visible install button anywhere else.
@@ -59,10 +73,46 @@ export function InstallAppDialog() {
 
   useEffect(() => {
     if (!eligible) return;
-    const timer = setTimeout(() => {
-      if (!recentlyDismissed()) setShown(true);
+    let cancelled = false;
+    let idleTimer: ReturnType<typeof setTimeout> | null = null;
+
+    function armIdleCheck() {
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        if (cancelled || recentlyDismissed()) return;
+        // Something the user opened is still up — wait for another quiet stretch instead of
+        // giving up, so the prompt still eventually gets a real chance to appear.
+        if (anotherDialogIsOpen()) {
+          armIdleCheck();
+          return;
+        }
+        setShown(true);
+      }, IDLE_BEFORE_SHOW_MS);
+    }
+    // Any sign of active use pushes the idle window back, so the prompt only ever
+    // appears during a genuine pause, never on top of a gesture in progress.
+    function onActivity() {
+      armIdleCheck();
+    }
+
+    const minDelayTimer = setTimeout(() => {
+      if (cancelled) return;
+      window.addEventListener("pointerdown", onActivity, { passive: true });
+      window.addEventListener("touchstart", onActivity, { passive: true });
+      window.addEventListener("keydown", onActivity);
+      window.addEventListener("wheel", onActivity, { passive: true });
+      armIdleCheck();
     }, SHOW_AFTER_MS);
-    return () => clearTimeout(timer);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(minDelayTimer);
+      if (idleTimer) clearTimeout(idleTimer);
+      window.removeEventListener("pointerdown", onActivity);
+      window.removeEventListener("touchstart", onActivity);
+      window.removeEventListener("keydown", onActivity);
+      window.removeEventListener("wheel", onActivity);
+    };
   }, [eligible]);
 
   useEffect(() => {

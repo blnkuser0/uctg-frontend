@@ -27,5 +27,7 @@ export default function ChannelThreadPage({ params }: { params: Promise<{ channe
     );
   }
 
-  return <MessageThread channel={channel} currentUserId={user?.id ?? ""} />;
+  // Keyed by channel so switching conversations remounts the thread — its own reply-target,
+  // open panel, etc. reset for free instead of needing an effect to sync them.
+  return <MessageThread key={channel._id} channel={channel} currentUserId={user?.id ?? ""} />;
 }

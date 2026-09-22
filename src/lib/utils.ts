@@ -48,6 +48,34 @@ export function formatClockDateTime(iso: string | Date): string {
   });
 }
 
+// Same five tones the main Sidebar's nav sections already rotate through — reused here so a
+// person's avatar color is consistent with the rest of the app's palette instead of introducing
+// a new one just for chat. Deterministic per id, so a given person is always the same color.
+const AVATAR_GRADIENTS = [
+  "bg-gradient-to-br from-sky-500 to-sky-600",
+  "bg-gradient-to-br from-violet-500 to-violet-600",
+  "bg-gradient-to-br from-amber-500 to-amber-600",
+  "bg-gradient-to-br from-emerald-500 to-emerald-600",
+  "bg-gradient-to-br from-orange-500 to-orange-600",
+];
+
+export function avatarGradient(seed: string): string {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  return AVATAR_GRADIENTS[hash % AVATAR_GRADIENTS.length];
+}
+
+/** Day-divider label for a chat message list: "Today", "Yesterday", or a full date further back. */
+export function formatDayLabel(iso: string | Date): string {
+  const d = typeof iso === "string" ? new Date(iso) : iso;
+  const key = toPhDateKey(d);
+  const today = toPhDateKey(new Date());
+  const yesterday = toPhDateKey(new Date(Date.now() - DAY_MS));
+  if (key === today) return "Today";
+  if (key === yesterday) return "Yesterday";
+  return d.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric", timeZone: PH_TIME_ZONE });
+}
+
 export function formatDueDate(date: string | Date | null | undefined): { label: string; tone: "gray" | "amber" | "red" } {
   if (!date) return { label: "", tone: "gray" };
   const d = typeof date === "string" ? new Date(date) : date;

@@ -57,3 +57,37 @@ export function useMarkChannelRead() {
     onSuccess: invalidate,
   });
 }
+
+export function useMarkChannelUnread() {
+  const invalidate = useInvalidateChannels();
+  return useMutation({
+    mutationFn: (channelId: string) => channelService.markChannelUnread(channelId),
+    onSuccess: invalidate,
+  });
+}
+
+export function useSetChannelPinned() {
+  const invalidate = useInvalidateChannels();
+  return useMutation({
+    mutationFn: ({ channelId, pinned }: { channelId: string; pinned: boolean }) =>
+      channelService.setChannelPinned(channelId, pinned),
+    onSuccess: invalidate,
+  });
+}
+
+export function useSetChannelMuted() {
+  const invalidate = useInvalidateChannels();
+  return useMutation({
+    mutationFn: ({ channelId, muted }: { channelId: string; muted: boolean }) =>
+      channelService.setChannelMuted(channelId, muted),
+    onSuccess: invalidate,
+  });
+}
+
+export function useHideDm() {
+  const invalidate = useInvalidateChannels();
+  return useMutation({
+    mutationFn: (channelId: string) => channelService.hideDm(channelId),
+    onSuccess: invalidate,
+  });
+}
