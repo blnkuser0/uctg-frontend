@@ -1,3 +1,5 @@
+import { AccomplishmentFilters } from "@/types/accomplishment";
+
 export const queryKeys = {
   me: ["me"] as const,
   users: (q?: string) => ["users", q ?? ""] as const,
@@ -20,6 +22,8 @@ export const queryKeys = {
   timeLogToday: () => ["timeclock", "today"] as const,
   leavesAll: () => ["leaves", "all"] as const,
   leavesMine: () => ["leaves", "mine"] as const,
+  accomplishmentsAll: (filters?: AccomplishmentFilters) => ["accomplishments", "all", filters ?? {}] as const,
+  accomplishmentsMine: (filters?: AccomplishmentFilters) => ["accomplishments", "mine", filters ?? {}] as const,
   channels: () => ["channels"] as const,
   messages: (channelId: string) => ["channels", channelId, "messages"] as const,
   pinnedMessages: (channelId: string) => ["channels", channelId, "pinned-messages"] as const,

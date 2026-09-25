@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarCheck, CalendarDays, ChevronLeft, ChevronRight, CircleUserRound, Clock, Crown, Gauge, LayoutGrid, ListChecks, MessagesSquare, Settings, ShieldCheck, Users } from "lucide-react";
+import { CalendarCheck, CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, CircleUserRound, Clock, Crown, Gauge, LayoutGrid, ListChecks, MessagesSquare, Settings, ShieldCheck, Users } from "lucide-react";
 import { useState } from "react";
 import { BrandLogo } from "@/components/branding/BrandLogo";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
@@ -24,6 +24,7 @@ const OPERATION_ITEMS = [
   { href: "/attendance", label: "Attendance", meta: "Team log", icon: CalendarCheck, tone: "green" },
   { href: "/leaves", label: "Leaves", meta: "Requests", icon: CalendarDays, tone: "green" },
 ] satisfies NavigationItem[];
+const ACCOMPLISHMENTS_ITEM = { href: "/accomplishments", label: "Accomplishments", meta: "Task log", icon: CheckCircle2, tone: "green" } satisfies NavigationItem;
 
 const ACTIVE_TONE: Record<NavigationTone, string> = {
   blue: "border-sky-500 bg-sky-500/10 text-sky-700 dark:text-sky-300",
@@ -40,9 +41,11 @@ export function Sidebar() {
 
   const canManageUsers = user?.role.permissions.includes(PERMISSIONS.USERS_MANAGE) ?? false;
   const canManageRoles = user?.role.permissions.includes(PERMISSIONS.ROLES_MANAGE) ?? false;
+  const canManageAccomplishments = user?.role.permissions.includes(PERMISSIONS.ACCOMPLISHMENTS_MANAGE) ?? false;
+  const operationItems: NavigationItem[] = [...OPERATION_ITEMS, ...(canManageAccomplishments ? [ACCOMPLISHMENTS_ITEM] : [])];
   const administrationItems: NavigationItem[] = [
-    ...(canManageUsers ? [{ href: "/users", label: "Users", meta: "Team", icon: Users, tone: "coral" as const }] : []),
-    ...(canManageRoles ? [{ href: "/roles", label: "Roles", meta: "Access", icon: ShieldCheck, tone: "coral" as const }] : []),
+    ...(canManageUsers ? [{ href: "/users", label: "Employee Management", meta: "Team", icon: Users, tone: "coral" as const }] : []),
+    ...(canManageRoles ? [{ href: "/roles", label: "Roles Management", meta: "Access", icon: ShieldCheck, tone: "coral" as const }] : []),
     ...(user?.isSuperAdmin ? [{ href: "/platform", label: "Platform", meta: "Provisioning", icon: Crown, tone: "coral" as const }] : []),
   ];
 
@@ -64,7 +67,7 @@ export function Sidebar() {
       <div className="grid gap-1">{renderItems(WORKSPACE_ITEMS)}</div>
       <div className="my-5 border-t border-sidebar-border" />
       {!collapsed && <p className="mb-2 px-3 text-[10px] font-semibold text-sidebar-foreground/38">Operations</p>}
-      <div className="grid gap-1">{renderItems(OPERATION_ITEMS)}</div>
+      <div className="grid gap-1">{renderItems(operationItems)}</div>
       {administrationItems.length > 0 && <><div className="my-5 border-t border-sidebar-border" />{!collapsed && <p className="mb-2 px-3 text-[10px] font-semibold text-sidebar-foreground/38">Administration</p>}<div className="grid gap-1">{renderItems(administrationItems)}</div></>}
     </nav>
     <div className="border-t border-sidebar-border p-2">

@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CalendarDays, CircleUserRound, Clock, FileCheck2, FolderKanban, ListChecks, MessageSquare, Search, Settings, Users } from "lucide-react";
+import { CalendarDays, CheckCircle2, CircleUserRound, Clock, FileCheck2, FolderKanban, ListChecks, MessageSquare, Search, Settings, Users } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useMyProjects } from "@/hooks/useProjects";
 import { useMyTasks } from "@/hooks/useMyTasks";
 import { useAuth } from "@/providers/AuthProvider";
 import { cn } from "@/lib/utils";
+import { PERMISSIONS } from "@/types/role";
 
 type SearchResult = {
   label: string;
@@ -36,6 +37,8 @@ export function WorkspaceSearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const isSuperAdmin = user?.isSuperAdmin ?? false;
+  const canManageAccomplishments = user?.role.permissions.includes(PERMISSIONS.ACCOMPLISHMENTS_MANAGE) ?? false;
 
   useEffect(() => {
     function keydown(event: KeyboardEvent) {
@@ -49,8 +52,11 @@ export function WorkspaceSearch() {
   }, []);
 
   const results = useMemo(() => {
-    const adminDestination: SearchResult[] = user?.isSuperAdmin
+    const adminDestination: SearchResult[] = isSuperAdmin
       ? [{ label: "Platform", detail: "Provision organizations, developers, and project access", href: "/platform", group: "Page", icon: Users }]
+      : [];
+    const accomplishmentsDestination: SearchResult[] = canManageAccomplishments
+      ? [{ label: "Accomplishments", detail: "Daily task log for the team", href: "/accomplishments", group: "Page", icon: CheckCircle2 }]
       : [];
     const projectById = new Map((projects.data ?? []).map((project) => [project._id, project]));
     const projectResults: SearchResult[] = (projects.data ?? []).map((project) => ({
@@ -67,10 +73,10 @@ export function WorkspaceSearch() {
       group: "Task",
       icon: FileCheck2,
     }));
-    const all = [...destinations, ...adminDestination, ...projectResults, ...taskResults];
+    const all = [...destinations, ...adminDestination, ...accomplishmentsDestination, ...projectResults, ...taskResults];
     const needle = query.trim().toLowerCase();
     return (needle ? all.filter((item) => `${item.label} ${item.detail} ${item.group}`.toLowerCase().includes(needle)) : all).slice(0, 12);
-  }, [projects.data, query, tasks.data, user?.role.name]);
+  }, [projects.data, query, tasks.data, canManageAccomplishments, isSuperAdmin]);
 
   function navigate(href: string) {
     setOpen(false);

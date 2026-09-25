@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { IdCardDialog } from "@/components/idcard/IdCardDialog";
 import { useAuth } from "@/providers/AuthProvider";
 import { useDeactivateUser, useUpdateUser } from "@/hooks/useUsers";
@@ -28,7 +29,7 @@ function initials(name: string): string {
 
 type RowAction = { kind: "id" | "edit" | "reset" | "delete"; user: User };
 
-export function UserTable({ users }: { users: User[] }) {
+export function UserTable({ users, emptyMessage }: { users: User[]; emptyMessage?: string }) {
   const { user: currentUser } = useAuth();
   const deactivateUser = useDeactivateUser();
   const updateUser = useUpdateUser();
@@ -58,75 +59,90 @@ export function UserTable({ users }: { users: User[] }) {
   }
 
   if (users.length === 0) {
-    return <p className="py-10 text-center text-sm text-muted-foreground">No users yet.</p>;
+    return <p className="py-10 text-center text-sm text-muted-foreground">{emptyMessage ?? "No users yet."}</p>;
   }
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-3">
-        {users.map((user) => {
-          const isActive = user.isActive !== false;
-          const isSelf = user.id === currentUser?.id;
-          return (
-            <div key={user.id} className="rounded-2xl border border-border bg-card p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex min-w-0 items-center gap-3">
-                  <Avatar className="size-9 shrink-0">
-                    <AvatarFallback className="bg-cyan-500/20 text-xs text-cyan-700">{initials(user.name)}</AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <h3 className="truncate font-semibold">{user.name}</h3>
-                      {!isActive && <Badge className="bg-muted font-normal text-muted-foreground">Deactivated</Badge>}
+      <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead className="text-right">Action</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {users.map((user) => {
+              const isActive = user.isActive !== false;
+              const isSelf = user.id === currentUser?.id;
+              return (
+                <TableRow key={user.id}>
+                  <TableCell>
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <Avatar className="size-8 shrink-0">
+                        <AvatarFallback className="bg-cyan-500/20 text-xs text-cyan-700">{initials(user.name)}</AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="truncate font-medium">{user.name}</span>
+                          {!isActive && <Badge className="bg-muted font-normal text-muted-foreground">Deactivated</Badge>}
+                        </div>
+                      </div>
                     </div>
-                    <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-                    <Badge className="mt-1.5 bg-cyan-500/15 font-normal text-cyan-700">{user.role.name ?? "No role"}</Badge>
-                  </div>
-                </div>
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    render={
-                      <Button size="icon-sm" variant="ghost" className="shrink-0" aria-label={`Actions for ${user.name}`}>
-                        <MoreVertical className="size-4" />
-                      </Button>
-                    }
-                  />
-                  <DropdownMenuContent align="end" className="min-w-44">
-                    <DropdownMenuItem onClick={() => setAction({ kind: "id", user })}>
-                      <IdCard className="size-4" />
-                      View ID card
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setAction({ kind: "edit", user })}>
-                      <Pencil className="size-4" />
-                      Edit user
-                    </DropdownMenuItem>
-                    <DropdownMenuItem disabled={isSelf} onClick={() => handleToggleActive(user)}>
-                      {isActive ? <PowerOff className="size-4" /> : <Power className="size-4" />}
-                      {isActive ? "Deactivate" : "Reactivate"}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      disabled={isSelf || user.isSuperAdmin === true}
-                      onClick={() => setAction({ kind: "reset", user })}
-                    >
-                      <KeyRound className="size-4" />
-                      Reset password
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      variant="destructive"
-                      disabled={isSelf || user.isSuperAdmin === true}
-                      onClick={() => setAction({ kind: "delete", user })}
-                    >
-                      <Trash2 className="size-4" />
-                      Delete user
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-          );
-        })}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                  <TableCell>
+                    <Badge className="bg-cyan-500/15 font-normal text-cyan-700">{user.role.name ?? "No role"}</Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={
+                          <Button size="icon-sm" variant="ghost" className="ml-auto" aria-label={`Actions for ${user.name}`}>
+                            <MoreVertical className="size-4" />
+                          </Button>
+                        }
+                      />
+                      <DropdownMenuContent align="end" className="min-w-44">
+                        <DropdownMenuItem onClick={() => setAction({ kind: "id", user })}>
+                          <IdCard className="size-4" />
+                          View ID card
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setAction({ kind: "edit", user })}>
+                          <Pencil className="size-4" />
+                          Edit user
+                        </DropdownMenuItem>
+                        <DropdownMenuItem disabled={isSelf} onClick={() => handleToggleActive(user)}>
+                          {isActive ? <PowerOff className="size-4" /> : <Power className="size-4" />}
+                          {isActive ? "Deactivate" : "Reactivate"}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          disabled={isSelf || user.isSuperAdmin === true}
+                          onClick={() => setAction({ kind: "reset", user })}
+                        >
+                          <KeyRound className="size-4" />
+                          Reset password
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          variant="destructive"
+                          disabled={isSelf || user.isSuperAdmin === true}
+                          onClick={() => setAction({ kind: "delete", user })}
+                        >
+                          <Trash2 className="size-4" />
+                          Delete user
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </div>
 
       {action?.kind === "id" && (

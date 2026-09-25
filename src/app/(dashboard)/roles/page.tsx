@@ -10,7 +10,7 @@ export default function RolesPage() {
 
   return (
     <div className="catalyst-page">
-      <PageHeader title="Roles" section="Administration / Access control" tone="coral" actions={<RoleFormDialog />} />
+      <PageHeader title="Roles Management" section="Administration / Access control" tone="coral" actions={<RoleFormDialog />} />
 
       {isLoading ? (
         <div className="flex justify-center py-10">

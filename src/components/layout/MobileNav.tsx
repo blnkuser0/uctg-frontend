@@ -6,6 +6,7 @@ import { useState } from "react";
 import {
   CalendarCheck,
   CalendarDays,
+  CheckCircle2,
   CircleUserRound,
   Clock,
   Crown,
@@ -54,6 +55,9 @@ export function MobileNav() {
   const operations: NavItem[] = [
     { href: "/attendance", label: "Attendance", icon: CalendarCheck },
     { href: "/leaves", label: "Leaves", icon: CalendarDays },
+    ...(permissions.includes(PERMISSIONS.ACCOMPLISHMENTS_MANAGE)
+      ? [{ href: "/accomplishments", label: "Accomplishments", icon: CheckCircle2 }]
+      : []),
   ];
   const administration: NavItem[] = [
     ...(permissions.includes(PERMISSIONS.USERS_MANAGE) ? [{ href: "/users", label: "Users", icon: Users }] : []),

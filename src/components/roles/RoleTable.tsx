@@ -3,10 +3,11 @@
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { RoleFormDialog } from "./RoleFormDialog";
 import { useDeleteRole } from "@/hooks/useRoles";
 import { PERMISSION_LABELS, Role } from "@/types/role";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Users } from "lucide-react";
 
 export function RoleTable({ roles }: { roles: Role[] }) {
   const deleteRole = useDeleteRole();
@@ -27,45 +28,60 @@ export function RoleTable({ roles }: { roles: Role[] }) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-3">
-      {roles.map((role) => (
-        <div key={role.id} className="rounded-2xl border border-border bg-card p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-semibold">{role.name}</h3>
-                <Badge className="bg-muted font-normal text-muted-foreground">
-                  {role.userCount ?? 0} {role.userCount === 1 ? "user" : "users"}
+    <div className="overflow-hidden rounded-2xl border border-border bg-card">
+      <Table>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead>Role name</TableHead>
+            <TableHead>Users</TableHead>
+            <TableHead>Permissions</TableHead>
+            <TableHead className="text-right">Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {roles.map((role) => (
+            <TableRow key={role.id}>
+              <TableCell className="align-top">
+                <span className="font-medium">{role.name}</span>
+              </TableCell>
+              <TableCell className="align-top">
+                <Badge className="w-fit gap-1 bg-muted font-normal whitespace-nowrap text-muted-foreground">
+                  <Users className="size-3" />
+                  {role.userCount ?? 0}
                 </Badge>
-              </div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {role.permissions.length === 0 ? (
-                  <span className="text-xs text-muted-foreground">No permissions</span>
-                ) : (
-                  role.permissions.map((p) => (
-                    <Badge key={p} className="bg-cyan-500/15 font-normal text-cyan-700">
-                      {PERMISSION_LABELS[p]}
-                    </Badge>
-                  ))
-                )}
-              </div>
-            </div>
-            <div className="flex shrink-0 gap-1.5">
-              <RoleFormDialog
-                role={role}
-                trigger={
-                  <Button size="icon-sm" variant="outline" aria-label="Edit role">
-                    <Pencil className="size-3.5" />
+              </TableCell>
+              <TableCell className="max-w-md align-top whitespace-normal">
+                <div className="flex flex-wrap gap-1.5">
+                  {role.permissions.length === 0 ? (
+                    <span className="text-xs text-muted-foreground">No permissions</span>
+                  ) : (
+                    role.permissions.map((p) => (
+                      <Badge key={p} className="bg-cyan-500/15 font-normal whitespace-nowrap text-cyan-700">
+                        {PERMISSION_LABELS[p]}
+                      </Badge>
+                    ))
+                  )}
+                </div>
+              </TableCell>
+              <TableCell className="text-right align-top">
+                <div className="flex shrink-0 justify-end gap-1.5">
+                  <RoleFormDialog
+                    role={role}
+                    trigger={
+                      <Button size="icon-sm" variant="outline" aria-label="Edit role">
+                        <Pencil className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <Button size="icon-sm" variant="outline" onClick={() => handleDelete(role)} aria-label="Delete role">
+                    <Trash2 className="size-3.5" />
                   </Button>
-                }
-              />
-              <Button size="icon-sm" variant="outline" onClick={() => handleDelete(role)} aria-label="Delete role">
-                <Trash2 className="size-3.5" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      ))}
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
