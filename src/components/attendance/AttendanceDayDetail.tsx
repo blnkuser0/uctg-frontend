@@ -1,19 +1,12 @@
 "use client";
 
-import { cn, formatClockTime } from "@/lib/utils";
+import { cn, formatClockTime, formatHours } from "@/lib/utils";
 import { DaySummary } from "@/types/timeLog";
 import { STATUS_DOT, STATUS_LABEL } from "./AttendanceCalendar";
 
 function formatTime(iso: string | null): string {
   if (!iso) return "—";
   return formatClockTime(iso);
-}
-
-function formatHours(minutes: number): string {
-  if (minutes <= 0) return "0h";
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  return m > 0 ? `${h}h ${m}m` : `${h}h`;
 }
 
 export function AttendanceDayDetail({ dateKey, summary }: { dateKey: string; summary: DaySummary | undefined }) {

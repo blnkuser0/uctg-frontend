@@ -9,11 +9,14 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { PasswordChangeBanner } from "@/components/layout/PasswordChangeBanner";
 import { InstallAppDialog } from "@/components/pwa/InstallAppDialog";
 import { useNotificationSocket } from "@/hooks/useNotificationSocket";
+import { useRealtimeSync } from "@/hooks/useRealtimeSync";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   useNotificationSocket();
+  // Live data on every page: refetch whatever changed the moment anyone changes it.
+  useRealtimeSync();
 
   useEffect(() => {
     if (!isLoading && !user) {

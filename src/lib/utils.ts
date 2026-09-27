@@ -90,3 +90,11 @@ export function formatDueDate(date: string | Date | null | undefined): { label: 
   return { label, tone: "gray" };
 }
 
+
+/** Worked minutes as "8h", "7h 30m" (or "0h"). */
+export function formatHours(minutes: number): string {
+  if (minutes <= 0) return "0h";
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}

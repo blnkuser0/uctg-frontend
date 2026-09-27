@@ -41,8 +41,8 @@ export default function LeavesPage() {
 
   function handleCancel(leaveId: string) {
     cancelLeave.mutate(leaveId, {
-      onSuccess: () => toast.success("Leave request cancelled"),
-      onError: () => toast.error("Could not cancel this request."),
+      onSuccess: () => toast.success("Leave request removed"),
+      onError: () => toast.error("Could not remove this request."),
     });
   }
 

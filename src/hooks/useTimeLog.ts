@@ -23,11 +23,27 @@ export function useClock() {
   });
 }
 
-/** month: "YYYY-MM" */
-export function useMonthAttendance(month: string) {
+/** month: "YYYY-MM"; userId views another employee (needs attendance.view_summary), omitted = me. */
+export function useMonthAttendance(month: string, userId?: string) {
   return useQuery({
-    queryKey: ["timeclock", "calendar", month] as const,
-    queryFn: () => timeLogService.getMonthSummary(month),
+    queryKey: ["timeclock", "calendar", month, userId ?? "me"] as const,
+    queryFn: () => timeLogService.getMonthSummary(month, userId),
+  });
+}
+
+/** Week + cut-off hours/days containing date ("YYYY-MM-DD"). */
+export function usePeriodSummary(date: string, userId?: string) {
+  return useQuery({
+    queryKey: ["timeclock", "summary", date, userId ?? "me"] as const,
+    queryFn: () => timeLogService.getPeriodSummary(date, userId),
+  });
+}
+
+export function useTeamPeriodSummary(date: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ["timeclock", "summary", "team", date] as const,
+    queryFn: () => timeLogService.getTeamPeriodSummary(date),
+    enabled,
   });
 }
 

@@ -3,86 +3,117 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AttendanceCalendar, STATUS_DOT, STATUS_LABEL } from "@/components/attendance/AttendanceCalendar";
-import { AttendanceDayDetail } from "@/components/attendance/AttendanceDayDetail";
-import { TeamRoster } from "@/components/attendance/TeamRoster";
-import { useMonthAttendance, useTeamAttendance } from "@/hooks/useTimeLog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { PersonalAttendance } from "@/components/attendance/PersonalAttendance";
+import { STATUS_DOT, STATUS_LABEL } from "@/components/attendance/AttendanceCalendar";
+import { TeamAttendanceTable } from "@/components/attendance/TeamAttendanceTable";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { useTeamAttendance, useTeamPeriodSummary } from "@/hooks/useTimeLog";
 import { useAuth } from "@/providers/AuthProvider";
-import { toPhDateKey } from "@/lib/utils";
+import { toDateKey, toPhDateKey } from "@/lib/utils";
 import { PERMISSIONS } from "@/types/role";
 import { DayAttendanceStatus } from "@/types/timeLog";
-import { PageHeader } from "@/components/layout/PageHeader";
 
-const LEGEND_ORDER: DayAttendanceStatus[] = ["present", "on-leave", "absent", "weekend"];
+const COUNT_ORDER: DayAttendanceStatus[] = ["present", "absent", "on-leave", "weekend"];
 
+function shiftDay(dateKey: string, delta: number): string {
+  const date = new Date(`${dateKey}T00:00:00`);
+  date.setDate(date.getDate() + delta);
+  return toDateKey(date);
+}
+
+// Team monitoring — gated by attendance.view_all. Each person's OWN calendar (hours per day, week
+// and cut-off totals) lives on their Timeproof page; here a manager sees everyone at once.
 export default function AttendancePage() {
   const { user } = useAuth();
-  const canViewTeam = user?.role.permissions.includes(PERMISSIONS.ATTENDANCE_VIEW_ALL) ?? false;
+  const canView = user?.role.permissions.includes(PERMISSIONS.ATTENDANCE_VIEW_ALL) ?? false;
 
   const todayPhKey = toPhDateKey(new Date());
-  const [todayYear, todayMonth] = todayPhKey.split("-").map(Number);
-  const [year, setYear] = useState(todayYear);
-  const [month, setMonth] = useState(todayMonth); // 1-12
-  const [selectedDateKey, setSelectedDateKey] = useState(todayPhKey);
+  const [dateKey, setDateKey] = useState(todayPhKey);
+  const [viewing, setViewing] = useState<{ userId: string; name: string } | null>(null);
 
-  const { data: summaries, isLoading } = useMonthAttendance(`${year}-${String(month).padStart(2, "0")}`);
-  const teamAttendance = useTeamAttendance(selectedDateKey, canViewTeam);
+  const dayAttendance = useTeamAttendance(dateKey, canView);
+  const periodSummary = useTeamPeriodSummary(dateKey, canView);
 
-  const monthLabel = new Date(year, month - 1, 1).toLocaleDateString(undefined, { month: "long", year: "numeric" });
-  const selectedSummary = (summaries ?? []).find((s) => s.date === selectedDateKey);
-
-  function shiftMonth(delta: number) {
-    const next = new Date(year, month - 1 + delta, 1);
-    setYear(next.getFullYear());
-    setMonth(next.getMonth() + 1);
+  if (!canView) {
+    return (
+      <div className="catalyst-page">
+        <PageHeader title="Attendance" section="Operations / Team records" tone="green" />
+        <p className="py-10 text-center text-sm text-muted-foreground">
+          You don&apos;t have access to this page. Ask an admin for the &ldquo;View everyone&apos;s attendance &amp; hours&rdquo; permission.
+        </p>
+      </div>
+    );
   }
+
+  const dayEntries = dayAttendance.data ?? [];
+  const counts = COUNT_ORDER.map((status) => ({ status, count: dayEntries.filter((e) => e.summary.status === status).length }));
+  const dayLabel = new Date(`${dateKey}T00:00:00`).toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
   return (
     <div className="catalyst-page min-w-0">
       <PageHeader title="Attendance" section="Operations / Team records" tone="green" />
 
-      <div className="catalyst-panel min-w-0 overflow-hidden p-4 sm:p-5">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="icon-sm" onClick={() => shiftMonth(-1)} aria-label="Previous month">
+      <div className="catalyst-panel flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-1.5">
+          <Button variant="ghost" size="icon-sm" onClick={() => setDateKey(shiftDay(dateKey, -1))} aria-label="Previous day">
             <ChevronLeft className="size-4" />
           </Button>
-          <span className="text-sm font-semibold">{monthLabel}</span>
-          <Button variant="ghost" size="icon-sm" onClick={() => shiftMonth(1)} aria-label="Next month">
+          <input
+            type="date"
+            value={dateKey}
+            max={todayPhKey}
+            onChange={(event) => event.target.value && setDateKey(event.target.value)}
+            aria-label="Attendance date"
+            className="h-8 rounded-lg border border-input bg-background px-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          />
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => setDateKey(shiftDay(dateKey, 1))}
+            disabled={dateKey >= todayPhKey}
+            aria-label="Next day"
+          >
             <ChevronRight className="size-4" />
           </Button>
+          {dateKey !== todayPhKey && (
+            <Button variant="outline" size="sm" onClick={() => setDateKey(todayPhKey)}>
+              Today
+            </Button>
+          )}
         </div>
-
-        {isLoading ? (
-          <div className="flex justify-center py-10">
-            <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
-          </div>
-        ) : (
-          <div className="mt-3 min-w-0 overflow-x-auto overscroll-x-contain pb-1">
-            <AttendanceCalendar
-              year={year}
-              month={month}
-              summaries={summaries ?? []}
-              selectedDateKey={selectedDateKey}
-              onSelectDate={setSelectedDateKey}
-            />
-          </div>
-        )}
-
-        <div className="mt-3 flex flex-wrap gap-3 border-t border-border pt-3">
-          {LEGEND_ORDER.map((status) => (
-            <span key={status} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          {counts.map(({ status, count }) => (
+            <span key={status} className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <span className={`size-2 rounded-full ${STATUS_DOT[status]}`} />
-              {STATUS_LABEL[status]}
+              {STATUS_LABEL[status]} <span className="font-semibold text-foreground tabular-nums">{count}</span>
             </span>
           ))}
         </div>
       </div>
+      <p className="-mt-2 text-xs text-muted-foreground">{dayLabel}</p>
 
-      <AttendanceDayDetail dateKey={selectedDateKey} summary={selectedSummary} />
+      <TeamAttendanceTable
+        dayEntries={dayEntries}
+        periodEntries={periodSummary.data ?? []}
+        isLoading={dayAttendance.isLoading}
+        onViewCalendar={(userId, name) => setViewing({ userId, name })}
+      />
 
-      {canViewTeam && (
-        <TeamRoster dateKey={selectedDateKey} entries={teamAttendance.data ?? []} isLoading={teamAttendance.isLoading} />
-      )}
+      <Dialog open={!!viewing} onOpenChange={(open) => !open && setViewing(null)}>
+        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>{viewing?.name}&apos;s attendance</DialogTitle>
+            <DialogDescription>Hours per day, plus week and cut-off totals.</DialogDescription>
+          </DialogHeader>
+          {viewing && <PersonalAttendance key={viewing.userId} userId={viewing.userId} />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -5,11 +5,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MonthGrid } from "@/components/calendar/MonthGrid";
 import { cn, toPhDateKey } from "@/lib/utils";
-import { Leave } from "@/types/leave";
+import { Leave, leaveTypeLabel } from "@/types/leave";
 
 interface DayLeave {
   employeeName: string;
   status: "pending" | "approved";
+  leaveType: string;
   reason: string;
 }
 
@@ -25,7 +26,7 @@ function expandByDay(leaves: Leave[]): Map<string, DayLeave[]> {
     const end = new Date(leave.endDate);
     while (cursor <= end) {
       const key = toPhDateKey(cursor);
-      const entry: DayLeave = { employeeName: employeeName(leave), status: leave.status as "pending" | "approved", reason: leave.reason };
+      const entry: DayLeave = { employeeName: employeeName(leave), status: leave.status as "pending" | "approved", leaveType: leaveTypeLabel(leave.leaveType), reason: leave.reason };
       const existing = byDay.get(key);
       if (existing) existing.push(entry);
       else byDay.set(key, [entry]);
@@ -109,7 +110,9 @@ export function LeaveCalendar({ leaves }: { leaves: Leave[] }) {
               <div key={i} className="flex items-center justify-between gap-2 rounded-lg border border-border p-2 text-sm">
                 <div className="min-w-0">
                   <p className="truncate font-medium">{entry.employeeName}</p>
-                  <p className="truncate text-xs text-muted-foreground">{entry.reason}</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {entry.leaveType} · {entry.reason}
+                  </p>
                 </div>
                 <span
                   className={cn(

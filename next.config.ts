@@ -51,6 +51,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Opt-in: lets a throwaway production build (e.g. for browser verification) go to its own
+  // folder so it never overwrites the .next a running `next dev` is using. Unset = ".next".
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   turbopack: {},
   async headers() {
     return [

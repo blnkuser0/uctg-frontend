@@ -21,7 +21,7 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   [PERMISSIONS.USERS_MANAGE]: "Manage users",
   [PERMISSIONS.ROLES_MANAGE]: "Manage roles",
   [PERMISSIONS.PROJECTS_MANAGE]: "Manage all projects",
-  [PERMISSIONS.ATTENDANCE_VIEW_ALL]: "View everyone's attendance",
+  [PERMISSIONS.ATTENDANCE_VIEW_ALL]: "View everyone's attendance & hours",
   [PERMISSIONS.ORG_MANAGE]: "Manage organization settings",
   [PERMISSIONS.ACCOMPLISHMENTS_MANAGE]: "Log and view daily accomplishments",
 };

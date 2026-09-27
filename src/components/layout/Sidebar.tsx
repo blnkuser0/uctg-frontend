@@ -19,11 +19,9 @@ const WORKSPACE_ITEMS = [
   { href: "/chat", label: "Catalyst Space", meta: "Messages", icon: MessagesSquare, tone: "violet" },
   { href: "/my-tasks", label: "My Tasks", meta: "Assigned", icon: ListChecks, tone: "violet" },
 ] satisfies NavigationItem[];
-const OPERATION_ITEMS = [
-  { href: "/timeproof", label: "Timeproof", meta: "Clocking", icon: Clock, tone: "amber" },
-  { href: "/attendance", label: "Attendance", meta: "Team log", icon: CalendarCheck, tone: "green" },
-  { href: "/leaves", label: "Leaves", meta: "Requests", icon: CalendarDays, tone: "green" },
-] satisfies NavigationItem[];
+const TIMEPROOF_ITEM = { href: "/timeproof", label: "Timeproof", meta: "Clocking", icon: Clock, tone: "amber" } satisfies NavigationItem;
+const ATTENDANCE_ITEM = { href: "/attendance", label: "Attendance", meta: "Team log", icon: CalendarCheck, tone: "green" } satisfies NavigationItem;
+const LEAVES_ITEM = { href: "/leaves", label: "Leaves", meta: "Requests", icon: CalendarDays, tone: "green" } satisfies NavigationItem;
 const ACCOMPLISHMENTS_ITEM = { href: "/accomplishments", label: "Accomplishments", meta: "Task log", icon: CheckCircle2, tone: "green" } satisfies NavigationItem;
 
 const ACTIVE_TONE: Record<NavigationTone, string> = {
@@ -42,7 +40,14 @@ export function Sidebar() {
   const canManageUsers = user?.role.permissions.includes(PERMISSIONS.USERS_MANAGE) ?? false;
   const canManageRoles = user?.role.permissions.includes(PERMISSIONS.ROLES_MANAGE) ?? false;
   const canManageAccomplishments = user?.role.permissions.includes(PERMISSIONS.ACCOMPLISHMENTS_MANAGE) ?? false;
-  const operationItems: NavigationItem[] = [...OPERATION_ITEMS, ...(canManageAccomplishments ? [ACCOMPLISHMENTS_ITEM] : [])];
+  const canViewAttendance = user?.role.permissions.includes(PERMISSIONS.ATTENDANCE_VIEW_ALL) ?? false;
+  // Attendance is the team-wide monitor, so it's permission-gated; everyone's own calendar lives in Timeproof.
+  const operationItems: NavigationItem[] = [
+    TIMEPROOF_ITEM,
+    ...(canViewAttendance ? [ATTENDANCE_ITEM] : []),
+    LEAVES_ITEM,
+    ...(canManageAccomplishments ? [ACCOMPLISHMENTS_ITEM] : []),
+  ];
   const administrationItems: NavigationItem[] = [
     ...(canManageUsers ? [{ href: "/users", label: "Employee Management", meta: "Team", icon: Users, tone: "coral" as const }] : []),
     ...(canManageRoles ? [{ href: "/roles", label: "Roles Management", meta: "Access", icon: ShieldCheck, tone: "coral" as const }] : []),

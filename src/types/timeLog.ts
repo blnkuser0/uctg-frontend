@@ -31,3 +31,21 @@ export interface TeamDayEntry {
   name: string;
   summary: DaySummary;
 }
+
+export interface PeriodStats {
+  from: string; // YYYY-MM-DD
+  to: string; // YYYY-MM-DD
+  totalMinutes: number;
+  daysPresent: number;
+}
+
+export interface PeriodSummary {
+  week: PeriodStats;
+  cutoff: PeriodStats;
+}
+
+export interface TeamPeriodEntry {
+  userId: string;
+  name: string;
+  summary: PeriodSummary;
+}

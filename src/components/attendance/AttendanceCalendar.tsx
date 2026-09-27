@@ -1,7 +1,7 @@
 "use client";
 
 import { MonthGrid } from "@/components/calendar/MonthGrid";
-import { cn } from "@/lib/utils";
+import { cn, formatHours } from "@/lib/utils";
 import { DaySummary } from "@/types/timeLog";
 
 const STATUS_DOT: Record<DaySummary["status"], string> = {
@@ -42,7 +42,14 @@ export function AttendanceCalendar({ year, month, summaries, selectedDateKey, on
         onSelectDate={onSelectDate}
         renderDay={(_date, dateKey) => {
           const summary = byDate.get(dateKey);
-          return <span className={cn("size-1.5 rounded-full", summary ? STATUS_DOT[summary.status] : "bg-transparent")} />;
+          return (
+            <>
+              <span className={cn("size-1.5 rounded-full", summary ? STATUS_DOT[summary.status] : "bg-transparent")} />
+              {summary && summary.workedMinutes > 0 && (
+                <span className="text-[10px] leading-none whitespace-nowrap text-muted-foreground">{formatHours(summary.workedMinutes)}</span>
+              )}
+            </>
+          );
         }}
       />
     </div>

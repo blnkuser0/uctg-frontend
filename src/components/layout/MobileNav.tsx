@@ -53,7 +53,7 @@ export function MobileNav() {
 
   const permissions = user?.role.permissions ?? [];
   const operations: NavItem[] = [
-    { href: "/attendance", label: "Attendance", icon: CalendarCheck },
+    ...(permissions.includes(PERMISSIONS.ATTENDANCE_VIEW_ALL) ? [{ href: "/attendance", label: "Attendance", icon: CalendarCheck }] : []),
     { href: "/leaves", label: "Leaves", icon: CalendarDays },
     ...(permissions.includes(PERMISSIONS.ACCOMPLISHMENTS_MANAGE)
       ? [{ href: "/accomplishments", label: "Accomplishments", icon: CheckCircle2 }]

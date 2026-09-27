@@ -1,7 +1,7 @@
 "use client";
 
 import { Leave } from "@/types/leave";
-import { LeaveRow } from "./LeaveRow";
+import { LeaveRemoveMode, LeaveRow } from "./LeaveRow";
 
 interface LeaveTableProps {
   leaves: Leave[];
@@ -37,6 +37,7 @@ export function LeaveTable({
           <tr className="border-b border-border bg-muted/40 text-xs font-medium text-muted-foreground">
             {showEmployeeColumn && <th className="px-4 py-2.5">Employee</th>}
             <th className="px-4 py-2.5">Dates</th>
+            <th className="px-4 py-2.5">Type</th>
             <th className="px-4 py-2.5">Reason</th>
             <th className="px-4 py-2.5">HR Approval</th>
             <th className="px-4 py-2.5">Admin Approval</th>
@@ -48,6 +49,11 @@ export function LeaveTable({
           {leaves.map((leave) => {
             const ownedByViewer =
               (typeof leave.userId === "string" ? leave.userId : leave.userId._id) === currentUserId;
+            // Once HR or Admin has acted on it (either one), the requester can no longer cancel it —
+            // from then on only HR/Admin can delete it.
+            const actedOn = leave.hrStatus !== "pending" || leave.adminStatus !== "pending";
+            const removeMode: LeaveRemoveMode =
+              ownedByViewer && !actedOn ? "cancel" : canApproveHr || canApproveAdmin ? "delete" : null;
             return (
               <LeaveRow
                 key={leave._id}
@@ -55,11 +61,11 @@ export function LeaveTable({
                 showEmployeeColumn={showEmployeeColumn}
                 canActHr={canApproveHr}
                 canActAdmin={canApproveAdmin}
-                canCancel={ownedByViewer}
+                removeMode={removeMode}
                 isMutating={isMutating}
                 onHrDecision={(status) => onHrDecision(leave._id, status)}
                 onAdminDecision={(status) => onAdminDecision(leave._id, status)}
-                onCancel={() => onCancel(leave._id)}
+                onRemove={() => onCancel(leave._id)}
               />
             );
           })}

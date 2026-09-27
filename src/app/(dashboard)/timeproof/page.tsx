@@ -5,6 +5,7 @@ import { useTodayTimeLog, useClock } from "@/hooks/useTimeLog";
 import { ClockStatusCard } from "@/components/timeproof/ClockStatusCard";
 import { ClockActionButtons } from "@/components/timeproof/ClockActionButtons";
 import { TodayLogList } from "@/components/timeproof/TodayLogList";
+import { PersonalAttendance } from "@/components/attendance/PersonalAttendance";
 import { TimeLogType } from "@/types/timeLog";
 import { PageHeader } from "@/components/layout/PageHeader";
 
@@ -39,6 +40,11 @@ export default function TimeproofPage() {
       <div>
         <h2 className="mb-2 text-sm font-medium text-muted-foreground">Today&apos;s activity</h2>
         <TodayLogList logs={data.logs} />
+      </div>
+
+      <div>
+        <h2 className="mb-2 text-sm font-medium text-muted-foreground">My attendance</h2>
+        <PersonalAttendance />
       </div>
     </div>
   );
