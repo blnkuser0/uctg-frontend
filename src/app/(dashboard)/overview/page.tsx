@@ -24,7 +24,7 @@ export default function OverviewPage() {
   const urgentCount = taskList.filter((task) => task.priority === "urgent" || task.priority === "high").length;
   const unread = (notifications.data ?? []).filter((notification) => !notification.readAt).length;
   const state = today.data?.state ?? "clocked-out";
-  const nextClock: { label: string; type: TimeLogType } = state === "clocked-out" ? { label: "Start work", type: "time-in" } : state === "working" ? { label: "Clock out", type: "time-out" } : state === "on-break" ? { label: "End break", type: "break-out" } : { label: "End lunch", type: "lunch-out" };
+  const nextClock: { label: string; type: TimeLogType } = state === "clocked-out" ? { label: "Start work", type: "time-in" } : state === "working" ? { label: "Clock out", type: "time-out" } : { label: "End break", type: "break-out" };
 
   return <div className="catalyst-page">
     <PageHeader title={<>Good to see you, {user?.name.split(" ")[0]}.</>} section="Workspace / Overview" actions={<><span className="border border-border bg-background/80 px-3 py-2 text-[11px] font-medium capitalize text-muted-foreground">Status: {state.replace("-", " ")}</span><Button onClick={() => clock.mutate({ type: nextClock.type })} disabled={clock.isPending} className="bg-primary text-primary-foreground"><Clock3 className="size-4" />{clock.isPending ? "Updating..." : nextClock.label}</Button></>} />

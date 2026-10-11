@@ -56,7 +56,7 @@ export function WorkspaceSearch() {
       ? [{ label: "Platform", detail: "Provision organizations, developers, and project access", href: "/platform", group: "Page", icon: Users }]
       : [];
     const accomplishmentsDestination: SearchResult[] = canManageAccomplishments
-      ? [{ label: "Accomplishments", detail: "Daily task log for the team", href: "/accomplishments", group: "Page", icon: CheckCircle2 }]
+      ? [{ label: "Daily Progress", detail: "Daily task log for the team", href: "/accomplishments", group: "Page", icon: CheckCircle2 }]
       : [];
     const projectById = new Map((projects.data ?? []).map((project) => [project._id, project]));
     const projectResults: SearchResult[] = (projects.data ?? []).map((project) => ({

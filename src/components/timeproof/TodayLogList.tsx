@@ -8,8 +8,6 @@ const TYPE_LABEL: Record<TimeLogType, string> = {
   "time-out": "Timed out",
   "break-in": "Break started",
   "break-out": "Break ended",
-  "lunch-in": "Lunch started",
-  "lunch-out": "Lunch ended",
 };
 
 export function TodayLogList({ logs }: { logs: TimeLog[] }) {

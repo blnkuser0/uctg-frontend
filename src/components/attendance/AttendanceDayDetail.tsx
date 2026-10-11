@@ -1,7 +1,7 @@
 "use client";
 
 import { cn, formatClockTime, formatHours } from "@/lib/utils";
-import { DaySummary } from "@/types/timeLog";
+import { BREAK_LIMIT_MINUTES, DaySummary } from "@/types/timeLog";
 import { STATUS_DOT, STATUS_LABEL } from "./AttendanceCalendar";
 
 function formatTime(iso: string | null): string {
@@ -29,7 +29,7 @@ export function AttendanceDayDetail({ dateKey, summary }: { dateKey: string; sum
       </div>
 
       {summary && summary.status === "present" && (
-        <div className="grid grid-cols-3 divide-x divide-border p-4 text-center">
+        <div className="grid grid-cols-4 divide-x divide-border p-4 text-center">
           <div>
             <p className="text-[11px] text-muted-foreground">Time in</p>
             <p className="text-sm font-medium">{formatTime(summary.firstTimeIn)}</p>
@@ -40,7 +40,22 @@ export function AttendanceDayDetail({ dateKey, summary }: { dateKey: string; sum
           </div>
           <div>
             <p className="text-[11px] text-muted-foreground">Worked</p>
-            <p className="text-sm font-medium">{formatHours(summary.workedMinutes)}</p>
+            <p className="text-sm font-medium text-blue-600">{formatHours(summary.workedMinutes)}</p>
+          </div>
+          <div>
+            <p className="text-[11px] text-muted-foreground">Break</p>
+            <p
+              className={cn(
+                "text-sm font-medium",
+                summary.breakMinutes <= 0
+                  ? ""
+                  : summary.breakMinutes >= BREAK_LIMIT_MINUTES
+                    ? "text-red-500"
+                    : "text-orange-500"
+              )}
+            >
+              {summary.breakMinutes > 0 ? formatHours(summary.breakMinutes) : "—"}
+            </p>
           </div>
         </div>
       )}

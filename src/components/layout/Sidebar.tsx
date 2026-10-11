@@ -22,7 +22,7 @@ const WORKSPACE_ITEMS = [
 const TIMEPROOF_ITEM = { href: "/timeproof", label: "Timeproof", meta: "Clocking", icon: Clock, tone: "amber" } satisfies NavigationItem;
 const ATTENDANCE_ITEM = { href: "/attendance", label: "Attendance", meta: "Team log", icon: CalendarCheck, tone: "green" } satisfies NavigationItem;
 const LEAVES_ITEM = { href: "/leaves", label: "Leaves", meta: "Requests", icon: CalendarDays, tone: "green" } satisfies NavigationItem;
-const ACCOMPLISHMENTS_ITEM = { href: "/accomplishments", label: "Accomplishments", meta: "Task log", icon: CheckCircle2, tone: "green" } satisfies NavigationItem;
+const ACCOMPLISHMENTS_ITEM = { href: "/accomplishments", label: "Daily Progress", meta: "Task log", icon: CheckCircle2, tone: "green" } satisfies NavigationItem;
 
 const ACTIVE_TONE: Record<NavigationTone, string> = {
   blue: "border-sky-500 bg-sky-500/10 text-sky-700 dark:text-sky-300",

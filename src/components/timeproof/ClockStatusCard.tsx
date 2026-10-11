@@ -7,7 +7,6 @@ const STATE_META: Record<ClockState, { label: string; dot: string }> = {
   "clocked-out": { label: "Not clocked in", dot: "bg-muted-foreground" },
   working: { label: "Working", dot: "bg-emerald-500" },
   "on-break": { label: "On break", dot: "bg-amber-500" },
-  "on-lunch": { label: "On lunch", dot: "bg-amber-500" },
 };
 
 export function ClockStatusCard({ state }: { state: ClockState }) {

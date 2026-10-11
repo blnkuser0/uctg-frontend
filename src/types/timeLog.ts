@@ -1,6 +1,6 @@
-export type TimeLogType = "time-in" | "time-out" | "break-in" | "break-out" | "lunch-in" | "lunch-out";
+export type TimeLogType = "time-in" | "time-out" | "break-in" | "break-out";
 
-export type ClockState = "clocked-out" | "working" | "on-break" | "on-lunch";
+export type ClockState = "clocked-out" | "working" | "on-break";
 
 export interface TimeLog {
   _id: string;
@@ -24,7 +24,11 @@ export interface DaySummary {
   firstTimeIn: string | null;
   lastTimeOut: string | null;
   workedMinutes: number;
+  breakMinutes: number;
 }
+
+// Flagged red once a single break reaches this length; shown orange up to it. Mirrors backend/src/utils/attendance.ts.
+export const BREAK_LIMIT_MINUTES = 60;
 
 export interface TeamDayEntry {
   userId: string;

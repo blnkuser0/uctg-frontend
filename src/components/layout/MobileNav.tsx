@@ -56,7 +56,7 @@ export function MobileNav() {
     ...(permissions.includes(PERMISSIONS.ATTENDANCE_VIEW_ALL) ? [{ href: "/attendance", label: "Attendance", icon: CalendarCheck }] : []),
     { href: "/leaves", label: "Leaves", icon: CalendarDays },
     ...(permissions.includes(PERMISSIONS.ACCOMPLISHMENTS_MANAGE)
-      ? [{ href: "/accomplishments", label: "Accomplishments", icon: CheckCircle2 }]
+      ? [{ href: "/accomplishments", label: "Daily Progress", icon: CheckCircle2 }]
       : []),
   ];
   const administration: NavItem[] = [

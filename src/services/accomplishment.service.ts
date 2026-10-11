@@ -1,5 +1,11 @@
 import { apiClient } from "@/lib/api-client";
-import { Accomplishment, AccomplishmentFilters, CreateAccomplishmentInput, UpdateAccomplishmentInput } from "@/types/accomplishment";
+import {
+  Accomplishment,
+  AccomplishmentFilters,
+  AccomplishmentSection,
+  CreateAccomplishmentInput,
+  UpdateAccomplishmentInput,
+} from "@/types/accomplishment";
 
 interface ApiEnvelope<T> {
   success: boolean;
@@ -29,4 +35,25 @@ export async function updateAccomplishment(id: string, input: UpdateAccomplishme
 
 export async function deleteAccomplishment(id: string): Promise<void> {
   await apiClient.delete(`/accomplishments/${id}`);
+}
+
+export async function addAccomplishmentAttachments(
+  id: string,
+  section: AccomplishmentSection,
+  files: File[]
+): Promise<Accomplishment> {
+  const formData = new FormData();
+  formData.append("section", section);
+  files.forEach((file) => formData.append("files", file));
+  const res = await apiClient.post<ApiEnvelope<Accomplishment>>(`/accomplishments/${id}/attachments`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return res.data.data;
+}
+
+export async function removeAccomplishmentAttachment(id: string, fileKey: string): Promise<Accomplishment> {
+  const res = await apiClient.delete<ApiEnvelope<Accomplishment>>(
+    `/accomplishments/${id}/attachments/${encodeURIComponent(fileKey)}`
+  );
+  return res.data.data;
 }

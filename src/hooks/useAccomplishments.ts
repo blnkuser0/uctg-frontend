@@ -3,7 +3,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/queryKeys";
 import * as accomplishmentService from "@/services/accomplishment.service";
-import { AccomplishmentFilters, CreateAccomplishmentInput, UpdateAccomplishmentInput } from "@/types/accomplishment";
+import {
+  AccomplishmentFilters,
+  AccomplishmentSection,
+  CreateAccomplishmentInput,
+  UpdateAccomplishmentInput,
+} from "@/types/accomplishment";
 
 export function useMyAccomplishments(filters: AccomplishmentFilters = {}, enabled: boolean = true) {
   return useQuery({
@@ -50,6 +55,24 @@ export function useDeleteAccomplishment() {
   const invalidate = useInvalidateAccomplishments();
   return useMutation({
     mutationFn: (id: string) => accomplishmentService.deleteAccomplishment(id),
+    onSuccess: invalidate,
+  });
+}
+
+export function useAddAccomplishmentAttachments() {
+  const invalidate = useInvalidateAccomplishments();
+  return useMutation({
+    mutationFn: ({ id, section, files }: { id: string; section: AccomplishmentSection; files: File[] }) =>
+      accomplishmentService.addAccomplishmentAttachments(id, section, files),
+    onSuccess: invalidate,
+  });
+}
+
+export function useRemoveAccomplishmentAttachment() {
+  const invalidate = useInvalidateAccomplishments();
+  return useMutation({
+    mutationFn: ({ id, fileKey }: { id: string; fileKey: string }) =>
+      accomplishmentService.removeAccomplishmentAttachment(id, fileKey),
     onSuccess: invalidate,
   });
 }

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AccomplishmentTable } from "@/components/accomplishments/AccomplishmentTable";
-import { LogAccomplishmentDialog } from "@/components/accomplishments/LogAccomplishmentDialog";
+import { AccomplishmentComposer } from "@/components/accomplishments/AccomplishmentComposer";
 import { useAllAccomplishments, useMyAccomplishments } from "@/hooks/useAccomplishments";
 import { useUsers } from "@/hooks/useUsers";
 import { useAuth } from "@/providers/AuthProvider";
@@ -16,21 +16,31 @@ export default function AccomplishmentsPage() {
 
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-  const [userId, setUserId] = useState("all");
+  const [roleId, setRoleId] = useState("all");
 
   const { data: users } = useUsers();
-  const teamEntries = useAllAccomplishments(
-    { from: from || undefined, to: to || undefined, userId: userId === "all" ? undefined : userId },
-    canManage
-  );
+  const teamEntries = useAllAccomplishments({ from: from || undefined, to: to || undefined }, canManage);
   const myEntries = useMyAccomplishments({}, canManage);
+
+  // Distinct roles among the org's users, for the "filter by role" dropdown below.
+  const roles = useMemo(() => {
+    const byId = new Map<string, string>();
+    for (const teamUser of users ?? []) byId.set(teamUser.role.id, teamUser.role.name ?? "No role");
+    return Array.from(byId, ([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name));
+  }, [users]);
+
+  const teamEntriesForRole = useMemo(() => {
+    const entries = teamEntries.data ?? [];
+    if (roleId === "all") return entries;
+    return entries.filter((entry) => typeof entry.userId !== "string" && entry.userId.roleId._id === roleId);
+  }, [teamEntries.data, roleId]);
 
   if (!canManage) {
     return (
       <div className="catalyst-page max-w-5xl">
-        <PageHeader title="Daily accomplishments" section="Operations / Task log" tone="green" />
+        <PageHeader title="Daily Progress" section="Operations / Task log" tone="green" />
         <p className="py-10 text-center text-sm text-muted-foreground">
-          You don&apos;t have access to this page. Ask an admin for the &ldquo;Log and view daily accomplishments&rdquo; permission.
+          You don&apos;t have access to this page. Ask an admin for the &ldquo;Log and view daily progress reports&rdquo; permission.
         </p>
       </div>
     );
@@ -38,7 +48,11 @@ export default function AccomplishmentsPage() {
 
   return (
     <div className="catalyst-page max-w-5xl">
-      <PageHeader title="Daily accomplishments" section="Operations / Task log" tone="green" actions={<LogAccomplishmentDialog />} />
+      <PageHeader title="Daily Progress" section="Operations / Task log" tone="green" />
+
+      <div className="mb-4">
+        <AccomplishmentComposer />
+      </div>
 
       <Tabs defaultValue="team">
         <TabsList>
@@ -67,22 +81,23 @@ export default function AccomplishmentsPage() {
               />
             </label>
             <select
-              value={userId}
-              onChange={(event) => setUserId(event.target.value)}
-              aria-label="Filter by employee"
+              value={roleId}
+              onChange={(event) => setRoleId(event.target.value)}
+              aria-label="Filter by role"
               className="h-8 rounded-lg border border-input bg-background px-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <option value="all">Everyone</option>
-              {(users ?? []).map((teamUser) => (
-                <option key={teamUser.id} value={teamUser.id}>
-                  {teamUser.name}
+              {roles.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
                 </option>
               ))}
             </select>
           </div>
           <AccomplishmentTable
-            entries={teamEntries.data ?? []}
+            entries={teamEntriesForRole}
             currentUserId={user?.id ?? ""}
+            currentUserRoleName={user?.role.name ?? null}
             showEmployeeColumn
             emptyMessage="No accomplishments logged for this filter yet."
           />
@@ -92,6 +107,7 @@ export default function AccomplishmentsPage() {
           <AccomplishmentTable
             entries={myEntries.data ?? []}
             currentUserId={user?.id ?? ""}
+            currentUserRoleName={user?.role.name ?? null}
             showEmployeeColumn={false}
             emptyMessage="You haven't logged anything yet — add today's first."
           />

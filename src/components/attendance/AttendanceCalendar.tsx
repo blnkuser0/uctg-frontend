@@ -2,7 +2,7 @@
 
 import { MonthGrid } from "@/components/calendar/MonthGrid";
 import { cn, formatHours } from "@/lib/utils";
-import { DaySummary } from "@/types/timeLog";
+import { BREAK_LIMIT_MINUTES, DaySummary } from "@/types/timeLog";
 
 const STATUS_DOT: Record<DaySummary["status"], string> = {
   present: "bg-emerald-500",
@@ -46,7 +46,19 @@ export function AttendanceCalendar({ year, month, summaries, selectedDateKey, on
             <>
               <span className={cn("size-1.5 rounded-full", summary ? STATUS_DOT[summary.status] : "bg-transparent")} />
               {summary && summary.workedMinutes > 0 && (
-                <span className="text-[10px] leading-none whitespace-nowrap text-muted-foreground">{formatHours(summary.workedMinutes)}</span>
+                <span className="rounded px-1 py-0.5 text-[10px] leading-none whitespace-nowrap font-medium text-white bg-blue-600">
+                  {formatHours(summary.workedMinutes)}
+                </span>
+              )}
+              {summary && summary.breakMinutes > 0 && (
+                <span
+                  className={cn(
+                    "rounded px-1 py-0.5 text-[10px] leading-none whitespace-nowrap font-medium text-white",
+                    summary.breakMinutes >= BREAK_LIMIT_MINUTES ? "bg-red-500" : "bg-orange-500"
+                  )}
+                >
+                  {formatHours(summary.breakMinutes)}
+                </span>
               )}
             </>
           );

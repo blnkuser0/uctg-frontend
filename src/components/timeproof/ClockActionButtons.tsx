@@ -2,13 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { ClockState, TimeLogType } from "@/types/timeLog";
-import { LogIn, LogOut, Coffee, UtensilsCrossed } from "lucide-react";
+import { LogIn, LogOut, Coffee } from "lucide-react";
 
 const VALID_ACTIONS: Record<ClockState, TimeLogType[]> = {
   "clocked-out": ["time-in"],
-  working: ["break-in", "lunch-in", "time-out"],
+  working: ["break-in", "time-out"],
   "on-break": ["break-out"],
-  "on-lunch": ["lunch-out"],
 };
 
 const ACTION_META: Record<TimeLogType, { label: string; icon: typeof LogIn; primary?: boolean }> = {
@@ -16,8 +15,6 @@ const ACTION_META: Record<TimeLogType, { label: string; icon: typeof LogIn; prim
   "time-out": { label: "Time Out", icon: LogOut },
   "break-in": { label: "Start Break", icon: Coffee },
   "break-out": { label: "End Break", icon: Coffee, primary: true },
-  "lunch-in": { label: "Start Lunch", icon: UtensilsCrossed },
-  "lunch-out": { label: "End Lunch", icon: UtensilsCrossed, primary: true },
 };
 
 interface ClockActionButtonsProps {

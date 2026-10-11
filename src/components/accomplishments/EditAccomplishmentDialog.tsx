@@ -12,14 +12,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useUpdateAccomplishment } from "@/hooks/useAccomplishments";
 import { toPhDateKey } from "@/lib/utils";
-import { Accomplishment } from "@/types/accomplishment";
+import { Accomplishment, AccomplishmentSection } from "@/types/accomplishment";
+import { AccomplishmentSectionAttachments } from "./AccomplishmentSectionAttachments";
 
 const editAccomplishmentSchema = z.object({
   date: z.string().min(1, "Required"),
-  text: z.string().trim().min(1, "Tell us what you got done"),
+  accomplishment: z.string().trim().min(1, "Tell us what you got done"),
+  blockers: z.string().trim(),
+  inProgress: z.string().trim(),
 });
 
 type EditAccomplishmentValues = z.infer<typeof editAccomplishmentSchema>;
+
+const SECTIONS: { key: AccomplishmentSection; label: string; required?: boolean }[] = [
+  { key: "accomplishment", label: "Accomplishments", required: true },
+  { key: "blockers", label: "Blockers" },
+  { key: "inProgress", label: "In progress" },
+];
 
 export function EditAccomplishmentDialog({
   accomplishment,
@@ -38,7 +47,12 @@ export function EditAccomplishmentDialog({
     formState: { errors },
   } = useForm<EditAccomplishmentValues>({
     resolver: zodResolver(editAccomplishmentSchema),
-    values: { date: accomplishment.date, text: accomplishment.text },
+    values: {
+      date: accomplishment.date,
+      accomplishment: accomplishment.accomplishment,
+      blockers: accomplishment.blockers,
+      inProgress: accomplishment.inProgress,
+    },
   });
 
   function onSubmit(values: EditAccomplishmentValues) {
@@ -56,7 +70,7 @@ export function EditAccomplishmentDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Edit accomplishment</DialogTitle>
         </DialogHeader>
@@ -66,11 +80,23 @@ export function EditAccomplishmentDialog({
             <Input id="editAccomplishmentDate" type="date" max={toPhDateKey(new Date())} {...register("date")} />
             {errors.date && <p className="text-xs text-destructive">{errors.date.message}</p>}
           </div>
-          <div className="grid gap-1.5">
-            <Label htmlFor="editAccomplishmentText">Task done</Label>
-            <Textarea id="editAccomplishmentText" rows={4} {...register("text")} />
-            {errors.text && <p className="text-xs text-destructive">{errors.text.message}</p>}
-          </div>
+
+          {SECTIONS.map(({ key, label, required }) => (
+            <div key={key} className="grid gap-1.5">
+              <Label htmlFor={`editAccomplishment-${key}`}>
+                {label}
+                {!required && <span className="text-muted-foreground"> (optional)</span>}
+              </Label>
+              <Textarea id={`editAccomplishment-${key}`} rows={3} {...register(key)} />
+              {errors[key] && <p className="text-xs text-destructive">{errors[key]?.message}</p>}
+              <AccomplishmentSectionAttachments
+                accomplishmentId={accomplishment._id}
+                section={key}
+                attachments={accomplishment.attachments.filter((a) => a.section === key)}
+              />
+            </div>
+          ))}
+
           <DialogFooter>
             <Button type="submit" disabled={updateAccomplishment.isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">
               {updateAccomplishment.isPending ? "Saving..." : "Save changes"}
