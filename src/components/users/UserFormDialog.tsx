@@ -20,8 +20,13 @@ import { useRoles } from "@/hooks/useRoles";
 import { announceAccountCreated } from "@/lib/accountCreated";
 import { AccountCredentials, CredentialsDialog } from "./CredentialsDialog";
 import { useCreateUser, useUpdateUser } from "@/hooks/useUsers";
-import { User } from "@/types/user";
+import { ShiftType, User } from "@/types/user";
 import { Plus } from "lucide-react";
+
+const SHIFT_OPTIONS: { value: ShiftType; label: string }[] = [
+  { value: "morning", label: "Morning (PH time)" },
+  { value: "night", label: "Night (US Eastern time)" },
+];
 
 interface UserFormDialogProps {
   user?: User;
@@ -44,6 +49,7 @@ export function UserFormDialog({ user, trigger, open: openProp, onOpenChange }: 
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [roleId, setRoleId] = useState(user?.role.id ?? "");
+  const [shiftType, setShiftType] = useState<ShiftType>(user?.shiftType ?? "morning");
 
   const { data: roles } = useRoles(open);
   const createUser = useCreateUser();
@@ -57,6 +63,7 @@ export function UserFormDialog({ user, trigger, open: openProp, onOpenChange }: 
       setName(user?.name ?? "");
       setEmail(user?.email ?? "");
       setRoleId(user?.role.id ?? "");
+      setShiftType(user?.shiftType ?? "morning");
     }
   }
 
@@ -83,10 +90,10 @@ export function UserFormDialog({ user, trigger, open: openProp, onOpenChange }: 
     };
 
     if (isEditing) {
-      updateUser.mutate({ userId: user.id, input: { name: name.trim(), roleId } }, { onSuccess, onError });
+      updateUser.mutate({ userId: user.id, input: { name: name.trim(), roleId, shiftType } }, { onSuccess, onError });
     } else {
       createUser.mutate(
-        { email: email.trim(), roleId },
+        { email: email.trim(), roleId, shiftType },
         {
           onSuccess: (created) => {
             setCredentials(announceAccountCreated(created, "User"));
@@ -152,6 +159,25 @@ export function UserFormDialog({ user, trigger, open: openProp, onOpenChange }: 
                 {(roles ?? []).map((role) => (
                   <SelectItem key={role.id} value={role.id}>
                     {role.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid gap-1.5">
+            <Label>Shift</Label>
+            <Select
+              value={shiftType}
+              items={SHIFT_OPTIONS}
+              onValueChange={(v) => setShiftType((v as ShiftType) ?? "morning")}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a shift..." />
+              </SelectTrigger>
+              <SelectContent>
+                {SHIFT_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>

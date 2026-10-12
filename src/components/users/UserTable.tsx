@@ -71,6 +71,7 @@ export function UserTable({ users, emptyMessage }: { users: User[]; emptyMessage
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>Shift</TableHead>
               <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -96,6 +97,17 @@ export function UserTable({ users, emptyMessage }: { users: User[]; emptyMessage
                   <TableCell className="text-muted-foreground">{user.email}</TableCell>
                   <TableCell>
                     <Badge className="bg-cyan-500/15 font-normal text-cyan-700">{user.role.name ?? "No role"}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      className={
+                        user.shiftType === "night"
+                          ? "bg-violet-500/15 font-normal text-violet-700"
+                          : "bg-amber-500/15 font-normal text-amber-700"
+                      }
+                    >
+                      {user.shiftType === "night" ? "Night" : "Morning"}
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>

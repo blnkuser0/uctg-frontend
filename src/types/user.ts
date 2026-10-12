@@ -6,6 +6,10 @@ export interface UserRoleSummary {
   permissions: Permission[];
 }
 
+// Governs which timezone's midnight is used as this person's clock-in/out day boundary — PH
+// time for a normal day shift, US Eastern time for a night shift aligned to US business hours.
+export type ShiftType = "morning" | "night";
+
 export interface User {
   id: string;
   name: string;
@@ -17,6 +21,7 @@ export interface User {
   isSuperAdmin?: boolean;
   // True until the user replaces the temporary password an admin gave them.
   mustChangePassword?: boolean;
+  shiftType: ShiftType;
 }
 
 // What the create endpoints return: the user plus whether the login-details
@@ -30,10 +35,12 @@ export interface CreateUserInput {
   // Optional: the server gives every new account the shared temporary password.
   password?: string;
   roleId: string;
+  shiftType?: ShiftType;
 }
 
 export interface UpdateUserInput {
   name?: string;
   roleId?: string;
   isActive?: boolean;
+  shiftType?: ShiftType;
 }
