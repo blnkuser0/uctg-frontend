@@ -10,7 +10,8 @@ import { TeamAttendanceTable } from "@/components/attendance/TeamAttendanceTable
 import { OperationsHeader, OperationsStat, OperationsState } from "@/components/layout/OperationsUI";
 import { useTeamAttendance, useTeamPeriodSummary } from "@/hooks/useTimeLog";
 import { useAuth } from "@/providers/AuthProvider";
-import { toDateKey, toPhDateKey } from "@/lib/utils";
+import { toDateKey, toZonedDateKey } from "@/lib/utils";
+import { shiftTimeZone } from "@/lib/shift";
 import { PERMISSIONS } from "@/types/role";
 import { DayAttendanceStatus } from "@/types/timeLog";
 import { ShiftType } from "@/types/user";
@@ -31,8 +32,11 @@ export default function AttendancePage() {
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
-  const todayPhKey = toPhDateKey(new Date());
-  const [dateKey, setDateKey] = useState(todayPhKey);
+  // "Today" (and the date picker's max/default) follows the VIEWER's own shift timezone — a
+  // night-shift admin/lead looking at this page should see it anchored to their own EST "today",
+  // not PH's, even though the roster below mixes people on both shifts.
+  const todayKey = toZonedDateKey(new Date(), shiftTimeZone(user?.shiftType));
+  const [dateKey, setDateKey] = useState(todayKey);
   const [viewing, setViewing] = useState<{ userId: string; name: string; shiftType: ShiftType } | null>(null);
 
   const dayAttendance = useTeamAttendance(dateKey, canView);
@@ -72,7 +76,7 @@ export default function AttendancePage() {
           <input
             type="date"
             value={dateKey}
-            max={todayPhKey}
+            max={todayKey}
             onChange={(event) => event.target.value && setDateKey(event.target.value)}
             aria-label="Attendance date"
             className="h-11 min-w-0 rounded-lg border border-input bg-background px-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -81,13 +85,13 @@ export default function AttendancePage() {
             variant="ghost"
             size="icon-sm"
             onClick={() => setDateKey(shiftDay(dateKey, 1))}
-            disabled={dateKey >= todayPhKey}
+            disabled={dateKey >= todayKey}
             aria-label="Next day"
           >
             <ChevronRight className="size-4" />
           </Button>
-          {dateKey !== todayPhKey && (
-            <Button variant="outline" size="sm" onClick={() => setDateKey(todayPhKey)}>
+          {dateKey !== todayKey && (
+            <Button variant="outline" size="sm" onClick={() => setDateKey(todayKey)}>
               Today
             </Button>
           )}
