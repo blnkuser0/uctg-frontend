@@ -28,9 +28,12 @@ interface AttendanceCalendarProps {
   summaries: DaySummary[];
   selectedDateKey?: string;
   onSelectDate: (dateKey: string) => void;
+  // Defaults to PH time inside MonthGrid; pass the viewed person's own shift timezone's "today"
+  // key so the highlighted day agrees with their actual attendance day boundary.
+  todayKey?: string;
 }
 
-export function AttendanceCalendar({ year, month, summaries, selectedDateKey, onSelectDate }: AttendanceCalendarProps) {
+export function AttendanceCalendar({ year, month, summaries, selectedDateKey, onSelectDate, todayKey }: AttendanceCalendarProps) {
   const byDate = new Map(summaries.map((s) => [s.date, s]));
 
   return (
@@ -40,6 +43,7 @@ export function AttendanceCalendar({ year, month, summaries, selectedDateKey, on
         month={month}
         selectedDateKey={selectedDateKey}
         onSelectDate={onSelectDate}
+        todayKey={todayKey}
         renderDay={(_date, dateKey) => {
           const summary = byDate.get(dateKey);
           return (

@@ -13,6 +13,7 @@ import { useAuth } from "@/providers/AuthProvider";
 import { toDateKey, toPhDateKey } from "@/lib/utils";
 import { PERMISSIONS } from "@/types/role";
 import { DayAttendanceStatus } from "@/types/timeLog";
+import { ShiftType } from "@/types/user";
 
 const COUNT_ORDER: DayAttendanceStatus[] = ["present", "absent", "on-leave", "weekend"];
 
@@ -32,7 +33,7 @@ export default function AttendancePage() {
   const [status, setStatus] = useState("all");
   const todayPhKey = toPhDateKey(new Date());
   const [dateKey, setDateKey] = useState(todayPhKey);
-  const [viewing, setViewing] = useState<{ userId: string; name: string } | null>(null);
+  const [viewing, setViewing] = useState<{ userId: string; name: string; shiftType: ShiftType } | null>(null);
 
   const dayAttendance = useTeamAttendance(dateKey, canView);
   const periodSummary = useTeamPeriodSummary(dateKey, canView);
@@ -101,7 +102,7 @@ export default function AttendancePage() {
         dayEntries={filteredEntries}
         periodEntries={periodSummary.data ?? []}
         isLoading={dayAttendance.isLoading}
-        onViewCalendar={(userId, name) => setViewing({ userId, name })}
+        onViewCalendar={(userId, name, shiftType) => setViewing({ userId, name, shiftType })}
       />}
       {periodSummary.isError && <OperationsState title="Period totals could not be loaded" description="Daily attendance is still available above." onRetry={() => void periodSummary.refetch()} />}
 
@@ -111,7 +112,7 @@ export default function AttendancePage() {
             <DialogTitle>{viewing?.name}&apos;s attendance</DialogTitle>
             <DialogDescription>Hours per day, plus week and cut-off totals.</DialogDescription>
           </DialogHeader>
-          {viewing && <PersonalAttendance key={viewing.userId} userId={viewing.userId} />}
+          {viewing && <PersonalAttendance key={viewing.userId} userId={viewing.userId} shiftType={viewing.shiftType} />}
         </DialogContent>
       </Dialog>
     </div>

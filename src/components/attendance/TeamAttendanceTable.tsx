@@ -27,7 +27,7 @@ export function TeamAttendanceTable({
   dayEntries: TeamDayEntry[];
   periodEntries: TeamPeriodEntry[];
   isLoading: boolean;
-  onViewCalendar: (userId: string, name: string) => void;
+  onViewCalendar: (userId: string, name: string, shiftType: TeamDayEntry["shiftType"]) => void;
 }) {
   if (isLoading) {
     return (
@@ -93,7 +93,7 @@ export function TeamAttendanceTable({
                   <Button
                     size="icon-sm"
                     variant="ghost"
-                    onClick={() => onViewCalendar(entry.userId, entry.name)}
+                    onClick={() => onViewCalendar(entry.userId, entry.name, entry.shiftType)}
                     aria-label={`View ${entry.name}'s attendance calendar`}
                     title="View calendar"
                   >
@@ -106,7 +106,7 @@ export function TeamAttendanceTable({
         </TableBody>
       </Table></div>
       <div className="divide-y divide-border lg:hidden">{dayEntries.map((entry) => { const period = periodByUser.get(entry.userId); return <article key={entry.userId} className="p-4">
-<div className="flex items-start justify-between gap-3"><div className="flex min-w-0 items-center gap-3"><Avatar className="size-10 shrink-0"><AvatarFallback className="bg-cyan-500/10 text-cyan-700 dark:text-cyan-400">{initials(entry.name)}</AvatarFallback></Avatar><div className="min-w-0"><h4 className="break-words text-sm font-semibold">{entry.name}</h4><p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground"><span className={cn("size-2 rounded-full", STATUS_DOT[entry.summary.status])} />{STATUS_LABEL[entry.summary.status]}</p></div></div><Button className="size-11 shrink-0" variant="outline" onClick={() => onViewCalendar(entry.userId, entry.name)} aria-label={"View " + entry.name + "'s attendance calendar"}><CalendarSearch className="size-4" /></Button></div>
+<div className="flex items-start justify-between gap-3"><div className="flex min-w-0 items-center gap-3"><Avatar className="size-10 shrink-0"><AvatarFallback className="bg-cyan-500/10 text-cyan-700 dark:text-cyan-400">{initials(entry.name)}</AvatarFallback></Avatar><div className="min-w-0"><h4 className="break-words text-sm font-semibold">{entry.name}</h4><p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground"><span className={cn("size-2 rounded-full", STATUS_DOT[entry.summary.status])} />{STATUS_LABEL[entry.summary.status]}</p></div></div><Button className="size-11 shrink-0" variant="outline" onClick={() => onViewCalendar(entry.userId, entry.name, entry.shiftType)} aria-label={"View " + entry.name + "'s attendance calendar"}><CalendarSearch className="size-4" /></Button></div>
 <p className="mt-4 text-xs text-muted-foreground">Time in / out <span className="ml-2 font-medium text-foreground">{formatTime(entry.summary.firstTimeIn)} · {formatTime(entry.summary.lastTimeOut)}</span></p>
 <dl className="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-muted/40 p-3"><div><dt className="text-[11px] text-muted-foreground">Week hours</dt><dd className="mt-1 text-sm font-semibold tabular-nums">{period ? formatHours(period.week.totalMinutes) : "—"}</dd></div><div><dt className="text-[11px] text-muted-foreground">Cut-off hours</dt><dd className="mt-1 text-sm font-semibold tabular-nums">{period ? formatHours(period.cutoff.totalMinutes) : "—"}</dd></div><div><dt className="text-[11px] text-muted-foreground">Cut-off days</dt><dd className="mt-1 text-sm font-semibold tabular-nums">{period ? period.cutoff.daysPresent : "—"}</dd></div></dl>
 </article>; })}</div>

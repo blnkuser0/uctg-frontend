@@ -1,3 +1,5 @@
+import { ShiftType } from "./user";
+
 export type TimeLogType = "time-in" | "time-out" | "break-in" | "break-out";
 
 export type ClockState = "clocked-out" | "working" | "on-break";
@@ -33,6 +35,7 @@ export const BREAK_LIMIT_MINUTES = 60;
 export interface TeamDayEntry {
   userId: string;
   name: string;
+  shiftType: ShiftType;
   summary: DaySummary;
 }
 
@@ -51,5 +54,6 @@ export interface PeriodSummary {
 export interface TeamPeriodEntry {
   userId: string;
   name: string;
+  shiftType: ShiftType;
   summary: PeriodSummary;
 }

@@ -10,13 +10,16 @@ interface MonthGridProps {
   renderDay: (date: Date, dateKey: string) => React.ReactNode;
   onSelectDate?: (dateKey: string) => void;
   selectedDateKey?: string;
+  // "Today" marker — defaults to PH time; attendance views pass the viewed person's own shift
+  // timezone instead, so a night-shift worker's calendar agrees with their actual day boundary.
+  todayKey?: string;
 }
 
-export function MonthGrid({ year, month, renderDay, onSelectDate, selectedDateKey }: MonthGridProps) {
+export function MonthGrid({ year, month, renderDay, onSelectDate, selectedDateKey, todayKey }: MonthGridProps) {
   const firstOfMonth = new Date(year, month - 1, 1);
   const daysInMonth = new Date(year, month, 0).getDate();
   const leadingBlanks = firstOfMonth.getDay();
-  const todayKey = toPhDateKey(new Date());
+  const resolvedTodayKey = todayKey ?? toPhDateKey(new Date());
 
   const cells: (Date | null)[] = [
     ...Array.from({ length: leadingBlanks }, () => null),
@@ -34,7 +37,7 @@ export function MonthGrid({ year, month, renderDay, onSelectDate, selectedDateKe
       {cells.map((date, i) => {
         if (!date) return <div key={`blank-${i}`} />;
         const dateKey = toDateKey(date);
-        const isToday = dateKey === todayKey;
+        const isToday = dateKey === resolvedTodayKey;
         const isSelected = dateKey === selectedDateKey;
         const content = (
           <>

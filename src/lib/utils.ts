@@ -30,6 +30,16 @@ export function toPhDateKey(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+/** Calendar-day key (YYYY-MM-DD) for `date` in an arbitrary IANA `timeZone` — same technique the
+ *  backend's zonedDateKey uses, for shift-aware views (a night-shift worker's own EST "today"). */
+export function toZonedDateKey(date: Date, timeZone: string): string {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(
+    date
+  );
+  const get = (type: string) => parts.find((p) => p.type === type)!.value;
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
 /** Formats a real timestamp as a PH clock time, e.g. "9:03 AM". */
 export function formatClockTime(iso: string | Date): string {
   const d = typeof iso === "string" ? new Date(iso) : iso;

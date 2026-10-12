@@ -5,8 +5,11 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMonthAttendance, usePeriodSummary } from "@/hooks/useTimeLog";
-import { toPhDateKey } from "@/lib/utils";
+import { toZonedDateKey } from "@/lib/utils";
+import { shiftTimeZone } from "@/lib/shift";
+import { useAuth } from "@/providers/AuthProvider";
 import { DayAttendanceStatus } from "@/types/timeLog";
+import { ShiftType } from "@/types/user";
 import { AttendanceCalendar, STATUS_DOT, STATUS_LABEL } from "./AttendanceCalendar";
 import { AttendanceDayDetail } from "./AttendanceDayDetail";
 import { PeriodSummaryCards } from "./PeriodSummaryCards";
@@ -14,14 +17,19 @@ import { PeriodSummaryCards } from "./PeriodSummaryCards";
 const LEGEND_ORDER: DayAttendanceStatus[] = ["present", "on-leave", "absent", "weekend"];
 
 // One person's month calendar (hours worked shown on each day), the selected day's detail, and
-// their week + payroll cut-off totals. Timeproof renders it for the signed-in user (no userId);
-// the Attendance page renders it for an employee a manager picked (userId, needs attendance.view_all).
-export function PersonalAttendance({ userId }: { userId?: string }) {
-  const todayPhKey = toPhDateKey(new Date());
-  const [todayYear, todayMonth] = todayPhKey.split("-").map(Number);
+// their week + payroll cut-off totals. Timeproof renders it for the signed-in user (no userId,
+// their own shiftType from useAuth()); the Attendance page renders it for an employee a manager
+// picked (userId + that employee's own shiftType, needs attendance.view_all). The calendar's
+// "today" and month/day boundaries follow THAT person's own shift timezone — PH time for a
+// morning shift, US Eastern for a night shift — so it never disagrees with their actual records.
+export function PersonalAttendance({ userId, shiftType }: { userId?: string; shiftType?: ShiftType }) {
+  const { user } = useAuth();
+  const timeZone = shiftTimeZone(userId ? shiftType : user?.shiftType);
+  const todayKey = toZonedDateKey(new Date(), timeZone);
+  const [todayYear, todayMonth] = todayKey.split("-").map(Number);
   const [year, setYear] = useState(todayYear);
   const [month, setMonth] = useState(todayMonth); // 1-12
-  const [selectedDateKey, setSelectedDateKey] = useState(todayPhKey);
+  const [selectedDateKey, setSelectedDateKey] = useState(todayKey);
 
   const { data: summaries, isLoading, isError, refetch } = useMonthAttendance(`${year}-${String(month).padStart(2, "0")}`, userId);
   const periodSummary = usePeriodSummary(selectedDateKey, userId);
@@ -61,6 +69,7 @@ export function PersonalAttendance({ userId }: { userId?: string }) {
               summaries={summaries ?? []}
               selectedDateKey={selectedDateKey}
               onSelectDate={setSelectedDateKey}
+              todayKey={todayKey}
             />
           </div>
         )}
