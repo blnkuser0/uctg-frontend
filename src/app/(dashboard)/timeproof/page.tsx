@@ -38,7 +38,7 @@ export default function TimeproofPage() {
       <ClockActionButtons state={data.state} onAction={handleAction} isPending={clockMutation.isPending} />
 
       <div>
-        <h2 className="mb-2 text-sm font-medium text-muted-foreground">Today&apos;s activity</h2>
+        <h2 className="mb-2 text-sm font-medium text-muted-foreground">Current shift activity</h2>
         <TodayLogList logs={data.logs} />
       </div>
 
