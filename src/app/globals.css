@@ -341,3 +341,18 @@
     border: 0;
   }
 }
+
+/* Leave records become readable cards on touch-sized screens. */
+@media (max-width: 1279px) {
+  .leave-records table, .leave-records tbody { display: block; }
+  .leave-records thead { display: none; }
+  .leave-records tbody { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding: 1rem; }
+  .leave-records tr { display: flex; min-width: 0; flex-direction: column; border: 1px solid var(--border); border-radius: 1rem; padding: .5rem; }
+  .leave-records tr:last-child { border: 1px solid var(--border); }
+  .leave-records td { display: flex; max-width: none; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: .6rem; font-size: .8125rem; overflow-wrap: anywhere; }
+  .leave-records td[data-label]::before { content: attr(data-label); flex-shrink: 0; width: 6rem; font-size: .75rem; color: var(--muted-foreground); }
+  .leave-records td:last-child { justify-content: flex-end; margin-top: auto; }
+}
+@media (max-width: 639px) {
+  .leave-records tbody { grid-template-columns: minmax(0, 1fr); padding: .75rem; }
+}

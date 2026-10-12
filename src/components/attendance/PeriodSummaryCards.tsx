@@ -23,14 +23,14 @@ function StatCard({ title, stats }: { title: string; stats: PeriodStats | undefi
             <Clock className="size-3" />
             Total hours
           </p>
-          <p className="text-lg font-semibold">{stats ? formatHours(stats.totalMinutes) : "—"}</p>
+          <p className="mt-1 text-2xl font-semibold tracking-tight tabular-nums">{stats ? formatHours(stats.totalMinutes) : "—"}</p>
         </div>
         <div>
           <p className="flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
             <CalendarRange className="size-3" />
             Days present
           </p>
-          <p className="text-lg font-semibold">{stats ? stats.daysPresent : "—"}</p>
+          <p className="mt-1 text-2xl font-semibold tracking-tight tabular-nums">{stats ? stats.daysPresent : "—"}</p>
         </div>
       </div>
     </div>
@@ -41,9 +41,9 @@ function StatCard({ title, stats }: { title: string; stats: PeriodStats | undefi
 // is on screen, anchored to the currently selected date.
 export function PeriodSummaryCards({ summary }: { summary: PeriodSummary | undefined }) {
   return (
-    <div className="flex flex-col gap-3 sm:flex-row">
-      <StatCard title="Week" stats={summary?.week} />
-      <StatCard title="Cut-off" stats={summary?.cutoff} />
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-1">
+      <StatCard title="Week totals" stats={summary?.week} />
+      <StatCard title="Cut-off totals" stats={summary?.cutoff} />
     </div>
   );
 }

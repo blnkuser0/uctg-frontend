@@ -54,8 +54,8 @@ export function LeaveCalendar({ leaves }: { leaves: Leave[] }) {
   }
 
   return (
-    <div className="grid gap-4">
-      <div className="rounded-2xl border border-border bg-card p-4">
+    <div className="grid min-w-0 items-start gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+      <div className="min-w-0 rounded-2xl border border-border bg-card p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <Button variant="ghost" size="icon-sm" onClick={() => shiftMonth(-1)} aria-label="Previous month">
             <ChevronLeft className="size-4" />
@@ -110,7 +110,7 @@ export function LeaveCalendar({ leaves }: { leaves: Leave[] }) {
               <div key={i} className="flex items-center justify-between gap-2 rounded-lg border border-border p-2 text-sm">
                 <div className="min-w-0">
                   <p className="truncate font-medium">{entry.employeeName}</p>
-                  <p className="truncate text-xs text-muted-foreground">
+                  <p className="break-words text-xs leading-relaxed text-muted-foreground">
                     {entry.leaveType} · {entry.reason}
                   </p>
                 </div>

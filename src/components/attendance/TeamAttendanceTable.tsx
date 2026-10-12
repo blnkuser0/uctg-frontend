@@ -41,7 +41,7 @@ export function TeamAttendanceTable({
   const first = periodEntries[0]?.summary;
 
   return (
-    <section className="catalyst-panel min-w-0 overflow-hidden">
+    <section className="min-w-0 overflow-hidden rounded-2xl border border-border bg-card">
       <div className="border-b border-border bg-sky-500/6 px-4 py-3">
         <h3 className="text-sm font-semibold">All employees</h3>
         {first && (
@@ -50,7 +50,7 @@ export function TeamAttendanceTable({
           </p>
         )}
       </div>
-      <Table>
+      <div className="hidden lg:block"><Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead>Employee</TableHead>
@@ -104,8 +104,13 @@ export function TeamAttendanceTable({
             );
           })}
         </TableBody>
-      </Table>
-      {dayEntries.length === 0 && <p className="px-4 py-8 text-center text-xs text-muted-foreground">No employees to show.</p>}
+      </Table></div>
+      <div className="divide-y divide-border lg:hidden">{dayEntries.map((entry) => { const period = periodByUser.get(entry.userId); return <article key={entry.userId} className="p-4">
+<div className="flex items-start justify-between gap-3"><div className="flex min-w-0 items-center gap-3"><Avatar className="size-10 shrink-0"><AvatarFallback className="bg-cyan-500/10 text-cyan-700 dark:text-cyan-400">{initials(entry.name)}</AvatarFallback></Avatar><div className="min-w-0"><h4 className="break-words text-sm font-semibold">{entry.name}</h4><p className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground"><span className={cn("size-2 rounded-full", STATUS_DOT[entry.summary.status])} />{STATUS_LABEL[entry.summary.status]}</p></div></div><Button className="size-11 shrink-0" variant="outline" onClick={() => onViewCalendar(entry.userId, entry.name)} aria-label={"View " + entry.name + "'s attendance calendar"}><CalendarSearch className="size-4" /></Button></div>
+<p className="mt-4 text-xs text-muted-foreground">Time in / out <span className="ml-2 font-medium text-foreground">{formatTime(entry.summary.firstTimeIn)} · {formatTime(entry.summary.lastTimeOut)}</span></p>
+<dl className="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-muted/40 p-3"><div><dt className="text-[11px] text-muted-foreground">Week hours</dt><dd className="mt-1 text-sm font-semibold tabular-nums">{period ? formatHours(period.week.totalMinutes) : "—"}</dd></div><div><dt className="text-[11px] text-muted-foreground">Cut-off hours</dt><dd className="mt-1 text-sm font-semibold tabular-nums">{period ? formatHours(period.cutoff.totalMinutes) : "—"}</dd></div><div><dt className="text-[11px] text-muted-foreground">Cut-off days</dt><dd className="mt-1 text-sm font-semibold tabular-nums">{period ? period.cutoff.daysPresent : "—"}</dd></div></dl>
+</article>; })}</div>
+      {dayEntries.length === 0 && <p className="px-4 py-8 text-center text-xs text-muted-foreground">No employees match this view.</p>}
     </section>
   );
 }

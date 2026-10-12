@@ -12,7 +12,7 @@ import { Trash2, X } from "lucide-react";
 export type LeaveRemoveMode = "cancel" | "delete" | null;
 
 const OVERALL_META: Record<LeaveDecisionStatus, string> = {
-  pending: "bg-muted text-muted-foreground",
+  pending: "bg-amber-500/10 text-amber-700 dark:text-amber-400",
   approved: "bg-emerald-500/15 text-emerald-600",
   rejected: "bg-destructive/15 text-destructive",
 };
@@ -44,14 +44,14 @@ export function LeaveRow({
   const employeeLabel = typeof leave.userId === "object" ? leave.userId.name : "You";
 
   return (
-    <tr className="border-b border-border last:border-0">
-      {showEmployeeColumn && <td className="px-4 py-3 text-sm font-medium">{employeeLabel}</td>}
-      <td className="px-4 py-3 text-sm text-muted-foreground">
+    <tr className="border-b border-border transition-colors last:border-0 hover:bg-muted/20">
+      {showEmployeeColumn && <td data-label="Employee" className="px-4 py-3 text-sm font-medium">{employeeLabel}</td>}
+      <td data-label="Dates" className="px-4 py-3 text-sm text-muted-foreground">
         {formatDate(leave.startDate)} – {formatDate(leave.endDate)}
       </td>
-      <td className="px-4 py-3 text-sm whitespace-nowrap">{leaveTypeLabel(leave.leaveType)}</td>
-      <td className="max-w-xs truncate px-4 py-3 text-sm">{leave.reason}</td>
-      <td className="px-4 py-3">
+      <td data-label="Leave type" className="px-4 py-3 text-sm">{leaveTypeLabel(leave.leaveType)}</td>
+      <td data-label="Reason" className="max-w-xs break-words px-4 py-3 text-sm">{leave.reason}</td>
+      <td data-label="HR review" className="px-4 py-3">
         <ApprovalCell
           status={leave.hrStatus}
           canAct={canActHr}
@@ -60,7 +60,7 @@ export function LeaveRow({
           onReject={() => onHrDecision("rejected")}
         />
       </td>
-      <td className="px-4 py-3">
+      <td data-label="Admin decision" className="px-4 py-3">
         <ApprovalCell
           status={leave.adminStatus}
           canAct={canActAdmin}
@@ -69,12 +69,12 @@ export function LeaveRow({
           onReject={() => onAdminDecision("rejected")}
         />
       </td>
-      <td className="px-4 py-3">
-        <Badge className={OVERALL_META[leave.status]}>{leave.status}</Badge>
+      <td data-label="Status" className="px-4 py-3">
+        <Badge className={"capitalize " + OVERALL_META[leave.status]}>{leave.status}</Badge>
       </td>
       <td className="px-4 py-3 text-right">
         {removeMode === "cancel" && (
-          <Button size="icon-sm" variant="ghost" onClick={onRemove} disabled={isMutating} aria-label="Cancel request">
+          <Button className="size-11" size="icon-sm" variant="ghost" onClick={onRemove} disabled={isMutating} aria-label="Cancel request">
             <X className="size-3.5" />
           </Button>
         )}
@@ -87,7 +87,7 @@ export function LeaveRow({
               disabled={isMutating}
               aria-label="Delete leave request"
               title="Delete leave request"
-              className="text-muted-foreground hover:text-destructive"
+              className="size-11 text-muted-foreground hover:text-destructive"
             >
               <Trash2 className="size-3.5" />
             </Button>
@@ -97,7 +97,7 @@ export function LeaveRow({
                   <DialogTitle>Delete this leave request?</DialogTitle>
                   <DialogDescription>
                     {employeeLabel === "You" ? "Your" : `${employeeLabel}'s`} leave request
-                    will be Deleted.
+                    will be permanently removed.
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>

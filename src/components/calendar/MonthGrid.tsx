@@ -25,7 +25,7 @@ export function MonthGrid({ year, month, renderDay, onSelectDate, selectedDateKe
   while (cells.length % 7 !== 0) cells.push(null);
 
   return (
-    <div className="grid grid-cols-7 gap-1.5">
+    <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
       {WEEKDAY_LABELS.map((label) => (
         <div key={label} className="pb-1 text-center text-[11px] font-medium text-muted-foreground">
           {label}
@@ -54,9 +54,12 @@ export function MonthGrid({ year, month, renderDay, onSelectDate, selectedDateKe
         return (
           <button
             key={dateKey}
+            aria-label={date.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" })}
+            aria-pressed={isSelected}
+            aria-current={isToday ? "date" : undefined}
             onClick={() => onSelectDate(dateKey)}
             className={cn(
-              "flex min-h-16 flex-col items-center justify-center gap-1 border border-transparent p-1 transition-[background-color,border-color,transform] hover:-translate-y-px hover:border-border hover:bg-muted",
+              "flex min-h-20 min-w-0 flex-col items-center justify-center gap-1 rounded-xl border border-transparent p-0.5 focus-visible:outline-2 focus-visible:outline-ring sm:p-1 transition-[background-color,border-color,transform] hover:-translate-y-px hover:border-border hover:bg-muted",
               isSelected && "border-primary bg-primary/8 text-primary"
             )}
           >

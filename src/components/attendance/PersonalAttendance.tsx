@@ -1,5 +1,6 @@
 "use client";
 
+import { OperationsState } from "@/components/layout/OperationsUI";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ export function PersonalAttendance({ userId }: { userId?: string }) {
   const [month, setMonth] = useState(todayMonth); // 1-12
   const [selectedDateKey, setSelectedDateKey] = useState(todayPhKey);
 
-  const { data: summaries, isLoading } = useMonthAttendance(`${year}-${String(month).padStart(2, "0")}`, userId);
+  const { data: summaries, isLoading, isError, refetch } = useMonthAttendance(`${year}-${String(month).padStart(2, "0")}`, userId);
   const periodSummary = usePeriodSummary(selectedDateKey, userId);
 
   const monthLabel = new Date(year, month - 1, 1).toLocaleDateString(undefined, { month: "long", year: "numeric" });
@@ -32,11 +33,12 @@ export function PersonalAttendance({ userId }: { userId?: string }) {
     const next = new Date(year, month - 1 + delta, 1);
     setYear(next.getFullYear());
     setMonth(next.getMonth() + 1);
+    setSelectedDateKey(`${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, "0")}-01`);
   }
 
   return (
-    <div className="grid min-w-0 gap-4">
-      <div className="catalyst-panel min-w-0 overflow-hidden p-4 sm:p-5">
+    <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+      <div className="min-w-0 overflow-hidden rounded-2xl border border-border bg-card p-4 sm:p-5 xl:row-span-2">
         <div className="flex items-center justify-between">
           <Button variant="ghost" size="icon-sm" onClick={() => shiftMonth(-1)} aria-label="Previous month">
             <ChevronLeft className="size-4" />
@@ -47,7 +49,7 @@ export function PersonalAttendance({ userId }: { userId?: string }) {
           </Button>
         </div>
 
-        {isLoading ? (
+        {isError ? <OperationsState title="Calendar unavailable" onRetry={() => void refetch()} /> : isLoading ? (
           <div className="flex justify-center py-10">
             <div className="size-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
           </div>
@@ -73,9 +75,9 @@ export function PersonalAttendance({ userId }: { userId?: string }) {
         </div>
       </div>
 
-      <PeriodSummaryCards summary={periodSummary.data} />
+      <div className="min-w-0">{periodSummary.isError ? <OperationsState title="Totals unavailable" onRetry={() => void periodSummary.refetch()} /> : <PeriodSummaryCards summary={periodSummary.data} />}</div>
 
-      <AttendanceDayDetail dateKey={selectedDateKey} summary={selectedSummary} />
+      {!isLoading && !isError && <AttendanceDayDetail dateKey={selectedDateKey} summary={selectedSummary} />}
     </div>
   );
 }

@@ -9,6 +9,9 @@ export function useTodayTimeLog() {
   return useQuery({
     queryKey: queryKeys.timeLogToday(),
     queryFn: timeLogService.getToday,
+    // The live timer itself ticks locally every second off the last-fetched base; this is just a
+    // drift/missed-event safety net (the socket-pushed "timeclock" resync covers the common case).
+    refetchInterval: 30_000,
   });
 }
 

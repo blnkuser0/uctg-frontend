@@ -71,16 +71,16 @@ export function RequestLeaveDialog() {
     >
       <DialogTrigger
         render={
-          <Button className="bg-cyan-600 text-white hover:bg-cyan-500">
+          <Button className="min-h-11 rounded-xl bg-cyan-600 text-white hover:bg-cyan-700">
             <Plus className="size-4" />
             Request Leave
           </Button>
         }
       />
-      <DialogContent>
+      <DialogContent className="max-h-[90dvh] overflow-y-auto rounded-2xl">
         <DialogHeader>
           <DialogTitle>Request leave</DialogTitle>
-          <DialogDescription>Submit a leave request for HR and Admin approval.</DialogDescription>
+          <DialogDescription>Choose your dates and share a brief reason. HR reviews your request; Admin makes the final decision.</DialogDescription>
         </DialogHeader>
         <form className="grid gap-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-1.5">
@@ -109,7 +109,7 @@ export function RequestLeaveDialog() {
             />
             {errors.leaveType && <p className="text-xs text-destructive">{errors.leaveType.message}</p>}
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="grid gap-1.5">
               <Label htmlFor="startDate">Start date</Label>
               <Input id="startDate" type="date" {...register("startDate")} />
@@ -123,14 +123,14 @@ export function RequestLeaveDialog() {
           </div>
           <div className="grid gap-1.5">
             <Label htmlFor="reason">Reason</Label>
-            <Textarea id="reason" rows={3} {...register("reason")} />
+            <Textarea id="reason" placeholder="A little context helps your team plan ahead." rows={4} {...register("reason")} />
             {errors.reason && <p className="text-xs text-destructive">{errors.reason.message}</p>}
           </div>
           <DialogFooter>
             <Button
               type="submit"
               disabled={createLeave.isPending}
-              className="bg-cyan-600 text-white hover:bg-cyan-500"
+              className="min-h-11 rounded-xl bg-cyan-600 text-white hover:bg-cyan-700"
             >
               {createLeave.isPending ? "Submitting..." : "Submit request"}
             </Button>

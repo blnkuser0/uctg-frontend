@@ -8,7 +8,7 @@ import { LeaveCalendar } from "@/components/leaves/LeaveCalendar";
 import { RequestLeaveDialog } from "@/components/leaves/RequestLeaveDialog";
 import { useAllLeaves, useMyLeaves, useHrDecision, useAdminDecision, useCancelLeave } from "@/hooks/useLeaves";
 import { PERMISSIONS } from "@/types/role";
-import { PageHeader } from "@/components/layout/PageHeader";
+import { OperationsHeader, OperationsStat, OperationsState } from "@/components/layout/OperationsUI";
 
 export default function LeavesPage() {
   const { user } = useAuth();
@@ -47,18 +47,22 @@ export default function LeavesPage() {
   }
 
   return (
-    <div className="catalyst-page max-w-6xl">
-      <PageHeader title="Leaves" section="Operations / Time away" tone="green" actions={<RequestLeaveDialog />} />
+    <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 p-4 sm:p-6 xl:p-8">
+      <OperationsHeader title="Time away" description="Plan a well-earned pause. Keep track of requests, decisions, and upcoming time off." actions={<RequestLeaveDialog />} />
+<div className="grid grid-cols-2 gap-3 lg:grid-cols-4">{([{ key: "all", label: "Total requests", accent: "bg-cyan-500" }, { key: "pending", label: "Awaiting decision", accent: "bg-amber-500" }, { key: "approved", label: "Approved", accent: "bg-emerald-500" }, { key: "rejected", label: "Rejected", accent: "bg-rose-500" }] as const).map(({ key, label, accent }) => { const query = canSeeAll ? allLeaves : myLeaves; return <OperationsStat key={key} label={label} value={query.isLoading || query.isError ? "—" : (query.data ?? []).filter((leave) => key === "all" || leave.status === key).length} hint={canSeeAll ? "Across team requests" : "Across your requests"} accent={accent} />; })}</div>
 
       <Tabs defaultValue={canSeeAll ? "all" : "mine"}>
-        <TabsList>
-          {canSeeAll && <TabsTrigger value="all">All requests</TabsTrigger>}
-          <TabsTrigger value="mine">My requests</TabsTrigger>
-          <TabsTrigger value="calendar">Calendar</TabsTrigger>
+        <TabsList style={{ height: "auto" }} className="h-auto w-full flex-wrap justify-start gap-1 rounded-xl bg-muted/60 p-1 sm:w-fit">
+          {canSeeAll && <TabsTrigger className="min-h-11 flex-1 px-4 sm:flex-none" value="all">All requests</TabsTrigger>}
+          <TabsTrigger className="min-h-11 flex-1 px-4 sm:flex-none" value="mine">My requests</TabsTrigger>
+          <TabsTrigger className="min-h-11 flex-1 px-4 sm:flex-none" value="calendar">Calendar</TabsTrigger>
         </TabsList>
         {canSeeAll && (
           <TabsContent value="all" className="mt-4">
             <LeaveTable
+              isLoading={allLeaves.isLoading}
+              isError={allLeaves.isError}
+              onRetry={() => void allLeaves.refetch()}
               leaves={allLeaves.data ?? []}
               showEmployeeColumn
               currentUserId={user?.id ?? ""}
@@ -73,6 +77,9 @@ export default function LeavesPage() {
         )}
         <TabsContent value="mine" className="mt-4">
           <LeaveTable
+            isLoading={myLeaves.isLoading}
+            isError={myLeaves.isError}
+            onRetry={() => void myLeaves.refetch()}
             leaves={myLeaves.data ?? []}
             showEmployeeColumn={false}
             currentUserId={user?.id ?? ""}
@@ -85,7 +92,7 @@ export default function LeavesPage() {
           />
         </TabsContent>
         <TabsContent value="calendar" className="mt-4">
-          <LeaveCalendar leaves={canSeeAll ? allLeaves.data ?? [] : myLeaves.data ?? []} />
+          {(canSeeAll ? allLeaves : myLeaves).isLoading ? <OperationsState loading title="Loading time away..." /> : (canSeeAll ? allLeaves : myLeaves).isError ? <OperationsState title="The calendar could not be loaded" onRetry={() => void (canSeeAll ? allLeaves : myLeaves).refetch()} /> : <LeaveCalendar leaves={canSeeAll ? allLeaves.data ?? [] : myLeaves.data ?? []} />}
         </TabsContent>
       </Tabs>
     </div>

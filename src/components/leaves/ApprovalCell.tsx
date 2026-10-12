@@ -7,7 +7,7 @@ import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const STATUS_META: Record<LeaveDecisionStatus, { label: string; className: string }> = {
-  pending: { label: "Pending", className: "bg-muted text-muted-foreground" },
+  pending: { label: "Pending", className: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
   approved: { label: "Approved", className: "bg-emerald-500/15 text-emerald-600" },
   rejected: { label: "Rejected", className: "bg-destructive/15 text-destructive" },
 };
@@ -34,7 +34,7 @@ export function ApprovalCell({ status, canAct, onApprove, onReject, isPending }:
         variant="outline"
         disabled={isPending}
         onClick={onApprove}
-        className="text-emerald-600 hover:text-emerald-600"
+        className="size-11 text-emerald-600 hover:text-emerald-600"
         aria-label="Approve"
       >
         <Check className="size-3.5" />
@@ -44,7 +44,7 @@ export function ApprovalCell({ status, canAct, onApprove, onReject, isPending }:
         variant="outline"
         disabled={isPending}
         onClick={onReject}
-        className="text-destructive hover:text-destructive"
+        className="size-11 text-destructive hover:text-destructive"
         aria-label="Reject"
       >
         <X className="size-3.5" />

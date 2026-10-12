@@ -1,10 +1,15 @@
 "use client";
 
+import { useState } from "react";
+import { OperationsState } from "@/components/layout/OperationsUI";
 import { Leave } from "@/types/leave";
 import { LeaveRemoveMode, LeaveRow } from "./LeaveRow";
 
 interface LeaveTableProps {
   leaves: Leave[];
+  isLoading?: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
   showEmployeeColumn: boolean;
   currentUserId: string;
   canApproveHr: boolean;
@@ -17,6 +22,9 @@ interface LeaveTableProps {
 
 export function LeaveTable({
   leaves,
+  isLoading,
+  isError,
+  onRetry,
   showEmployeeColumn,
   currentUserId,
   canApproveHr,
@@ -26,13 +34,15 @@ export function LeaveTable({
   onAdminDecision,
   onCancel,
 }: LeaveTableProps) {
-  if (leaves.length === 0) {
-    return <p className="py-10 text-center text-sm text-muted-foreground">No leave requests yet.</p>;
-  }
+  const [status, setStatus] = useState("all");
+  const filtered = leaves.filter((leave) => status === "all" || leave.status === status);
+  if (isLoading) return <OperationsState loading title="Loading leave requests..." />;
+  if (isError) return <OperationsState title="Requests could not be loaded" onRetry={onRetry} />;
+  if (leaves.length === 0) return <OperationsState title="No requests yet" description="Leave requests and their approval progress will appear here." />;
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-border">
-      <table className="w-full min-w-[720px] border-collapse text-left">
+    <div className="min-w-0 space-y-4"><div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">{filtered.length} request{filtered.length === 1 ? "" : "s"}</p><select aria-label="Filter leave status" value={status} onChange={(e) => setStatus(e.target.value)} className="min-h-11 rounded-xl border border-input bg-card px-3 text-sm"><option value="all">All statuses</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></div><div className="leave-records overflow-hidden rounded-2xl border border-border bg-card">
+      <table className="w-full border-collapse text-left">
         <thead>
           <tr className="border-b border-border bg-muted/40 text-xs font-medium text-muted-foreground">
             {showEmployeeColumn && <th className="px-4 py-2.5">Employee</th>}
@@ -46,7 +56,7 @@ export function LeaveTable({
           </tr>
         </thead>
         <tbody>
-          {leaves.map((leave) => {
+          {filtered.map((leave) => {
             const ownedByViewer =
               (typeof leave.userId === "string" ? leave.userId : leave.userId._id) === currentUserId;
             // Once HR or Admin has acted on it (either one), the requester can no longer cancel it —
@@ -71,6 +81,8 @@ export function LeaveTable({
           })}
         </tbody>
       </table>
+      {filtered.length === 0 && <p className="p-8 text-center text-sm text-muted-foreground">No requests with this status.</p>}
+      </div>
     </div>
   );
 }
