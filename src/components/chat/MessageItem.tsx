@@ -7,13 +7,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Textarea } from "@/components/ui/textarea";
 import { avatarGradient, cn, formatClockTime } from "@/lib/utils";
 import { Message } from "@/types/message";
-import { FileIcon, Pencil, Pin, Reply, SmilePlus, Trash2 } from "lucide-react";
-
-function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+import { Pencil, Pin, Reply, SmilePlus, Trash2 } from "lucide-react";
+import { MessageAttachments } from "./MessageAttachments";
+import { RichMessageText } from "./RichMessageText";
 
 function initials(name: string): string {
   return name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
@@ -195,25 +191,11 @@ export function MessageItem({
                     : "rounded-bl-md border border-border bg-card shadow-sm"
                 )}
               >
-                {message.message}
+                <RichMessageText value={message.message} />
               </div>
             )}
             {message.attachments.length > 0 && (
-              <div className="grid gap-1.5">
-                {message.attachments.map((file) => (
-                  <a
-                    key={file.fileKey}
-                    href={file.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex max-w-xs items-center gap-2 rounded-xl border border-border bg-card p-2 text-sm shadow-sm hover:bg-muted"
-                  >
-                    <FileIcon className="size-4 shrink-0 text-muted-foreground" />
-                    <span className="min-w-0 flex-1 truncate">{file.originalName}</span>
-                    <span className="shrink-0 text-xs text-muted-foreground">{formatSize(file.size)}</span>
-                  </a>
-                ))}
-              </div>
+              <MessageAttachments attachments={message.attachments} />
             )}
           </div>
         )}

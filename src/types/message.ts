@@ -20,6 +20,7 @@ export interface Message {
   authorName: string;
   authorAvatar: string | null;
   message: string;
+  clientMessageId: string | null;
   mentions: string[];
   attachments: TaskAttachment[];
   reactions: MessageReaction[];
@@ -28,6 +29,8 @@ export interface Message {
   pinnedAt: string | null;
   pinnedBy: string | null;
   isEdited: boolean;
+  scheduledFor: string | null;
+  scheduledStatus: "pending" | "dispatching" | "sent" | "cancelled";
   createdAt: string;
   updatedAt: string;
 }
@@ -36,4 +39,6 @@ export interface CreateMessageInput {
   message: string;
   mentions?: string[];
   replyToId?: string;
+  clientMessageId?: string;
+  scheduledFor?: string;
 }

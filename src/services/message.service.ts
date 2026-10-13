@@ -17,6 +17,11 @@ export async function createMessage(channelId: string, input: CreateMessageInput
   return res.data.data;
 }
 
+export async function listScheduledMessages(channelId: string): Promise<Message[]> {
+  const res = await apiClient.get<ApiEnvelope<Message[]>>(`/channels/${channelId}/scheduled-messages`);
+  return res.data.data;
+}
+
 export async function updateMessage(messageId: string, message: string): Promise<Message> {
   const res = await apiClient.patch<ApiEnvelope<Message>>(`/messages/${messageId}`, { message });
   return res.data.data;

@@ -3,12 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { ChevronLeft, Pin, Search } from "lucide-react";
+import { CalendarClock, ChevronLeft, Pin, Search } from "lucide-react";
 import { ChatSearchPanel } from "./ChatSearchPanel";
 import { GroupInfoDialog } from "./GroupInfoDialog";
 import { MessageComposer } from "./MessageComposer";
 import { MessageItem } from "./MessageItem";
 import { PinnedMessagesPanel } from "./PinnedMessagesPanel";
+import { ScheduledMessagesPanel } from "./ScheduledMessagesPanel";
 import { TypingIndicator } from "./TypingIndicator";
 import { getChannelDisplayName } from "./channelDisplay";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,7 @@ import { formatDayLabel, toPhDateKey } from "@/lib/utils";
 import { Channel } from "@/types/channel";
 import { Message } from "@/types/message";
 
-type OverlayPanel = "none" | "search" | "pinned";
+type OverlayPanel = "none" | "search" | "pinned" | "scheduled";
 
 // Consecutive messages from the same sender within this window collapse into one visual
 // "burst" — avatar/name/timestamp only show once, matching how every mainstream chat app groups
@@ -105,9 +106,10 @@ export function MessageThread({ channel, currentUserId }: { channel: Channel; cu
     setPanel((current) => (current === next ? "none" : next));
   }
 
-  function handleSend(text: string, mentions: string[], replyToId?: string) {
+  function handleSend(text: string, mentions: string[], replyToId?: string, scheduledFor?: string) {
     notifyStopTyping();
-    sendMessage.mutate({ message: text, mentions, replyToId }, { onError: () => toast.error("Could not send that message.") });
+    const clientMessageId = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+    sendMessage.mutate({ message: text, mentions, replyToId, scheduledFor, clientMessageId }, { onError: () => toast.error("Could not send that message.") });
   }
 
   function handleAttach(files: File[]) {
@@ -172,6 +174,16 @@ export function MessageThread({ channel, currentUserId }: { channel: Channel; cu
         <Button
           variant="ghost"
           size="icon-sm"
+          onClick={() => togglePanel("scheduled")}
+          aria-label="Scheduled messages"
+          title="Scheduled messages"
+          className={panel === "scheduled" ? "bg-muted" : undefined}
+        >
+          <CalendarClock className="size-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
           onClick={() => togglePanel("search")}
           aria-label="Search this conversation"
           title="Search"
@@ -188,6 +200,7 @@ export function MessageThread({ channel, currentUserId }: { channel: Channel; cu
       {panel === "search" && (
         <ChatSearchPanel channelId={channel._id} onClose={() => setPanel("none")} onJumpToMessage={handleJumpToMessage} />
       )}
+      {panel === "scheduled" && <ScheduledMessagesPanel channelId={channel._id} onClose={() => setPanel("none")} />}
 
       <div className="flex-1 overflow-y-auto p-3">
         {isLoading ? (

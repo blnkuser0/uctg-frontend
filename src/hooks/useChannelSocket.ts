@@ -18,7 +18,7 @@ export function useChannelSocket(channelId: string) {
       queryClient.setQueryData<Message[]>(queryKeys.messages(channelId), (old) =>
         old && !old.some((m) => m._id === message._id) ? [...old, message] : old
       );
-      queryClient.invalidateQueries({ queryKey: queryKeys.channels() });
+      queryClient.invalidateQueries({ queryKey: ["channels"] });
     }
 
     function onUpdated({ message }: { message: Message }) {

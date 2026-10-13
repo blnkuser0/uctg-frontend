@@ -7,8 +7,8 @@ interface ApiEnvelope<T> {
   data: T;
 }
 
-export async function listChannels(): Promise<Channel[]> {
-  const res = await apiClient.get<ApiEnvelope<Channel[]>>("/channels");
+export async function listChannels(archived = false): Promise<Channel[]> {
+  const res = await apiClient.get<ApiEnvelope<Channel[]>>("/channels", { params: archived ? { archived: "true" } : undefined });
   return res.data.data;
 }
 
@@ -45,6 +45,10 @@ export async function setChannelPinned(channelId: string, pinned: boolean): Prom
 
 export async function setChannelMuted(channelId: string, muted: boolean): Promise<void> {
   await apiClient.post(`/channels/${channelId}/mute`, { muted });
+}
+
+export async function setChannelArchived(channelId: string, archived: boolean): Promise<void> {
+  await apiClient.post(`/channels/${channelId}/archive`, { archived });
 }
 
 export async function hideDm(channelId: string): Promise<void> {

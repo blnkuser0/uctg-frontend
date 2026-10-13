@@ -1,14 +1,16 @@
 "use client";
 
 import { use } from "react";
+import { useSearchParams } from "next/navigation";
 import { MessageThread } from "@/components/chat/MessageThread";
 import { useChannels } from "@/hooks/useChannels";
 import { useAuth } from "@/providers/AuthProvider";
 
 export default function ChannelThreadPage({ params }: { params: Promise<{ channelId: string }> }) {
   const { channelId } = use(params);
+  const searchParams = useSearchParams();
   const { user } = useAuth();
-  const { data: channels, isLoading } = useChannels();
+  const { data: channels, isLoading } = useChannels(searchParams.get("archived") === "1");
   const channel = channels?.find((c) => c._id === channelId);
 
   if (isLoading) {

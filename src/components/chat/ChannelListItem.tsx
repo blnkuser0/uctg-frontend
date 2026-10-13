@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Bell, BellOff, Hash, LayoutGrid, LogOut, MailOpen, MoreHorizontal, Pin, PinOff, Trash2, Users } from "lucide-react";
+import { Archive, ArchiveRestore, Bell, BellOff, Hash, LayoutGrid, LogOut, MailOpen, MoreHorizontal, Pin, PinOff, Trash2, Users } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +26,7 @@ import {
   useMarkChannelRead,
   useMarkChannelUnread,
   useSetChannelMuted,
+  useSetChannelArchived,
   useSetChannelPinned,
   useUpdateGroup,
 } from "@/hooks/useChannels";
@@ -42,7 +43,7 @@ function initials(name: string): string {
 export function ChannelListItem({ channel, currentUserId }: { channel: Channel; currentUserId: string }) {
   const pathname = usePathname();
   const router = useRouter();
-  const href = `/chat/${channel._id}`;
+  const href = `/chat/${channel._id}${channel.archived ? "?archived=1" : ""}`;
   const active = pathname === href;
   const other = channel.type === "dm" ? (channel.memberIds.find((m) => m._id !== currentUserId) ?? channel.memberIds[0]) : null;
   const otherOnline = useIsOnline(other?._id);
@@ -52,6 +53,7 @@ export function ChannelListItem({ channel, currentUserId }: { channel: Channel; 
   const markUnread = useMarkChannelUnread();
   const setPinned = useSetChannelPinned();
   const setMuted = useSetChannelMuted();
+  const setArchived = useSetChannelArchived();
   const hideDm = useHideDm();
   const updateGroup = useUpdateGroup();
 
@@ -161,6 +163,15 @@ export function ChannelListItem({ channel, currentUserId }: { channel: Channel; 
           <DropdownMenuItem onClick={() => setMuted.mutate({ channelId: channel._id, muted: !channel.muted })}>
             {channel.muted ? <Bell className="size-4" /> : <BellOff className="size-4" />}
             {channel.muted ? "Unmute" : "Mute"}
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setArchived.mutate(
+              { channelId: channel._id, archived: !channel.archived },
+              { onSuccess: () => { if (!channel.archived && active) router.push("/chat"); toast.success(channel.archived ? "Conversation restored" : "Conversation archived"); }, onError: () => toast.error("Could not update the archive.") }
+            )}
+          >
+            {channel.archived ? <ArchiveRestore className="size-4" /> : <Archive className="size-4" />}
+            {channel.archived ? "Unarchive" : "Archive"}
           </DropdownMenuItem>
           {canRemove && (
             <>

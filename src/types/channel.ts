@@ -19,6 +19,7 @@ export interface Channel {
   unreadCount: number;
   pinned: boolean;
   muted: boolean;
+  archived: boolean;
   createdAt: string;
   updatedAt: string;
 }

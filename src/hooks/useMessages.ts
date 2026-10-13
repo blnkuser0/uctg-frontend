@@ -19,8 +19,11 @@ export function useSendMessage(channelId: string) {
   return useMutation({
     mutationFn: (input: CreateMessageInput) => messageService.createMessage(channelId, input),
     onSuccess: (message) => {
-      queryClient.setQueryData<Message[]>(queryKeys.messages(channelId), (old) => (old ? [...old, message] : [message]));
-      queryClient.invalidateQueries({ queryKey: queryKeys.channels() });
+      if (message.scheduledStatus !== "pending") {
+        queryClient.setQueryData<Message[]>(queryKeys.messages(channelId), (old) => (old ? [...old, message] : [message]));
+      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.scheduledMessages(channelId) });
+      queryClient.invalidateQueries({ queryKey: ["channels"] });
     },
   });
 }
@@ -58,6 +61,7 @@ export function useDeleteMessage(channelId: string) {
       queryClient.setQueryData<Message[]>(queryKeys.messages(channelId), (old) =>
         old?.filter((m) => m._id !== messageId)
       );
+      queryClient.invalidateQueries({ queryKey: queryKeys.scheduledMessages(channelId) });
     },
   });
 }
@@ -104,6 +108,14 @@ export function usePinnedMessages(channelId: string, enabled: boolean) {
   return useQuery({
     queryKey: queryKeys.pinnedMessages(channelId),
     queryFn: () => messageService.listPinnedMessages(channelId),
+    enabled: enabled && !!channelId,
+  });
+}
+
+export function useScheduledMessages(channelId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: queryKeys.scheduledMessages(channelId),
+    queryFn: () => messageService.listScheduledMessages(channelId),
     enabled: enabled && !!channelId,
   });
 }

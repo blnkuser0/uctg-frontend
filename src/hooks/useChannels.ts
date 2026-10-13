@@ -5,16 +5,16 @@ import { queryKeys } from "@/lib/queryKeys";
 import * as channelService from "@/services/channel.service";
 import { CreateGroupInput, UpdateGroupInput } from "@/types/channel";
 
-export function useChannels() {
+export function useChannels(archived = false) {
   return useQuery({
-    queryKey: queryKeys.channels(),
-    queryFn: channelService.listChannels,
+    queryKey: queryKeys.channels(archived),
+    queryFn: () => channelService.listChannels(archived),
   });
 }
 
 function useInvalidateChannels() {
   const queryClient = useQueryClient();
-  return () => queryClient.invalidateQueries({ queryKey: queryKeys.channels() });
+  return () => queryClient.invalidateQueries({ queryKey: ["channels"] });
 }
 
 export function useGetOrCreateDm() {
@@ -80,6 +80,15 @@ export function useSetChannelMuted() {
   return useMutation({
     mutationFn: ({ channelId, muted }: { channelId: string; muted: boolean }) =>
       channelService.setChannelMuted(channelId, muted),
+    onSuccess: invalidate,
+  });
+}
+
+export function useSetChannelArchived() {
+  const invalidate = useInvalidateChannels();
+  return useMutation({
+    mutationFn: ({ channelId, archived }: { channelId: string; archived: boolean }) =>
+      channelService.setChannelArchived(channelId, archived),
     onSuccess: invalidate,
   });
 }
