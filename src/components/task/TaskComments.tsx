@@ -4,15 +4,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
+import { MentionTextarea } from "./MentionTextarea";
 import { useAuth } from "@/providers/AuthProvider";
 import { useComments, useCreateComment, useUpdateComment, useDeleteComment } from "@/hooks/useComments";
 import { useUsers } from "@/hooks/useUsers";
 import { formatClockDateTime } from "@/lib/utils";
-import { AtSign, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 
 function initials(name: string): string {
   return name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
@@ -36,10 +34,6 @@ export function TaskComments({ taskId, memberIds }: { taskId: string; memberIds:
   const [editingText, setEditingText] = useState("");
 
   const members = (users ?? []).filter((u) => memberIds.includes(u.id) && u.id !== user?.id);
-
-  function toggleMention(userId: string, checked: boolean) {
-    setMentions(checked ? [...mentions, userId] : mentions.filter((id) => id !== userId));
-  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -115,29 +109,15 @@ export function TaskComments({ taskId, memberIds }: { taskId: string; memberIds:
       </div>
 
       <form onSubmit={handleSubmit} className="grid gap-2">
-        <Textarea rows={3} placeholder="Write a comment..." value={message} onChange={(e) => setMessage(e.target.value)} />
-        <div className="flex items-center justify-between">
-          <Popover>
-            <PopoverTrigger
-              render={
-                <Button type="button" size="sm" variant="outline">
-                  <AtSign className="size-3.5" />
-                  Mention{mentions.length > 0 ? ` (${mentions.length})` : ""}
-                </Button>
-              }
-            />
-            <PopoverContent className="w-56 p-2" align="start">
-              <div className="grid gap-1.5">
-                {members.length === 0 && <p className="p-2 text-xs text-muted-foreground">No other members yet.</p>}
-                {members.map((u) => (
-                  <label key={u.id} className="flex items-center gap-2 rounded-md p-1.5 text-sm hover:bg-muted">
-                    <Checkbox checked={mentions.includes(u.id)} onCheckedChange={(c) => toggleMention(u.id, c === true)} />
-                    <Label className="cursor-pointer font-normal">{u.name}</Label>
-                  </label>
-                ))}
-              </div>
-            </PopoverContent>
-          </Popover>
+        <MentionTextarea
+          rows={3}
+          placeholder="Write a comment... type @ to mention someone"
+          value={message}
+          onChange={setMessage}
+          members={members}
+          onMentionsChange={setMentions}
+        />
+        <div className="flex items-center justify-end">
           <Button type="submit" size="sm" disabled={createComment.isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">
             Post
           </Button>

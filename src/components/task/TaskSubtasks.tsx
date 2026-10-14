@@ -18,11 +18,13 @@ export function TaskSubtasks({
   projectId,
   projectKey,
   onOpenSubtask,
+  canCreate = true,
 }: {
   taskId: string;
   projectId: string;
   projectKey: string;
   onOpenSubtask: (id: string) => void;
+  canCreate?: boolean;
 }) {
   const [title, setTitle] = useState("");
   const { data: subtasks } = useSubtasks(taskId);
@@ -57,12 +59,14 @@ export function TaskSubtasks({
         </button>
       ))}
 
-      <form onSubmit={handleAdd} className="flex gap-2">
-        <Input placeholder="Add a subtask" value={title} onChange={(e) => setTitle(e.target.value)} />
-        <Button type="submit" size="sm" variant="outline" disabled={createSubtask.isPending}>
-          <Plus className="size-4" />
-        </Button>
-      </form>
+      {canCreate && (
+        <form onSubmit={handleAdd} className="flex gap-2">
+          <Input placeholder="Add a subtask" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <Button type="submit" size="sm" variant="outline" disabled={createSubtask.isPending}>
+            <Plus className="size-4" />
+          </Button>
+        </form>
+      )}
     </div>
   );
 }

@@ -14,7 +14,10 @@ export function useUsers() {
 
 function useInvalidateUsers() {
   const queryClient = useQueryClient();
-  return () => queryClient.invalidateQueries({ queryKey: ["users"] });
+  return () => Promise.all([
+    queryClient.invalidateQueries({ queryKey: ["users"] }),
+    queryClient.invalidateQueries({ queryKey: ["roles"] }),
+  ]);
 }
 
 export function useCreateUser() {

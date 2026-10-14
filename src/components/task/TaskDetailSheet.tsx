@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,8 @@ import { TaskAttachments } from "./TaskAttachments";
 import { useTask, useUpdateTask, useDeleteTask } from "@/hooks/useTask";
 import { useStages } from "@/hooks/useStages";
 import { useMoveTask } from "@/hooks/useTasks";
+import { useAuth } from "@/providers/AuthProvider";
+import { PERMISSIONS } from "@/types/role";
 import { Task, TaskPriority } from "@/types/task";
 import { Trash2 } from "lucide-react";
 
@@ -34,6 +37,18 @@ interface TaskDetailSheetProps {
 
 export function TaskDetailSheet({ taskId, projectId, projectKey, memberIds, onOpenChange, onOpenTask }: TaskDetailSheetProps) {
   const { data: task } = useTask(taskId ?? "");
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  // The backend marks the viewer "seen" as a side effect of this same GET — patch the cached
+  // list views too, so the unseen dot clears immediately instead of waiting for a refetch.
+  useEffect(() => {
+    if (!task || !user?.id) return;
+    if (task.seenBy.includes(user.id)) return;
+    const markSeen = (t: Task) => (t._id === task._id && !t.seenBy.includes(user.id) ? { ...t, seenBy: [...t.seenBy, user.id] } : t);
+    queryClient.setQueriesData<Task[]>({ queryKey: ["projects", projectId, "tasks"] }, (tasks) => tasks?.map(markSeen));
+    queryClient.setQueriesData<Task[]>({ queryKey: ["my-tasks"] }, (tasks) => tasks?.map(markSeen));
+  }, [task, user?.id, projectId, queryClient]);
 
   return (
     <Sheet open={!!taskId} onOpenChange={onOpenChange}>
@@ -69,6 +84,17 @@ function TaskDetailBody({
   onDeleted: () => void;
   onOpenSubtask: (taskId: string) => void;
 }) {
+  const { user } = useAuth();
+  // Mirrors the backend's getTaskForWorkspaceAccess (the STRICT check, no own-task carve-out):
+  // only tasks.manage/projects.manage/Super Admin can retitle/reprioritize/reassign/relabel/
+  // redate/delete a task — being the assignee or creator does NOT grant this (that narrower
+  // carve-out only covers viewing/commenting/moving stage/checklist/attachments, which stay
+  // interactive below regardless of canManage).
+  const canManage =
+    user?.isSuperAdmin ||
+    (user?.role.permissions.includes(PERMISSIONS.TASKS_MANAGE) ?? false) ||
+    (user?.role.permissions.includes(PERMISSIONS.PROJECTS_MANAGE) ?? false);
+
   const updateTask = useUpdateTask(task._id, projectId);
   const deleteTask = useDeleteTask(task._id, projectId);
   const stages = useStages(projectId);
@@ -102,6 +128,7 @@ function TaskDetailBody({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           onBlur={() => title.trim() && title !== task.title && saveField("title", title.trim())}
+          readOnly={!canManage}
           className="border-none px-0 text-lg font-semibold shadow-none focus-visible:ring-0"
         />
 
@@ -141,13 +168,19 @@ function TaskDetailBody({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 onBlur={() => description !== task.description && saveField("description", description)}
+                readOnly={!canManage}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="grid gap-1.5">
                 <Label>Priority</Label>
-                <Select value={priorityValue} items={PRIORITY_LABELS} onValueChange={(v) => saveField("priority", v as TaskPriority)}>
+                <Select
+                  value={priorityValue}
+                  items={PRIORITY_LABELS}
+                  onValueChange={(v) => saveField("priority", v as TaskPriority)}
+                  disabled={!canManage}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -165,13 +198,19 @@ function TaskDetailBody({
                   memberIds={memberIds}
                   selected={task.assigneeIds}
                   onChange={(ids) => saveField("assigneeIds", ids)}
+                  disabled={!canManage}
                 />
               </div>
             </div>
 
             <div className="grid gap-1.5">
               <Label>Labels</Label>
-              <TaskLabelPicker projectId={projectId} selected={task.labelIds} onChange={(ids) => saveField("labelIds", ids)} />
+              <TaskLabelPicker
+                projectId={projectId}
+                selected={task.labelIds}
+                onChange={(ids) => saveField("labelIds", ids)}
+                disabled={!canManage}
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -181,6 +220,7 @@ function TaskDetailBody({
                   type="date"
                   defaultValue={task.startDate?.slice(0, 10) ?? ""}
                   onBlur={(e) => saveField("startDate", e.target.value || null)}
+                  disabled={!canManage}
                 />
               </div>
               <div className="grid gap-1.5">
@@ -189,14 +229,17 @@ function TaskDetailBody({
                   type="date"
                   defaultValue={task.deadline?.slice(0, 10) ?? ""}
                   onBlur={(e) => saveField("deadline", e.target.value || null)}
+                  disabled={!canManage}
                 />
               </div>
             </div>
 
-            <Button variant="outline" className="mt-2 text-destructive hover:text-destructive" onClick={handleDelete}>
-              <Trash2 className="size-4" />
-              Delete task
-            </Button>
+            {canManage && (
+              <Button variant="outline" className="mt-2 text-destructive hover:text-destructive" onClick={handleDelete}>
+                <Trash2 className="size-4" />
+                Delete task
+              </Button>
+            )}
           </TabsContent>
 
           <TabsContent value="checklist" className="pt-3">
@@ -204,7 +247,13 @@ function TaskDetailBody({
           </TabsContent>
 
           <TabsContent value="subtasks" className="pt-3">
-            <TaskSubtasks taskId={task._id} projectId={projectId} projectKey={projectKey} onOpenSubtask={onOpenSubtask} />
+            <TaskSubtasks
+              taskId={task._id}
+              projectId={projectId}
+              projectKey={projectKey}
+              onOpenSubtask={onOpenSubtask}
+              canCreate={canManage}
+            />
           </TabsContent>
 
           <TabsContent value="time" className="pt-3">

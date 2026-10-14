@@ -12,9 +12,10 @@ interface TaskLabelPickerProps {
   projectId: string;
   selected: string[];
   onChange: (next: string[]) => void;
+  disabled?: boolean;
 }
 
-export function TaskLabelPicker({ projectId, selected, onChange }: TaskLabelPickerProps) {
+export function TaskLabelPicker({ projectId, selected, onChange, disabled }: TaskLabelPickerProps) {
   const { data: labels } = useLabels(projectId);
   const selectedLabels = (labels ?? []).filter((l) => selected.includes(l._id));
 
@@ -26,7 +27,7 @@ export function TaskLabelPicker({ projectId, selected, onChange }: TaskLabelPick
     <Popover>
       <PopoverTrigger
         render={
-          <Button variant="outline" size="sm" className="h-auto min-h-9 flex-wrap justify-start gap-1.5 py-1.5">
+          <Button variant="outline" size="sm" className="h-auto min-h-9 flex-wrap justify-start gap-1.5 py-1.5" disabled={disabled}>
             <Tag className="size-3.5 shrink-0" />
             {selectedLabels.length === 0 ? (
               "Labels"

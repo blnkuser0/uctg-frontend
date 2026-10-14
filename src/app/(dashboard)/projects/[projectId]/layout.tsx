@@ -1,14 +1,17 @@
 "use client";
 
-import { use } from "react";
+import { use, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useProject } from "@/hooks/useProject";
+import { useAuth } from "@/providers/AuthProvider";
+import { PERMISSIONS } from "@/types/role";
 import { cn } from "@/lib/utils";
 
 const TABS = [
   { segment: "board", label: "Board" },
   { segment: "list", label: "List" },
+  { segment: "completed", label: "Completed" },
   { segment: "reports", label: "Reports" },
   { segment: "settings", label: "Settings" },
 ];
@@ -23,6 +26,23 @@ export default function ProjectLayout({
   const { projectId } = use(params);
   const { data: project } = useProject(projectId);
   const pathname = usePathname();
+  const router = useRouter();
+  const { user } = useAuth();
+
+  // Full project workspace (board/list/completed/reports/settings) is gated on tasks.manage or
+  // projects.manage — an ordinary assignee without it works entirely from /my-tasks instead. The
+  // backend is what actually enforces this (every API call here 403s otherwise); this redirect is
+  // just so a baseline user doesn't land on an empty/erroring board.
+  const canManageWorkspace =
+    user?.isSuperAdmin ||
+    (user?.role.permissions.includes(PERMISSIONS.TASKS_MANAGE) ?? false) ||
+    (user?.role.permissions.includes(PERMISSIONS.PROJECTS_MANAGE) ?? false);
+
+  useEffect(() => {
+    if (!canManageWorkspace) router.replace("/my-tasks");
+  }, [canManageWorkspace, router]);
+
+  if (!canManageWorkspace) return null;
 
   return (
     <div className="flex h-full min-w-0 flex-col">

@@ -15,9 +15,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { PermissionChecklist } from "./PermissionChecklist";
 import { useCreateRole, useUpdateRole } from "@/hooks/useRoles";
-import { Permission, Role } from "@/types/role";
+import { Role } from "@/types/role";
 import { Plus } from "lucide-react";
 
 interface RoleFormDialogProps {
@@ -28,7 +27,6 @@ interface RoleFormDialogProps {
 export function RoleFormDialog({ role, trigger }: RoleFormDialogProps) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(role?.name ?? "");
-  const [permissions, setPermissions] = useState<Permission[]>(role?.permissions ?? []);
 
   const createRole = useCreateRole();
   const updateRole = useUpdateRole();
@@ -39,7 +37,6 @@ export function RoleFormDialog({ role, trigger }: RoleFormDialogProps) {
     setOpen(next);
     if (next) {
       setName(role?.name ?? "");
-      setPermissions(role?.permissions ?? []);
     }
   }
 
@@ -62,9 +59,9 @@ export function RoleFormDialog({ role, trigger }: RoleFormDialogProps) {
     };
 
     if (isEditing) {
-      updateRole.mutate({ roleId: role.id, input: { name, permissions } }, { onSuccess, onError });
+      updateRole.mutate({ roleId: role.id, input: { name } }, { onSuccess, onError });
     } else {
-      createRole.mutate({ name, permissions }, { onSuccess, onError });
+      createRole.mutate({ name, permissions: [] }, { onSuccess, onError });
     }
   }
 
@@ -83,16 +80,16 @@ export function RoleFormDialog({ role, trigger }: RoleFormDialogProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{isEditing ? "Edit role" : "Create a role"}</DialogTitle>
-          <DialogDescription>Pick exactly what this role is allowed to do.</DialogDescription>
+          <DialogDescription>
+            {isEditing
+              ? "Rename this role. Configure its permissions from the Permissions page."
+              : "Name this role, then configure its permissions from the Permissions page."}
+          </DialogDescription>
         </DialogHeader>
         <form className="grid gap-4" onSubmit={handleSubmit}>
           <div className="grid gap-1.5">
             <Label htmlFor="roleName">Role name</Label>
             <Input id="roleName" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Supervisor" />
-          </div>
-          <div className="grid gap-1.5">
-            <Label>Permissions</Label>
-            <PermissionChecklist selected={permissions} onChange={setPermissions} />
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isPending} className="bg-cyan-600 text-white hover:bg-cyan-500">

@@ -21,9 +21,10 @@ interface TaskAssigneePickerProps {
   memberIds: string[];
   selected: string[];
   onChange: (next: string[]) => void;
+  disabled?: boolean;
 }
 
-export function TaskAssigneePicker({ memberIds, selected, onChange }: TaskAssigneePickerProps) {
+export function TaskAssigneePicker({ memberIds, selected, onChange, disabled }: TaskAssigneePickerProps) {
   const { data: users } = useUsers();
   const members = (users ?? []).filter((u) => memberIds.includes(u.id));
   const selectedUsers = members.filter((u) => selected.includes(u.id));
@@ -36,7 +37,7 @@ export function TaskAssigneePicker({ memberIds, selected, onChange }: TaskAssign
     <Popover>
       <PopoverTrigger
         render={
-          <Button variant="outline" size="sm" className="gap-1.5">
+          <Button variant="outline" size="sm" className="gap-1.5" disabled={disabled}>
             <div className="flex -space-x-1.5">
               {selectedUsers.slice(0, 3).map((u) => (
                 <Avatar key={u.id} className="size-5 border border-background">

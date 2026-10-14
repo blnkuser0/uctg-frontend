@@ -6,6 +6,9 @@ import { Progress } from "@/components/ui/progress";
 import { LabelBadge } from "@/components/labels/LabelBadge";
 import { TaskPriorityFlag } from "@/components/task/TaskPriorityFlag";
 import { TaskDeadlinePill } from "@/components/task/TaskDeadlinePill";
+import { useAuth } from "@/providers/AuthProvider";
+import { cn } from "@/lib/utils";
+import { isTaskUnseen } from "@/lib/taskSeen";
 import { Label } from "@/types/label";
 import { Task } from "@/types/task";
 import { User } from "@/types/user";
@@ -30,6 +33,8 @@ interface TaskCardProps {
 }
 
 export function TaskCard({ task, projectKey, labels, assignees, onClick, onMoveClick, statusLabel }: TaskCardProps) {
+  const { user } = useAuth();
+  const unseen = isTaskUnseen(task, user?.id);
   const taskLabels = labels.filter((l) => task.labelIds.includes(l._id));
   const taskAssignees = assignees.filter((u) => task.assigneeIds.includes(u.id));
 
@@ -39,8 +44,12 @@ export function TaskCard({ task, projectKey, labels, assignees, onClick, onMoveC
       tabIndex={0}
       onClick={onClick}
       onKeyDown={(e) => e.key === "Enter" && onClick()}
-      className="group flex w-full flex-col gap-2 border border-border bg-card p-3 text-left shadow-sm transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-violet-500/40 hover:shadow-md"
+      className={cn(
+        "group relative flex w-full flex-col gap-2 border border-border bg-card p-3 text-left shadow-sm transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-violet-500/40 hover:shadow-md",
+        unseen && "bg-cyan-500/5"
+      )}
     >
+      {unseen && <span className="absolute top-2 right-2 size-2 rounded-full bg-cyan-600" aria-label="Unseen update" />}
       <div className="flex items-center justify-between">
         <span className="font-mono text-[10px] text-muted-foreground">
           {projectKey}-{task.taskNumber}
@@ -62,7 +71,7 @@ export function TaskCard({ task, projectKey, labels, assignees, onClick, onMoveC
         </div>
       </div>
 
-      <p className="text-sm font-medium leading-snug">{task.title}</p>
+      <p className={cn("text-sm leading-snug", unseen ? "font-bold" : "font-medium")}>{task.title}</p>
 
       {statusLabel && <span className="w-fit border border-violet-500/20 bg-violet-500/8 px-2 py-1 text-[10px] font-medium text-violet-700 dark:text-violet-300">{statusLabel}</span>}
 

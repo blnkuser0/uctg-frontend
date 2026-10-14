@@ -12,7 +12,10 @@ import { Button } from "@/components/ui/button";
 import { useMyTasks } from "@/hooks/useMyTasks";
 import { useMyProjects } from "@/hooks/useProjects";
 import { useUsers } from "@/hooks/useUsers";
+import { useAuth } from "@/providers/AuthProvider";
 import { queryKeys } from "@/lib/queryKeys";
+import { cn } from "@/lib/utils";
+import { isTaskUnseen } from "@/lib/taskSeen";
 import { listStages } from "@/services/stage.service";
 import { Task } from "@/types/task";
 
@@ -66,6 +69,7 @@ export default function MyTasksPage() {
   const overdueCount = (tasks ?? []).filter((task) => task.deadline && new Date(task.deadline) < now && !task.completedAt).length;
   const completedCount = (tasks ?? []).filter((task) => !!task.completedAt).length;
   const highCount = (tasks ?? []).filter((task) => task.priority === "urgent" || task.priority === "high").length;
+  const completionPercent = (tasks ?? []).length > 0 ? Math.round((completedCount / (tasks ?? []).length) * 100) : 0;
 
   function clearFilters() {
     setQuery("");
@@ -82,7 +86,7 @@ export default function MyTasksPage() {
       <section className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-3">
         <TaskMetric label="Assigned" value={(tasks ?? []).length} tone="border-t-sky-500" />
         <TaskMetric label="High attention" value={highCount} tone="border-t-amber-500" />
-        <TaskMetric label="Completed" value={completedCount} tone="border-t-emerald-500" />
+        <TaskMetric label="Completed" value={completedCount} tone="border-t-emerald-500" sub={`${completionPercent}% done`} />
       </section>
 
       <section className="catalyst-panel overflow-hidden">
@@ -117,10 +121,42 @@ export default function MyTasksPage() {
   );
 }
 
-function TaskMetric({ label, value, tone }: { label: string; value: number; tone: string }) {
-  return <div className={`border-t-2 bg-card px-4 py-3 ${tone}`}><p className="text-[10px] font-medium text-muted-foreground">{label}</p><p className="mt-2 text-2xl font-bold">{String(value).padStart(2, "0")}</p></div>;
+function TaskMetric({ label, value, tone, sub }: { label: string; value: number; tone: string; sub?: string }) {
+  return (
+    <div className={`border-t-2 bg-card px-4 py-3 ${tone}`}>
+      <p className="text-[10px] font-medium text-muted-foreground">{label}</p>
+      <p className="mt-2 text-2xl font-bold">{String(value).padStart(2, "0")}</p>
+      {sub && <p className="mt-0.5 text-[10px] text-muted-foreground">{sub}</p>}
+    </div>
+  );
 }
 
 function TaskRow({ task, projectKey, status, onOpen }: { task: Task; projectKey: string; status: string; onOpen: () => void }) {
-  return <button type="button" onClick={onOpen} className="grid w-full grid-cols-[minmax(0,1fr)_6rem] items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 md:grid-cols-[minmax(0,1fr)_8rem_8rem_7rem]"><span className="min-w-0"><span className="block truncate text-sm font-semibold">{task.title}</span><span className="mt-0.5 block text-[10px] text-muted-foreground">{projectKey}-{task.taskNumber} · {task.commentCount} comments · {task.attachments.length} files</span></span><span className="truncate text-xs text-violet-600 dark:text-violet-300">{status}</span><span className="hidden text-xs capitalize text-muted-foreground md:block">{task.priority ?? "normal"}</span><span className="hidden text-xs text-muted-foreground md:block">{task.deadline ? new Date(task.deadline).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "None"}</span></button>;
+  const { user } = useAuth();
+  const unseen = isTaskUnseen(task, user?.id);
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className={cn(
+        "grid w-full grid-cols-[minmax(0,1fr)_6rem] items-center px-4 py-3 text-left transition-colors hover:bg-muted/40 md:grid-cols-[minmax(0,1fr)_8rem_8rem_7rem]",
+        unseen && "bg-cyan-500/5"
+      )}
+    >
+      <span className="flex min-w-0 items-center gap-2">
+        {unseen && <span className="size-2 shrink-0 rounded-full bg-cyan-600" aria-label="Unseen update" />}
+        <span className="min-w-0">
+          <span className={cn("block truncate text-sm", unseen ? "font-bold" : "font-semibold")}>{task.title}</span>
+          <span className="mt-0.5 block text-[10px] text-muted-foreground">
+            {projectKey}-{task.taskNumber} · {task.commentCount} comments · {task.attachments.length} files
+          </span>
+        </span>
+      </span>
+      <span className="truncate text-xs text-violet-600 dark:text-violet-300">{status}</span>
+      <span className="hidden text-xs text-muted-foreground capitalize md:block">{task.priority ?? "normal"}</span>
+      <span className="hidden text-xs text-muted-foreground md:block">
+        {task.deadline ? new Date(task.deadline).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "None"}
+      </span>
+    </button>
+  );
 }

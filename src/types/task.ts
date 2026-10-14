@@ -41,6 +41,7 @@ export interface Task {
   trackedMinutes: number;
   attachments: TaskAttachment[];
   commentCount: number;
+  seenBy: string[];
   completedAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -77,4 +78,5 @@ export interface TaskListFilters {
   priority?: Exclude<TaskPriority, null>;
   q?: string;
   includeSubtasks?: boolean;
+  completed?: boolean;
 }
